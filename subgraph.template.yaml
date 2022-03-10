@@ -23,4 +23,10 @@ dataSources:
       eventHandlers:
         - event: ProposalCreated(uint256,address,address[],uint256[],string[],bytes[],uint256,uint256,string)
           handler: handleNewProposal
+
+        - event: ProposalQueued(uint256,uint256)
+          handler: handleProposalQueued
+
+        - event: VoteCast(address,uint256,bool,uint256)
+          handler: handleVoteCast
       file: ./src/mappings/proposals.ts
