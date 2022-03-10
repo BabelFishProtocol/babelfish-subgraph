@@ -1,0 +1,26 @@
+specVersion: 0.0.2
+description: Babelfish subgraph
+repository: https://github.com/graphprotocol/example-subgraph
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: GovernorAlpha
+    network: {{network}}
+    source:
+      address: '{{contracts.GovernorAlpha.address}}'
+      abi: GovernorAlpha
+      startBlock: {{startBlock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      entities:
+        - GovernorAlpha
+      abis:
+        - name: GovernorAlpha
+          file: ./abis/GovernorAlpha.json
+      eventHandlers:
+        - event: ProposalCreated(uint256,address,address[],uint256[],string[],bytes[],uint256,uint256,string)
+          handler: handleNewProposal
+      file: ./src/mappings/proposals.ts

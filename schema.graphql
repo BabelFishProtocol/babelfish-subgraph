@@ -1,0 +1,18 @@
+enum ProposalState {
+  Pending
+  Active
+  Canceled
+  Defeated
+  Succeeded
+  Queued
+  Expired
+  Executed
+}
+
+type Proposal @entity {
+  id: ID!
+  title: String!
+  startBlock: BigInt!
+  state: ProposalState!
+  endBlock: BigInt!
+}
