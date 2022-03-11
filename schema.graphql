@@ -16,8 +16,10 @@ type ProposalAction @entity {
 
 type Proposal @entity {
   id: ID!
+  proposalId: BigInt!
+  contractAddress: Bytes!
   eta: BigInt
-  title: String!
+  description: String!
   startBlock: BigInt!
   startDate: BigInt!
   endBlock: BigInt!
