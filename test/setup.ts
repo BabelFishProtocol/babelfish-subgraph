@@ -1,27 +1,38 @@
-import { providers } from 'ethers';
+import { JsonRpcSigner } from '@ethersproject/providers';
+import { providers, utils } from 'ethers';
 import Logs from 'node-logs';
 
 import {
   Staking__factory,
   TimelockMock__factory,
   GovernorAlpha__factory,
+  StakingProxy__factory,
+  Fish__factory,
 } from '../generated/types';
 
 import {
   startGraph,
   EVM_ENDPOINT,
-  waitForSubgraphUp,
   buildSubgraphYaml,
   execAsync,
 } from './utils';
 
 const logger = new Logs().showInConsole(true);
 
-export const jestBeforeAll = async () => {
-  await waitForSubgraphUp();
+const deployStaking = async (tokenAddress: string, deployer: JsonRpcSigner) => {
+  const stakingLogic = await new Staking__factory(deployer).deploy();
+  const stakingProxy = await new StakingProxy__factory(deployer).deploy(
+    tokenAddress
+  );
+
+  await stakingProxy.setImplementation(stakingLogic.address);
+
+  const staking = Staking__factory.connect(stakingProxy.address, deployer);
+
+  return staking;
 };
 
-export const jestBeforeEach = async () => {
+export const setupSystem = async () => {
   // ---- constants -----
   const TIMELOCK_DELAY = 50;
 
@@ -37,7 +48,13 @@ export const jestBeforeEach = async () => {
     TIMELOCK_DELAY
   );
 
-  const staking = await new Staking__factory(deployer).deploy();
+  const initialTokenAmount = utils.parseEther('100');
+
+  const fishToken = await new Fish__factory(deployer).deploy(
+    initialTokenAmount
+  );
+
+  const staking = await deployStaking(fishToken.address, deployer);
 
   const governorAdmin = await new GovernorAlpha__factory(deployer).deploy(
     timelockMock.address,
@@ -72,8 +89,17 @@ export const jestBeforeEach = async () => {
   await startGraph(provider);
 
   logger.info('Setup complete!');
+
+  return {
+    provider,
+    staking,
+    fishToken,
+    governorAdmin,
+    governorOwner,
+    timelockMock,
+  };
 };
 
-export const jestAfterEach = async () => {
+export const clearSubgraph = async () => {
   await execAsync('yarn remove-local');
 };

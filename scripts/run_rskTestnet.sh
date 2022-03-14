@@ -1,8 +1,6 @@
 #!/bin/bash
 set -a
 
-rm -rf data
-docker rm -f `docker ps -aq -f name=graph-node`
 source .env_rskTestnet
 
 yarn prepare-rskTestnet

@@ -43,14 +43,13 @@ export const buildSubgraphYaml = async (viewProps: BuildSubgraphYmlProps) => {
 type WaitForGraphSyncParams = {
   provider: providers.JsonRpcProvider
   targetBlockNumber?: number
-  subgraphName: string
 }
 
-export const waitForGraphSync = async ({ provider, targetBlockNumber, subgraphName }: WaitForGraphSyncParams) => {
+export const waitForGraphSync = async ({ provider, targetBlockNumber }: WaitForGraphSyncParams) => {
   targetBlockNumber = targetBlockNumber || (await getLastBlock(provider)).number
   let isSynced = false
 
-  logger.info(`Waiting for subgraph "${subgraphName}" to sync block #${targetBlockNumber}`)
+  logger.info(`Waiting for subgraph "${SUBGRAPH_NAME}" to sync block #${targetBlockNumber}`)
 
   while (true) {
     try {
@@ -61,7 +60,7 @@ export const waitForGraphSync = async ({ provider, targetBlockNumber, subgraphNa
         }
       } } = await axios.post('http://localhost:8030/graphql', {
         query: `{
-            indexingStatusForCurrentVersion(subgraphName: "${subgraphName}") {
+            indexingStatusForCurrentVersion(subgraphName: "${SUBGRAPH_NAME}") {
             synced
             chains {
               chainHeadBlock {
@@ -74,10 +73,10 @@ export const waitForGraphSync = async ({ provider, targetBlockNumber, subgraphNa
           }
         }`
       })
-
+      console.log(indexingStatusForCurrentVersion.chains)
 
       if (indexingStatusForCurrentVersion.synced && indexingStatusForCurrentVersion.chains[0].latestBlock.number == targetBlockNumber) {
-        logger.info(`Subgraph "${subgraphName}" has synced with block #${targetBlockNumber}`)
+        logger.info(`Subgraph "${SUBGRAPH_NAME}" has synced with block #${targetBlockNumber}`)
         isSynced = true
         break;
       }
@@ -91,13 +90,12 @@ export const waitForGraphSync = async ({ provider, targetBlockNumber, subgraphNa
 
 /**
  * Queries a given subgraph
- * @param subgraphName
  * @param query
  * @returns
  */
-export async function querySubgraph(subgraphName: string, query: string) {
+export async function querySubgraph(query: string) {
   const res = await axios.post(
-    `http://localhost:8000/subgraphs/name/${subgraphName}`,
+    `http://localhost:8000/subgraphs/name/${SUBGRAPH_NAME}`,
     {
       query
     },
@@ -115,17 +113,6 @@ export async function querySubgraph(subgraphName: string, query: string) {
   }
 }
 
-
-
-/**
- * Waits for graph-node to be up after launching docker.
- * @param {number} [timeout=10000] (optional) Time in ms after which error is thrown
- */
-
-export const waitForSubgraphUp =async () => {
-  await execAsync('yarn wait-for-healthy')
-}
-
 export const startGraph = async (provider: providers.JsonRpcProvider) => {
   logger.info('Creating and deploying subgraph');
 
@@ -133,9 +120,5 @@ export const startGraph = async (provider: providers.JsonRpcProvider) => {
   await execAsync('yarn run create-local');
   await execAsync('yarn deploy-local');
 
-  await waitForGraphSync({
-    subgraphName: SUBGRAPH_NAME,
-    provider,
-  });
+  await waitForGraphSync({ provider });
 };
-
