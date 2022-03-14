@@ -18,7 +18,8 @@ services:
       postgres_db: graph-node
       ipfs: 'ipfs:5001'
       # Change next line if you want to connect to a different JSON-RPC endpoint
-      ethereum: 'rskTestnet:https://testnet.sovryn.app'
+      # ethereum: 'rskTestnet:https://testnet.sovryn.app'
+      ethereum: ${RPC_NODE}
       GRAPH_LOG: info
   ipfs:
     image: ipfs/go-ipfs:v0.4.23
@@ -37,3 +38,7 @@ services:
       POSTGRES_DB: graph-node
     volumes:
       - ./data/postgres:/var/lib/postgresql/data
+  ganache:
+    image: trufflesuite/ganache-cli
+    ports:
+      - '8545:8545'
