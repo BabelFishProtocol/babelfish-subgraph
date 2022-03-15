@@ -3,7 +3,7 @@ import {
   ProposalCreated,
   ProposalQueued,
   VoteCast,
-} from '../../generated/GovernorAlpha/GovernorAlpha';
+} from '../../generated/GovernorAdmin/GovernorAlpha';
 import { Vote, Proposal, ProposalAction } from '../../generated/schema';
 
 export function handleNewProposal(event: ProposalCreated): void {
