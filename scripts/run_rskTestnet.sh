@@ -4,6 +4,7 @@ set -a
 source .env_rskTestnet
 
 yarn prepare-rskTestnet
+yarn codegen
 yarn build
 
 cat docker-compose.yml | envsubst | yarn docker-up
