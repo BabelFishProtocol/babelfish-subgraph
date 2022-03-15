@@ -1,7 +1,7 @@
 #!/bin/bash
 set -a
 
-source .env_rskTestnet
+source ../.env_rskTestnet
 
 yarn prepare-rskTestnet
 yarn codegen

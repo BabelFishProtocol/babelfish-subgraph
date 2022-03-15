@@ -5,7 +5,6 @@ Babelfish Subgraph is the main data provider for Babelfish dapp.
 Install
 
 - `yarn install`
-- `yarn codegen`
 
 # Deployment
 
@@ -13,7 +12,15 @@ Install
 
 Each network deployment requires setting up a JSON configuration file in `config/<NetworkName>.json`.
 
-## Prepare `subgraph.yaml`
+## Build, Deploy and run subgraph for specific network:
+
+```bash
+$ yarn run-<NetworkName>
+```
+
+## Or you can do it step by step:
+
+### - Prepare `subgraph.yaml`
 
 To build proper `subgraph.yaml` for specific network you need to run:
 
@@ -23,26 +30,32 @@ $ yarn prepare-<NetworkName>
 
 rsk and rskTestnet networks are supported.
 
-## Start docker
+### - Start docker
 
 ```bash
 $ yarn docker-up
 ```
 
-## Build
+### - Build
 
 ```bash
 $ yarn build
 ```
 
-## Create
+### - Create
 
 ```bash
-$ yarn run create
+$ yarn run create-<NetworkName>
 ```
 
-## Deploy
+### - Deploy
 
 ```bash
-$ yarn deploy
+$ yarn deploy-<NetworkName>
+```
+
+# Testing
+
+```bash
+$ yarn test
 ```
