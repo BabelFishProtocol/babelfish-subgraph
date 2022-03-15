@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
 import { constants, utils } from 'ethers';
 
-import { clearSubgraph, setupSystem } from './setup';
+import { setupSystem } from './setup';
 import { getSigners, querySubgraph, waitForGraphSync } from './utils';
 
 const stakeUntilDate = dayjs()
@@ -9,14 +9,13 @@ const stakeUntilDate = dayjs()
   .unix();
 
 afterAll(async () => {
-  await clearSubgraph();
+  // await clearSubgraph();
 });
 
 describe('Proposals', () => {
   let babelfish: Awaited<ReturnType<typeof setupSystem>>;
 
   beforeAll(async () => {
-    // await clearSubgraph();
     babelfish = await setupSystem();
   });
 
