@@ -100,6 +100,7 @@ export const setupSystem = async () => {
     governorAdmin,
     governorOwner,
     timelockMock,
+    TIMELOCK_DELAY,
   };
 };
 
