@@ -38,10 +38,10 @@ export const setupSystem = async () => {
 
   const provider = new providers.JsonRpcProvider(EVM_ENDPOINT);
 
-  logger.info('Deploying contracts...');
-
   const deployer = await provider.getSigner(0);
   const deployerAddress = await deployer.getAddress();
+
+  logger.info('Deploying contracts...');
 
   const timelockMock = await new TimelockMock__factory(deployer).deploy(
     deployerAddress,

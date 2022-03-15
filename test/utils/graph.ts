@@ -1,16 +1,16 @@
-import axios from 'axios'
-import Logs from 'node-logs'
-import { inspect } from 'util'
-import { render } from 'mustache'
-import type { providers } from 'ethers'
-import { writeFile, readFile } from 'fs/promises'
+import axios from 'axios';
+import Logs from 'node-logs';
+import { inspect } from 'util';
+import { render } from 'mustache';
+import { providers } from 'ethers';
+import { writeFile, readFile } from 'fs/promises';
 
 // EVM utils
-import { wait } from './time'
-import { execAsync } from './bash'
-import { getLastBlock } from './evm'
-import { GRAPH_ADMIN_ENDPOINT, SUBGRAPH_NAME, SUBGRAPH_SYNC_SECONDS } from './constants'
-import { Networks } from './types'
+import { wait } from './time';
+import { execAsync } from './bash';
+import { getLastBlock } from './evm';
+import { SUBGRAPH_NAME } from './constants';
+import { Networks } from './types';
 
 const logger = new Logs().showInConsole(true);
 
@@ -25,7 +25,7 @@ export type BuildSubgraphYmlProps = {
       address: string;
     };
   };
-}
+};
 export const buildSubgraphYaml = async (viewProps: BuildSubgraphYmlProps) => {
   logger.info('Building subgraph manifest...');
 
@@ -39,26 +39,31 @@ export const buildSubgraphYaml = async (viewProps: BuildSubgraphYmlProps) => {
   logger.info('subgraph.yaml file created!');
 };
 
-
 type WaitForGraphSyncParams = {
-  provider: providers.JsonRpcProvider
-  targetBlockNumber?: number
-}
+  provider: providers.JsonRpcProvider;
+  targetBlockNumber?: number;
+};
 
-export const waitForGraphSync = async ({ provider, targetBlockNumber }: WaitForGraphSyncParams) => {
-  targetBlockNumber = targetBlockNumber || (await getLastBlock(provider)).number
-  let isSynced = false
+export const waitForGraphSync = async ({
+  provider,
+  targetBlockNumber,
+}: WaitForGraphSyncParams) => {
+  targetBlockNumber =
+    targetBlockNumber || (await getLastBlock(provider)).number;
+  let isSynced = false;
 
-  logger.info(`Waiting for subgraph "${SUBGRAPH_NAME}" to sync block #${targetBlockNumber}`)
+  logger.info(
+    `Waiting for subgraph "${SUBGRAPH_NAME}" to sync block #${targetBlockNumber}`
+  );
 
   while (true) {
     try {
-      await wait(100)
-      const { data: {
+      await wait(1000);
+      const {
         data: {
-          indexingStatusForCurrentVersion
-        }
-      } } = await axios.post('http://localhost:8030/graphql', {
+          data: { indexingStatusForCurrentVersion },
+        },
+      } = await axios.post('http://localhost:8030/graphql', {
         query: `{
             indexingStatusForCurrentVersion(subgraphName: "${SUBGRAPH_NAME}") {
             synced
@@ -71,47 +76,53 @@ export const waitForGraphSync = async ({ provider, targetBlockNumber }: WaitForG
               }
             }
           }
-        }`
-      })
-      console.log(indexingStatusForCurrentVersion.chains)
+        }`,
+      });
+      console.log(indexingStatusForCurrentVersion.chains);
 
-      if (indexingStatusForCurrentVersion.synced && indexingStatusForCurrentVersion.chains[0].latestBlock.number == targetBlockNumber) {
-        logger.info(`Subgraph "${SUBGRAPH_NAME}" has synced with block #${targetBlockNumber}`)
-        isSynced = true
+      if (
+        indexingStatusForCurrentVersion.synced &&
+        indexingStatusForCurrentVersion.chains[0].latestBlock.number >=
+          targetBlockNumber
+      ) {
+        logger.info(
+          `Subgraph "${SUBGRAPH_NAME}" has synced with block #${targetBlockNumber}`
+        );
+        isSynced = true;
         break;
       }
     } catch (e) {
-      console.error(e)
+      console.error(e);
     }
   }
-}
-
-
+};
 
 /**
  * Queries a given subgraph
  * @param query
  * @returns
  */
-export async function querySubgraph(query: string) {
+export const querySubgraph = async (query: string) => {
   const res = await axios.post(
     `http://localhost:8000/subgraphs/name/${SUBGRAPH_NAME}`,
     {
-      query
+      query,
     },
     {
       headers: {
-        'Content-Type': 'application/json'
-      }
+        'Content-Type': 'application/json',
+      },
     }
-  )
+  );
 
   if (res.data?.data && !res.data?.errors?.length) {
-    return res.data
+    return res.data;
   } else {
-    throw new Error(`Query failed: ${inspect(res.data.errors, false, null, true)}`)
+    throw new Error(
+      `Query failed: ${inspect(res.data.errors, false, null, true)}`
+    );
   }
-}
+};
 
 export const startGraph = async (provider: providers.JsonRpcProvider) => {
   logger.info('Creating and deploying subgraph');

@@ -1,9 +1,6 @@
-export const SUBGRAPH_SYNC_SECONDS = 1500;
-
 // The Graph GraphQL endpoint
 export const SUBGRAPH_NAME = 'babelfish/test-graph';
 export const GRAPHQL_ENDPOINT = `http://localhost:8000/subgraphs/name/${SUBGRAPH_NAME}`;
-export const GRAPH_ADMIN_ENDPOINT = 'http://localhost:8020';
 
 // Ganache EVM endpoint
 export const EVM_ENDPOINT = 'http://localhost:8545';
