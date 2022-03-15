@@ -19,7 +19,8 @@
     "deploy-local": "graph deploy babelfish/test-graph --ipfs http://127.0.0.1:5001 --node http://127.0.0.1:8020",
     "remove-local": "graph remove --node http://localhost:8020/ babelfish/test-graph",
     "generate-contracts-types": "typechain --target ethers-v5 --out-dir generated/types './abis/*.json'",
-    "postinstall": "yarn generate-contracts-types"
+    "postinstall": "yarn generate-contracts-types",
+    "check-types": "tsc --noEmit"
   },
   "devDependencies": {
     "@graphprotocol/graph-cli": "^0.20.1",
