@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
 import { constants, utils } from 'ethers';
 
-import { setupSystem } from './setup';
+import { clearSubgraph, setupSystem } from './setup';
 import { getSigners, querySubgraph, waitForGraphSync } from './utils';
 
 const stakeUntilDate = dayjs()
@@ -9,7 +9,7 @@ const stakeUntilDate = dayjs()
   .unix();
 
 afterAll(async () => {
-  // await clearSubgraph();
+  await clearSubgraph();
 });
 
 describe('Proposals', () => {
