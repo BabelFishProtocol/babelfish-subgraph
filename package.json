@@ -14,17 +14,17 @@
     "deploy": "graph deploy babelfish/graph --ipfs http://127.0.0.1:5001 --node http://127.0.0.1:8020"
   },
   "devDependencies": {
+    "@graphprotocol/graph-cli": "^0.20.1",
+    "@graphprotocol/graph-ts": "^0.20.0",
     "@typechain/ethers-v5": "^7.0.1",
     "@types/jest": "^26.0.20",
     "@types/mustache": "^4.1.2",
     "@types/node": "^16.4.0",
-    "@graphprotocol/graph-cli": "^0.20.1",
-    "@graphprotocol/graph-ts": "^0.20.0",
-    "jest": "^27.5.1",
     "hardhat": "^2.0.10",
+    "jest": "^27.5.1",
+    "mustache": "^4.2.0",
     "ts-jest": "^27.0.4",
-    "typechain": "^5.1.2",
-    "mustache": "^4.2.0"
+    "typechain": "^5.1.2"
   },
   "dependencies": {
     "babel-polyfill": "^6.26.0",
