@@ -69,7 +69,6 @@ describe('Proposals', () => {
 
     const { data } = await querySubgraph(`{
       proposals {
-        proposalId
         description
         contractAddress
       }
@@ -79,14 +78,17 @@ describe('Proposals', () => {
 
     expect(proposals).toHaveLength(2);
 
-    expect(proposals[0]).toEqual({
-      description: 'test admin proposal',
-      contractAddress: babelfish.governorAdmin.address.toLowerCase(),
-    });
-
-    expect(proposals[1].description).toEqual({
-      description: 'test owner proposal',
-      contractAddress: babelfish.governorOwner.address.toLowerCase(),
-    });
+    expect(proposals).toEqual(
+      expect.arrayContaining([
+        {
+          description: 'test admin proposal',
+          contractAddress: babelfish.governorAdmin.address.toLowerCase(),
+        },
+        {
+          description: 'test owner proposal',
+          contractAddress: babelfish.governorOwner.address.toLowerCase(),
+        },
+      ])
+    );
   });
 });

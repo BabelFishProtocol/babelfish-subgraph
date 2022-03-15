@@ -86,6 +86,8 @@ export const setupSystem = async () => {
     },
   });
 
+  await execAsync('yarn codegen');
+
   await startGraph(provider);
 
   logger.info('Setup complete!');
