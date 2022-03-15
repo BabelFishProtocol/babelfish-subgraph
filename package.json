@@ -2,6 +2,7 @@
   "name": "graph",
   "version": "0.1.0",
   "scripts": {
+    "lint": "eslint .",
     "docker-up": "docker-compose up -d --force-recreate --renew-anon-volumes graph-node",
     "docker-clean": "docker-compose kill && docker-compose rm -v",
     "pretest": "./scripts/run_local.sh",
@@ -19,8 +20,7 @@
     "deploy-local": "graph deploy babelfish/test-graph --ipfs http://127.0.0.1:5001 --node http://127.0.0.1:8020",
     "remove-local": "graph remove --node http://localhost:8020/ babelfish/test-graph",
     "generate-contracts-types": "typechain --target ethers-v5 --out-dir generated/types './abis/*.json'",
-    "postinstall": "yarn generate-contracts-types",
-    "check-types": "tsc --noEmit"
+    "postinstall": "yarn generate-contracts-types"
   },
   "devDependencies": {
     "@graphprotocol/graph-cli": "^0.20.1",
