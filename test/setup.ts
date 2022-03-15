@@ -33,6 +33,7 @@ const deployStaking = async (tokenAddress: string, deployer: JsonRpcSigner) => {
 };
 
 export const setupSystem = async () => {
+  await execAsync('yarn prepare-test');
   // ---- constants -----
   const TIMELOCK_DELAY = 50;
 
