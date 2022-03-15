@@ -1,11 +1,8 @@
 import dayjs from 'dayjs';
-import Logs from 'node-logs';
 import { constants, utils } from 'ethers';
 
 import { clearSubgraph, setupSystem } from './setup';
 import { getSigners, querySubgraph, waitForGraphSync } from './utils';
-
-const logger = new Logs().showInConsole(true);
 
 const stakeUntilDate = dayjs()
   .add(21, 'days')

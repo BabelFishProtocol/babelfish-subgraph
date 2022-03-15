@@ -50,12 +50,12 @@ export const waitForGraphSync = async ({
 }: WaitForGraphSyncParams) => {
   targetBlockNumber =
     targetBlockNumber || (await getLastBlock(provider)).number;
-  let isSynced = false;
 
   logger.info(
     `Waiting for subgraph "${SUBGRAPH_NAME}" to sync block #${targetBlockNumber}`
   );
 
+  // eslint-disable-next-line no-constant-condition
   while (true) {
     try {
       await wait(1000);
@@ -78,7 +78,6 @@ export const waitForGraphSync = async ({
           }
         }`,
       });
-      console.log(indexingStatusForCurrentVersion.chains);
 
       if (
         indexingStatusForCurrentVersion.synced &&
@@ -88,10 +87,10 @@ export const waitForGraphSync = async ({
         logger.info(
           `Subgraph "${SUBGRAPH_NAME}" has synced with block #${targetBlockNumber}`
         );
-        isSynced = true;
         break;
       }
     } catch (e) {
+      // eslint-disable-next-line no-console
       console.error(e);
     }
   }

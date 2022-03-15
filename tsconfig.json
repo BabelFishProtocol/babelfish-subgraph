@@ -31,10 +31,10 @@
   "exclude": [
     "node_modules"
   ],
-  "files": ["./hardhat.config.ts"],
+  "files": ["./hardhat.config.ts", "jest.config.ts"],
   "include": [
     "./src/**/*.tsx",
     "./src/**/*.ts",
-    "./test/**/*.ts"
+    "./test/**/*.ts",
   ]
 }

@@ -1,7 +1,5 @@
 {
   "extends": [
-    "airbnb",
-    "airbnb-typescript",
     "eslint:recommended",
     "prettier"
   ],
@@ -20,7 +18,6 @@
     "react/no-array-index-key": "off",
     "@typescript-eslint/no-use-before-define": "off",
     "react/function-component-definition": 0,
-    "import/no-extraneous-dependencies": ["error", { "devDependencies": true }],
     "no-console": 2,
     "consistent-return": "off",
     "@typescript-eslint/no-explicit-any": 2,
