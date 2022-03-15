@@ -7,7 +7,9 @@ import {
 import { Vote, Proposal, ProposalAction } from '../../generated/schema';
 
 export function handleNewProposal(event: ProposalCreated): void {
-  let proposal = new Proposal(event.params.id.toHex());
+  let proposal = new Proposal(
+    event.transaction.hash.toHex() + '_' + event.logIndex.toString()
+  );
 
   proposal.description = event.params.description;
   proposal.startBlock = event.params.startBlock;
