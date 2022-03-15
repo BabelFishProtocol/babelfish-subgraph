@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
-import { constants, utils } from 'ethers';
 import Logs from 'node-logs';
+import { constants, utils } from 'ethers';
 
 import { clearSubgraph, setupSystem } from './setup';
 import { getSigners, querySubgraph, waitForGraphSync } from './utils';
@@ -15,7 +15,7 @@ afterAll(async () => {
   await clearSubgraph();
 });
 
-describe('Proposals', function() {
+describe('Proposals', () => {
   let babelfish: Awaited<ReturnType<typeof setupSystem>>;
 
   beforeAll(async () => {
@@ -41,35 +41,55 @@ describe('Proposals', function() {
         .stake(stakeAmount, stakeUntilDate, userAddress, userAddress);
     }
 
-    await babelfish.governorAdmin
-      .connect(user)
-      .propose(
-        [constants.AddressZero],
-        ['0'],
-        ['0x00'],
-        ['0x00'],
-        'test admin proposal'
-      );
+    await (
+      await babelfish.governorAdmin
+        .connect(user)
+        .propose(
+          [constants.AddressZero],
+          ['0'],
+          ['0x00'],
+          ['0x00'],
+          'test admin proposal'
+        )
+    ).wait();
 
-    await babelfish.governorOwner
-      .connect(user)
-      .propose(
-        [constants.AddressZero],
-        ['0'],
-        ['0x00'],
-        ['0x00'],
-        'test owner proposal'
-      );
+    const ownerProposalReceipt = await (
+      await babelfish.governorOwner
+        .connect(user)
+        .propose(
+          [constants.AddressZero],
+          ['0'],
+          ['0x00'],
+          ['0x00'],
+          'test owner proposal'
+        )
+    ).wait();
 
-    await waitForGraphSync({ provider: babelfish.provider });
+    await waitForGraphSync({
+      provider: babelfish.provider,
+      targetBlockNumber: ownerProposalReceipt.blockNumber,
+    });
 
     const { data } = await querySubgraph(`{
       proposals {
+        proposalId
         description
         contractAddress
       }
     }`);
 
-    console.log({ data });
+    const { proposals } = data;
+
+    expect(proposals).toHaveLength(2);
+
+    expect(proposals[0]).toEqual({
+      description: 'test admin proposal',
+      contractAddress: babelfish.governorAdmin.address.toLowerCase(),
+    });
+
+    expect(proposals[1].description).toEqual({
+      description: 'test owner proposal',
+      contractAddress: babelfish.governorOwner.address.toLowerCase(),
+    });
   });
 });
