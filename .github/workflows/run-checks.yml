@@ -1,4 +1,4 @@
-name: run-lint
+name: run-checks
 on: ['push']
 jobs:
   check-bats-version:
@@ -10,3 +10,4 @@ jobs:
           node-version: '16'
       - run: yarn install
       - run: yarn lint
+      - run: yarn test
