@@ -1,18 +1,31 @@
-enum ProposalState {
-  Pending
-  Active
-  Canceled
-  Defeated
-  Succeeded
-  Queued
-  Expired
-  Executed
+type Vote @entity {
+  id: ID!
+  voter: Bytes!
+  txHash: Bytes!
+  proposal: Proposal!
+  votes: BigInt!
+  isPro: Boolean!
+}
+
+type ProposalAction @entity {
+  id: ID!
+  contract: Bytes!
+  signature: String!
+  proposal: Proposal!
 }
 
 type Proposal @entity {
   id: ID!
-  title: String!
+  proposalId: BigInt!
+  contractAddress: Bytes!
+  eta: BigInt
+  description: String!
   startBlock: BigInt!
-  state: ProposalState!
+  startDate: BigInt!
   endBlock: BigInt!
+  proposer: Bytes!
+  forVotesAmount: BigInt!
+  againstVotesAmount: BigInt!
+  votes: [Vote!]! @derivedFrom(field: "proposal")
+  actions: [ProposalAction!]! @derivedFrom(field: "proposal")
 }

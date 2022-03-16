@@ -1,0 +1,37 @@
+{
+  "extends": [
+    "eslint:recommended",
+    "prettier"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["@typescript-eslint"],
+  "parserOptions": {
+    "project": "./tsconfig.json",
+    "parser": "@typescript-eslint/parser"
+  },
+  "rules": {
+    "no-plusplus": "off",
+    "no-undef": "off",
+    "no-param-reassign": "off",
+    "import/prefer-default-export": 0,
+    "react/prop-types": "off",
+    "react/no-array-index-key": "off",
+    "@typescript-eslint/no-use-before-define": "off",
+    "react/function-component-definition": 0,
+    "no-console": 2,
+    "consistent-return": "off",
+    "@typescript-eslint/no-explicit-any": 2,
+    "import/no-cycle": "off",
+    "no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
+    "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
+    "@typescript-eslint/lines-between-class-members": "off"
+  },
+  "overrides": [
+    {
+      "files": ["*.ts"]
+    }
+  ],
+  "env": {
+    "node": true
+  }
+}

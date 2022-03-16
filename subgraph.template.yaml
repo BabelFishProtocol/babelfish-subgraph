@@ -5,10 +5,10 @@ schema:
   file: ./schema.graphql
 dataSources:
   - kind: ethereum/contract
-    name: GovernorAlpha
+    name: GovernorAdmin
     network: {{network}}
     source:
-      address: '{{contracts.GovernorAlpha.address}}'
+      address: '{{contracts.GovernorAdmin.address}}'
       abi: GovernorAlpha
       startBlock: {{startBlock}}
     mapping:
@@ -16,11 +16,44 @@ dataSources:
       apiVersion: 0.0.4
       language: wasm/assemblyscript
       entities:
-        - GovernorAlpha
+        - GovernorAdmin
       abis:
         - name: GovernorAlpha
           file: ./abis/GovernorAlpha.json
       eventHandlers:
         - event: ProposalCreated(uint256,address,address[],uint256[],string[],bytes[],uint256,uint256,string)
           handler: handleNewProposal
+
+        - event: ProposalQueued(uint256,uint256)
+          handler: handleProposalQueued
+
+        - event: VoteCast(address,uint256,bool,uint256)
+          handler: handleVoteCast
+      file: ./src/mappings/proposals.ts
+
+  - kind: ethereum/contract
+    name: GovernorOwner
+    network: {{network}}
+    source:
+      address: '{{contracts.GovernorOwner.address}}'
+      abi: GovernorAlpha
+      startBlock: {{startBlock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      entities:
+        - GovernorOwner
+      abis:
+        - name: GovernorAlpha
+          file: ./abis/GovernorAlpha.json
+      eventHandlers:
+        - event: ProposalCreated(uint256,address,address[],uint256[],string[],bytes[],uint256,uint256,string)
+          handler: handleNewProposal
+
+        - event: ProposalQueued(uint256,uint256)
+          handler: handleProposalQueued
+
+        - event: VoteCast(address,uint256,bool,uint256)
+          handler: handleVoteCast
       file: ./src/mappings/proposals.ts
