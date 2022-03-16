@@ -85,7 +85,7 @@ export const proposalsDetailsQuery = async () => {
       description
       contractAddress
     }
-  }
-}`);
+  }`);
+
   return proposals;
 };
