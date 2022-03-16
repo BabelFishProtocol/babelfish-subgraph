@@ -24,7 +24,7 @@ export const increaseBockTimestamp = (
   provider: providers.JsonRpcProvider,
   timestamp: number
 ) => {
-  logger.info(`Increainsg timestamp to ${timestamp}`);
+  logger.info(`Increainsg timestamp by ${timestamp}`);
   return provider.send('evm_increaseTime', [timestamp]);
 };
 
@@ -33,6 +33,27 @@ export const mineBlock = async (
   timestamp: number
 ) => {
   return provider.send('evm_mine', [timestamp]);
+};
+
+export const mineBlocks = async (
+  provider: providers.JsonRpcProvider,
+  offset: number
+): Promise<void> => {
+  logger.info(`Forcing mining ${offset} blocks`);
+
+  for (let i = 0; i < offset; i++) {
+    await increaseTime(provider, 1);
+  }
+};
+
+export const mineBlocksFor = async (
+  provider: providers.JsonRpcProvider,
+  targetBlockNumber: number | string
+) => {
+  const currBlockNumber = await provider.getBlockNumber();
+  const blocksAmount = Number(targetBlockNumber) - currBlockNumber;
+
+  await mineBlocks(provider, blocksAmount);
 };
 
 export const increaseTime = async (
@@ -48,4 +69,13 @@ export const increaseTime = async (
  */
 export const getLastBlock = async (provider: providers.Provider) => {
   return provider.getBlock(await provider.getBlockNumber());
+};
+
+/**
+ * Finds timestamp of current block
+ */
+export const getCurrentTimestamp = async (provider: providers.Provider) => {
+  const { timestamp } = await provider.getBlock('latest');
+
+  return timestamp;
 };

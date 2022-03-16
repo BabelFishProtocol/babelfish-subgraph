@@ -43,7 +43,9 @@ export function handleNewProposal(event: ProposalCreated): void {
 }
 
 export function handleProposalQueued(event: ProposalQueued): void {
-  let proposal = Proposal.load(event.params.id.toHex());
+  let proposal = Proposal.load(
+    event.address.toHex() + '_' + event.params.id.toHex()
+  );
 
   if (proposal) {
     proposal.eta = event.params.eta;
