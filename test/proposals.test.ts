@@ -2,12 +2,8 @@ import dayjs from 'dayjs';
 import { constants, utils } from 'ethers';
 
 import { clearSubgraph, setupSystem } from './setup';
-import {
-  getSigners,
-  mineBlock,
-  querySubgraph,
-  waitForGraphSync,
-} from './utils';
+import { getSigners, mineBlock } from './utils/evm';
+import { querySubgraph, waitForGraphSync } from './utils/graph';
 
 const stakeUntilDate = dayjs()
   .add(21, 'days')

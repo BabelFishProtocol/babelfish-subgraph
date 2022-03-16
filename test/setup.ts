@@ -3,19 +3,15 @@ import { providers, utils } from 'ethers';
 import Logs from 'node-logs';
 
 import {
+  Fish__factory,
   Staking__factory,
   TimelockMock__factory,
   GovernorAlpha__factory,
   StakingProxy__factory,
-  Fish__factory,
 } from '../generated/types';
-
-import {
-  startGraph,
-  EVM_ENDPOINT,
-  buildSubgraphYaml,
-  execAsync,
-} from './utils';
+import { execAsync } from './utils/bash';
+import { EVM_ENDPOINT } from './utils/constants';
+import { buildSubgraphYaml, startGraph } from './utils/graph';
 
 const logger = new Logs().showInConsole(true);
 
