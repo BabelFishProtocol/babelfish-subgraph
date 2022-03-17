@@ -9,6 +9,8 @@
     "docker-test-up": "docker-compose up -d ganache & npm run docker-up",
     "prepare-rskTestnet": "mustache config/rskTestnet.json subgraph.template.yaml > subgraph.yaml",
     "run-rskTestnet": "./scripts/run_rskTestnet.sh",
+    "prepare-rsk": "mustache config/rsk.json subgraph.template.yaml > subgraph.yaml",
+    "run-rsk": "./scripts/run_rsk.sh",
     "test": "jest --runInBand",
     "logs": "docker-compose logs -f graph-node",
     "codegen": "graph codegen",
