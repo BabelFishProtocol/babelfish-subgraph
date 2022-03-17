@@ -8,7 +8,7 @@ import { Vote, Proposal, ProposalAction } from '../../generated/schema';
 
 export function handleNewProposal(event: ProposalCreated): void {
   let proposal = new Proposal(
-    event.transaction.hash.toHex() + '_' + event.logIndex.toString()
+    event.address.toHex() + '_' + event.params.id.toHex()
   );
 
   proposal.description = event.params.description;
@@ -43,7 +43,9 @@ export function handleNewProposal(event: ProposalCreated): void {
 }
 
 export function handleProposalQueued(event: ProposalQueued): void {
-  let proposal = Proposal.load(event.params.id.toHex());
+  let proposal = Proposal.load(
+    event.address.toHex() + '_' + event.params.id.toHex()
+  );
 
   if (proposal) {
     proposal.eta = event.params.eta;
@@ -52,7 +54,9 @@ export function handleProposalQueued(event: ProposalQueued): void {
 }
 
 export function handleVoteCast(event: VoteCast): void {
-  let proposal = Proposal.load(event.params.proposalId.toHex());
+  let proposal = Proposal.load(
+    event.address.toHex() + '_' + event.params.proposalId.toHex()
+  );
 
   if (!proposal) {
     return;

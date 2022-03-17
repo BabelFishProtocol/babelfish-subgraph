@@ -101,7 +101,7 @@ export const waitForGraphSync = async ({
  * @param query
  * @returns
  */
-export const querySubgraph = async (query: string) => {
+export const querySubgraph = async <T>(query: string) => {
   const res = await axios.post(
     `http://localhost:8000/subgraphs/name/${SUBGRAPH_NAME}`,
     {
@@ -115,7 +115,7 @@ export const querySubgraph = async (query: string) => {
   );
 
   if (res.data?.data && !res.data?.errors?.length) {
-    return res.data;
+    return res.data.data as T;
   } else {
     throw new Error(
       `Query failed: ${inspect(res.data.errors, false, null, true)}`
