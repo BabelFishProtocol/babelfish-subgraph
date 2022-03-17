@@ -1,0 +1,12 @@
+{
+  "network": "rsk",
+  "startBlock": 3778925,
+  "contracts": {
+    "GovernorAdmin": {
+      "address": "0xA91b53289375836565ea0c276286561fEd555C85"
+    },
+    "GovernorOwner": {
+      "address": "0x409b92978ca7745DA04f9e62a386774cABE02B46"
+    }
+  }
+}
