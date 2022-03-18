@@ -7,8 +7,8 @@ yarn prepare-rskTestnet
 yarn codegen
 yarn build
 
-cat docker-compose.yml | envsubst | yarn docker-up
+yarn docker-up-rskTestnet
 
 yarn wait-for-healthy
-yarn run create
-yarn deploy
+yarn create-rskTestnet
+yarn deploy-rskTestnet

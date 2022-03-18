@@ -30,10 +30,10 @@ $ yarn prepare-<NetworkName>
 
 rsk and rskTestnet networks are supported.
 
-### - Start docker
+### - Start docker for specific network
 
 ```bash
-$ yarn docker-up
+$ yarn docker-up-<NetworkName>
 ```
 
 ### - Build
