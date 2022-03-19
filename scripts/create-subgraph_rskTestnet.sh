@@ -3,4 +3,4 @@ set -a
 
 source .env_rskTestnet
 
-graph create babelfish/graph --node http://127.0.0.1:$SUBGRAPH_PORT_3
+graph create babelfish/rskTestnet-graph --node http://127.0.0.1:$SUBGRAPH_PORT_3
