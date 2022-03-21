@@ -7,8 +7,8 @@ yarn prepare-rsk
 yarn codegen
 yarn build
 
-cat docker-compose.yml | envsubst | yarn docker-up
+yarn docker-up-rsk
 
 yarn wait-for-healthy
-yarn run create
-yarn deploy
+yarn create-rsk
+yarn deploy-rsk
