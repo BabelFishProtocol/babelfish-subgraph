@@ -66,7 +66,7 @@ describe('Proposals', () => {
         .propose(
           [constants.AddressZero],
           ['0'],
-          ['0x00'],
+          ['0x01'],
           ['0x00'],
           'test admin proposal'
         )
@@ -101,11 +101,25 @@ describe('Proposals', () => {
           proposalId: '1',
           description: 'test admin proposal',
           contractAddress: governorAdmin.address.toLowerCase(),
+          actions: [
+            {
+              contract: constants.AddressZero,
+              signature: '0x01',
+              calldata: '0x00',
+            },
+          ],
         },
         {
           proposalId: '1',
           description: 'test owner proposal',
           contractAddress: governorOwner.address.toLowerCase(),
+          actions: [
+            {
+              contract: constants.AddressZero,
+              signature: '0x00',
+              calldata: '0x00',
+            },
+          ],
         },
       ])
     );

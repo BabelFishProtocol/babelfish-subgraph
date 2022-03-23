@@ -23,19 +23,22 @@ export function handleNewProposal(event: ProposalCreated): void {
 
   let target = event.params.targets.shift() || null;
   let signature = event.params.signatures.shift() || null;
+  let calldata = event.params.calldatas.shift() || null;
 
   for (let i = 0; i < event.params.targets.length; i++) {
-    if (target != null && signature != null) {
+    if (target != null && signature != null && calldata != null) {
       let proposalAction = new ProposalAction(proposal.id + '_' + i.toString());
 
       proposalAction.contract = target;
       proposalAction.signature = signature;
       proposalAction.proposal = proposal.id;
+      proposalAction.calldata = calldata;
 
       proposalAction.save();
 
       target = event.params.targets.shift() || null;
       signature = event.params.signatures.shift() || null;
+      calldata = event.params.calldatas.shift() || null;
     }
   }
 
