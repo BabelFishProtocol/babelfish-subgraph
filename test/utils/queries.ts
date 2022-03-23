@@ -19,6 +19,11 @@ type ProposalsListQueryResult = {
     proposalId: string;
     description: string;
     contractAddress: string;
+    actions: {
+      contract: string;
+      signature: string;
+      calldata: string;
+    }[];
   }>;
 };
 
@@ -32,6 +37,11 @@ export const proposalsListQuery = async () => {
       proposalId
       description
       contractAddress
+      actions {
+        contract
+        signature
+        calldata
+      }
     }
   }`);
 

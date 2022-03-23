@@ -12,6 +12,7 @@ type ProposalAction @entity {
   contract: Bytes!
   signature: String!
   proposal: Proposal!
+  calldata: Bytes!
 }
 
 type Proposal @entity {
