@@ -24,6 +24,9 @@ export type BuildSubgraphYmlProps = {
     GovernorOwner: {
       address: string;
     };
+    Staking: {
+      address: string;
+    };
   };
 };
 export const buildSubgraphYaml = async (viewProps: BuildSubgraphYmlProps) => {

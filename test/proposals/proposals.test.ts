@@ -1,20 +1,20 @@
 import { constants, utils } from 'ethers';
 
-import { clearSubgraph, prepareTest, setupSystem } from './setup';
+import { clearSubgraph, prepareTest, setupSystem } from '../setup';
 import {
   mineBlock,
   getSigners,
   mineBlocksFor,
   getCurrentTimestamp,
-} from './utils/evm';
+} from '../utils/evm';
 import {
   proposalsBaseQuery,
   proposalsDetailsQuery,
   proposalsListQuery,
   proposalsWithVotesListQuery,
-} from './utils/queries';
-import { ONE_DAY } from './utils/constants';
-import { waitForGraphSync } from './utils/graph';
+} from './queries';
+import { ONE_DAY } from '../utils/constants';
+import { waitForGraphSync } from '../utils/graph';
 
 afterAll(async () => {
   await clearSubgraph();

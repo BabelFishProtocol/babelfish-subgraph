@@ -123,6 +123,9 @@ export const setupSystem = async () => {
       GovernorOwner: {
         address: governorOwner.address,
       },
+      Staking: {
+        address: staking.address,
+      },
     },
   });
 

@@ -1,12 +1,18 @@
 {
   "network": "rsk",
-  "startBlock": 3778925,
+  "startBlock": 3629154,
   "contracts": {
     "GovernorAdmin": {
       "address": "0xA91b53289375836565ea0c276286561fEd555C85"
     },
     "GovernorOwner": {
       "address": "0x409b92978ca7745DA04f9e62a386774cABE02B46"
+    },
+    "Staking": {
+      "address": "0xFd8ea2e5e8591fA791d44731499cDF2e81CD6a41"
+    },
+    "VestingRegistry": {
+      "address": "0x036ab2DB0a3d1574469a4a7E09887Ed76fB56C41"
     }
   }
 }
