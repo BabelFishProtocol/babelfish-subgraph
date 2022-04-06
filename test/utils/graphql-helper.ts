@@ -3,7 +3,7 @@
  */
 export const mapToGraphqlArrayOfString = (list: string[]) => {
   let listToGraphqlString = "";
-  list.map((element) => {
+  list.forEach((element) => {
     listToGraphqlString = listToGraphqlString.length > 0 ? `${listToGraphqlString}, "${element}"` : `"${element}"`;
   })
   return `[${listToGraphqlString}]`;

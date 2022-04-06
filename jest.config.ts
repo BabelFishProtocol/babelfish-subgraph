@@ -10,7 +10,7 @@ const config: Config.InitialOptions = {
     '<rootDir>/abis/',
     '<rootDir>/scripts/',
   ],
-  testTimeout: 1300000, // expect tests to take up to 20 minutes because subgraph indexing syncs,
+  testTimeout: 1250000, // expect tests to take up to 20 minutes because subgraph indexing syncs,
 };
 
 export default config;

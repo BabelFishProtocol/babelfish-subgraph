@@ -72,7 +72,7 @@ describe('Staking events', () => {
       provider,
       targetBlockNumber: userStake2.blockNumber,
     });
-    const stakeEvents = await stakeEventsListQuery([userAddress.toLowerCase(), user2Address.toLowerCase()]);
+    const stakeEvents = await stakeEventsListQuery([userAddress, user2Address]);
 
     expect(stakeEvents).toHaveLength(2);
 
@@ -108,7 +108,7 @@ describe('Staking events', () => {
       provider,
       targetBlockNumber: await provider.getBlockNumber(),
     });
-    const stakeEvents = await stakeEventsListQuery([userAddress.toLowerCase(), user2Address.toLowerCase()]);
+    const stakeEvents = await stakeEventsListQuery([userAddress, user2Address]);
 
     expect(stakeEvents).toHaveLength(0);
   });
