@@ -1,6 +1,6 @@
 import { constants, utils } from 'ethers';
 
-import { clearSubgraph, prepareTest, setupSystem } from '../setup';
+import { prepareTest, setupSystem } from '../setup';
 import {
   mineBlock,
   getSigners,
@@ -17,7 +17,7 @@ import { ONE_DAY } from '../utils/constants';
 import { waitForGraphSync } from '../utils/graph';
 
 afterAll(async () => {
-  await clearSubgraph();
+  // await clearSubgraph();
 });
 
 beforeAll(async () => {
