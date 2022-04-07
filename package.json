@@ -7,7 +7,7 @@
     "docker-up-rsk": "./scripts/docker-up_rsk.sh",
     "docker-up-rskTestnet": "./scripts/docker-up_rskTestnet.sh",
     "prepare-test": "./scripts/run_local.sh",
-    "docker-test-up": "docker-compose up -d ganache & npm run docker-up",
+    "docker-test-up": "docker-compose up -d  --force-recreate --renew-anon-volumes ganache & npm run docker-up",
     "run-rsk": "./scripts/run_rsk.sh",
     "run-rskTestnet": "./scripts/run_rskTestnet.sh",
     "create-rsk": "./scripts/create-subgraph_rsk.sh",
