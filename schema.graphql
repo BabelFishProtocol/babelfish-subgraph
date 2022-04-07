@@ -30,3 +30,12 @@ type Proposal @entity {
   votes: [Vote!]! @derivedFrom(field: "proposal")
   actions: [ProposalAction!]! @derivedFrom(field: "proposal")
 }
+
+type StakeEvent @entity {
+  id: ID!
+  staker: Bytes!
+  amount: BigInt!
+  lockedUntil: BigInt!
+  totalStaked: BigInt!
+  transactionHash: Bytes!
+}

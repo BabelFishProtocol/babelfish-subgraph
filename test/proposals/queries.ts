@@ -1,4 +1,4 @@
-import { querySubgraph } from './graph';
+import { querySubgraph } from '../utils/graph';
 
 type ProposalsBaseQueryResult = {
   proposals: Array<{ proposalId: string; startDate: string; eta: string }>;

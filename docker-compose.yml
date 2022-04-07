@@ -1,7 +1,8 @@
 version: '3'
 services:
   graph-node:
-    image: graphprotocol/graph-node
+    image: graphprotocol/graph-node:8b5cf75
+
     ports:
       - '${SUBGRAPH_HTTP_PORT}:8000'
       - '${SUBGRAPH_WS_PORT}:8001'

@@ -57,3 +57,23 @@ dataSources:
         - event: VoteCast(address,uint256,bool,uint256)
           handler: handleVoteCast
       file: ./src/mappings/proposals.ts
+  - kind: ethereum/contract
+    name: Staking
+    network: {{network}}
+    source:
+      address: '{{contracts.Staking.address}}'
+      abi: Staking
+      startBlock: {{startBlock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      entities:
+        - Staking
+      abis:
+        - name: Staking
+          file: ./abis/Staking.json
+      eventHandlers:
+        - event: TokensStaked(indexed address,uint256,uint256,uint256)
+          handler: handleTokensStaked
+      file: ./src/mappings/stakingHistory.ts
