@@ -76,7 +76,7 @@ describe('Staking events', () => {
 
     expect(stakeEvents).toHaveLength(2);
 
-    expect(stakeEvents).toEqual(
+    expect(stakeEvents).toEqual(expect.arrayContaining(
       [
         {
           amount: stakeAmount2.toString(),
@@ -93,7 +93,7 @@ describe('Staking events', () => {
           transactionHash: userStake.transactionHash,
         }
       ]
-    );
+    ));
   });
   it('properly sync when there are no stake events', async () => {
     const {
