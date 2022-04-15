@@ -37,5 +37,20 @@ type StakeEvent @entity {
   amount: BigInt!
   lockedUntil: BigInt!
   totalStaked: BigInt!
+  # blockNumber: BigInt!
   transactionHash: Bytes!
+}
+
+type VestingContract @entity {
+  id: ID!
+  owner: Bytes!
+  address: Bytes!
+  stakes: [StakeEvent!]
+}
+
+type User @entity {
+  id: ID!
+  address: Bytes!
+  stakes: [StakeEvent!]
+  vests: [StakeEvent!]
 }
