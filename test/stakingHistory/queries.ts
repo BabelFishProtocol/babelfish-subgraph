@@ -1,7 +1,8 @@
 import { mapToGraphqlArrayOfString } from '../utils/graphql-helper';
 import { querySubgraph } from '../utils/graph';
+import { VestingContract } from 'test/vestingRegistry/queries';
 
-type Stake = {
+export type Stake = {
   staker: string;
   amount: string;
   lockedUntil: string;
@@ -40,20 +41,20 @@ type UserData = {
   id: string;
   address: string;
   stakes: Array<Stake>;
-  vests: Array<Stake>;
+  vests: Array<VestingContract>;
 };
 
 type UserQueryResult = {
   user: UserData;
 };
 
-const stakeFragment = `fragment stake on Stake {
-  staker
-  amount
-  lockedUntil
-  totalStaked
-  transactionHash
-}`
+// const stakeFragment = gql`fragment stake on Stake {
+//   staker
+//   amount
+//   lockedUntil
+//   totalStaked
+//   transactionHash
+// }`
 
 
 /**
@@ -61,17 +62,29 @@ const stakeFragment = `fragment stake on Stake {
  * @param accountAddress - user account addresses
  */
 
-export const userQuery = async (accountAddress: string[]) => {
+export const userQuery = async (accountAddress: string) => {
   // const addressesToString = mapToGraphqlArrayOfString(addressesList);
 
   const { user } = await querySubgraph<UserQueryResult>(`{
-    user(id: ${accountAddress}) {
+    user(id: "${accountAddress}") {
       address
-      stakes: {
-        ...${stakeFragment}
+      stakes {
+        staker
+        amount
+        lockedUntil
+        totalStaked
+        transactionHash
       }
-      vests: {
-        ...${stakeFragment}
+      vests {
+        address
+        owner
+        stakes {
+          staker
+          amount
+          lockedUntil
+          totalStaked
+          transactionHash
+        }
       }
     }
   }`);

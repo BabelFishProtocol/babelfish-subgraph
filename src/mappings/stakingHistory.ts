@@ -14,6 +14,7 @@ export function handleTokensStaked(event: TokensStaked): void {
   stake.transactionHash = event.transaction.hash;
   stake.save();
 
+  // if vesting contract exist, staker is an address of vesting
   let vestingContract = VestingContract.load(event.params.staker.toHex());
   let owner = event.params.staker;
 
@@ -33,7 +34,7 @@ export function handleTokensStaked(event: TokensStaked): void {
     user.vests = [] as string[];
   }
 
-  let vestingEvents: string[] = [];
+  let vestingContracts: string[] = [];
   let vestingContractStakes: string[] = [];
   let events: string[] = [];
 
@@ -43,15 +44,15 @@ export function handleTokensStaked(event: TokensStaked): void {
   user.stakes = events;
 
   if(vestingContract) {
-    vestingEvents = user.vests as string[];
-    vestingEvents.push(stake.id);
-    user.vests = vestingEvents;
-
     vestingContractStakes = vestingContract.stakes as string[];
 
     vestingContractStakes.push(stake.id);
     vestingContract.stakes = vestingContractStakes;
     vestingContract.save();
+
+    vestingContracts = user.vests as string[];
+    vestingContracts.push(vestingContract.id);
+    user.vests = vestingContracts;
   }
   user.address = owner;
 

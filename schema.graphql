@@ -37,7 +37,6 @@ type StakeEvent @entity {
   amount: BigInt!
   lockedUntil: BigInt!
   totalStaked: BigInt!
-  # blockNumber: BigInt!
   transactionHash: Bytes!
 }
 
@@ -52,5 +51,5 @@ type User @entity {
   id: ID!
   address: Bytes!
   stakes: [StakeEvent!]
-  vests: [StakeEvent!]
+  vests: [VestingContract!]
 }

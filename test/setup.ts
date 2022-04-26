@@ -1,5 +1,5 @@
 import { JsonRpcSigner } from '@ethersproject/providers';
-import { providers, utils } from 'ethers';
+import { constants, providers, utils } from 'ethers';
 import { AbiCoder } from 'ethers/lib/utils';
 import Logs from 'node-logs';
 
@@ -10,6 +10,10 @@ import {
   TimelockMock__factory,
   StakingProxy__factory,
   GovernorAlpha__factory,
+  VestingRegistry__factory,
+  FeeSharingProxy__factory,
+  VestingLogic__factory,
+  VestingFactory__factory,
 } from '../generated/types';
 import { execAsync } from './utils/bash';
 import { EVM_ENDPOINT } from './utils/constants';
@@ -31,6 +35,32 @@ const deployStaking = async (tokenAddress: string, deployer: JsonRpcSigner) => {
   const staking = Staking__factory.connect(stakingProxy.address, deployer);
 
   return staking;
+};
+
+const deployVesting = async (tokenAddress: string, staking: Staking, multisigAddress: string, deployer: JsonRpcSigner) => {
+  const feeSharingProxy = await new FeeSharingProxy__factory(deployer).deploy(
+    constants.AddressZero, staking.address
+  );
+
+  await staking.setFeeSharing(feeSharingProxy.address)
+
+  const vestingLogic = await new VestingLogic__factory(deployer).deploy();
+
+  const vestingFactory = await new VestingFactory__factory(deployer).deploy(
+    vestingLogic.address
+  );
+
+  const vestingRegistry = await new VestingRegistry__factory(deployer).deploy(
+    vestingFactory.address,
+    tokenAddress,
+    staking.address,
+    feeSharingProxy.address,
+    multisigAddress
+  );
+
+  vestingFactory.transferOwnership(vestingRegistry.address);
+
+  return vestingRegistry;
 };
 
 const prepareGovernor = async (
@@ -98,7 +128,10 @@ export const setupSystem = async () => {
     initialTokenAmount
   );
 
+  const fishTokenOwner = await fishToken.owner();
+
   const staking = await deployStaking(fishToken.address, deployer);
+  const vesting = await deployVesting(fishToken.address, staking, fishTokenOwner, deployer);
 
   const [governorAdmin, adminTimelock] = await prepareGovernor(
     provider,
@@ -126,6 +159,9 @@ export const setupSystem = async () => {
       Staking: {
         address: staking.address,
       },
+      VestingRegistry: {
+        address: vesting.address,
+      },
     },
   });
 
@@ -138,6 +174,7 @@ export const setupSystem = async () => {
   return {
     provider,
     staking,
+    vesting,
     fishToken,
     governorAdmin,
     governorOwner,
