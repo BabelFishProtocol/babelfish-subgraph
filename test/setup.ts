@@ -37,12 +37,18 @@ const deployStaking = async (tokenAddress: string, deployer: JsonRpcSigner) => {
   return staking;
 };
 
-const deployVesting = async (tokenAddress: string, staking: Staking, multisigAddress: string, deployer: JsonRpcSigner) => {
+const deployVesting = async (
+  tokenAddress: string,
+  staking: Staking,
+  multisigAddress: string,
+  deployer: JsonRpcSigner
+) => {
   const feeSharingProxy = await new FeeSharingProxy__factory(deployer).deploy(
-    constants.AddressZero, staking.address
+    constants.AddressZero,
+    staking.address
   );
 
-  await staking.setFeeSharing(feeSharingProxy.address)
+  await staking.setFeeSharing(feeSharingProxy.address);
 
   const vestingLogic = await new VestingLogic__factory(deployer).deploy();
 
@@ -131,7 +137,12 @@ export const setupSystem = async () => {
   const fishTokenOwner = await fishToken.owner();
 
   const staking = await deployStaking(fishToken.address, deployer);
-  const vesting = await deployVesting(fishToken.address, staking, fishTokenOwner, deployer);
+  const vesting = await deployVesting(
+    fishToken.address,
+    staking,
+    fishTokenOwner,
+    deployer
+  );
 
   const [governorAdmin, adminTimelock] = await prepareGovernor(
     provider,

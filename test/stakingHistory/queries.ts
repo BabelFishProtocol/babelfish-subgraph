@@ -8,7 +8,7 @@ export type Stake = {
   lockedUntil: string;
   totalStaked: string;
   transactionHash: string;
-}
+};
 
 type StakeEventsListQueryResult = {
   stakeEvents: Array<Stake>;
@@ -35,8 +35,6 @@ export const stakeEventsListQuery = async (addressesList: string[]) => {
   return stakeEvents;
 };
 
-
-
 type UserData = {
   id: string;
   address: string;
@@ -48,23 +46,12 @@ type UserQueryResult = {
   user: UserData;
 };
 
-// const stakeFragment = gql`fragment stake on Stake {
-//   staker
-//   amount
-//   lockedUntil
-//   totalStaked
-//   transactionHash
-// }`
-
-
 /**
  * Query to get the user data
  * @param accountAddress - user account addresses
  */
 
 export const userQuery = async (accountAddress: string) => {
-  // const addressesToString = mapToGraphqlArrayOfString(addressesList);
-
   const { user } = await querySubgraph<UserQueryResult>(`{
     user(id: "${accountAddress}") {
       address

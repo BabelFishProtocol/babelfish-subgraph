@@ -1,15 +1,11 @@
 import { utils } from 'ethers';
 
 import { clearSubgraph, prepareTest, setupSystem } from '../setup';
-import {
-  getSigners,
-  getCurrentTimestamp,
-} from '../utils/evm';
-import {
-  stakeEventsListQuery, userQuery
-} from './queries';
+import { getSigners, getCurrentTimestamp } from '../utils/evm';
+import { stakeEventsListQuery, userQuery } from './queries';
 import { ONE_DAY } from '../utils/constants';
 import { waitForGraphSync } from '../utils/graph';
+import { createVesting } from '../utils/helpers';
 
 afterAll(async () => {
   await clearSubgraph();
@@ -27,11 +23,7 @@ describe('Staking events', () => {
   });
 
   it('properly sync new stake events', async () => {
-    const {
-      provider,
-      staking,
-      fishToken,
-    } = babelfish;
+    const { provider, staking, fishToken } = babelfish;
 
     const [deployer, user, user2] = await getSigners(provider);
     const userAddress = (await user.getAddress()).toLowerCase();
@@ -39,34 +31,39 @@ describe('Staking events', () => {
 
     // ----- stake some fish tokens with delegation for users -----
 
-      const stakeAmount1 = utils.parseEther('1');
+    const stakeAmount1 = utils.parseEther('1');
 
-      await fishToken.connect(deployer).approve(staking.address, stakeAmount1);
+    await fishToken.connect(deployer).approve(staking.address, stakeAmount1);
 
-      let timestamp = await getCurrentTimestamp(provider);
-      const stakeUntilDate1 = timestamp + ONE_DAY * 115;
+    let timestamp = await getCurrentTimestamp(provider);
+    const stakeUntilDate1 = timestamp + ONE_DAY * 115;
 
-      const userStake = await (await staking
+    const userStake = await (
+      await staking
         .connect(deployer)
-        .stake(stakeAmount1, stakeUntilDate1, userAddress, userAddress)).wait();
+        .stake(stakeAmount1, stakeUntilDate1, userAddress, userAddress)
+    ).wait();
 
-      const userStakeLockDate1 = (await staking.timestampToLockDate(stakeUntilDate1)).toString();
+    const userStakeLockDate1 = (
+      await staking.timestampToLockDate(stakeUntilDate1)
+    ).toString();
 
+    const stakeAmount2 = utils.parseEther('2');
 
-      const stakeAmount2 = utils.parseEther('2');
+    await fishToken.connect(deployer).approve(staking.address, stakeAmount2);
 
-      await fishToken.connect(deployer).approve(staking.address, stakeAmount2);
+    timestamp = await getCurrentTimestamp(provider);
+    const stakeUntilDate2 = timestamp + ONE_DAY * 121;
 
-      timestamp = await getCurrentTimestamp(provider);
-      const stakeUntilDate2 = timestamp + ONE_DAY * 121;
-
-      const userStake2 = await (await staking
+    const userStake2 = await (
+      await staking
         .connect(deployer)
-        .stake(stakeAmount2, stakeUntilDate2, user2Address, user2Address)).wait();
+        .stake(stakeAmount2, stakeUntilDate2, user2Address, user2Address)
+    ).wait();
 
-      const userStakeLockDate2 = (await staking.timestampToLockDate(stakeUntilDate2)).toString();
-
-
+    const userStakeLockDate2 = (
+      await staking.timestampToLockDate(stakeUntilDate2)
+    ).toString();
 
     await waitForGraphSync({
       provider,
@@ -76,8 +73,8 @@ describe('Staking events', () => {
 
     expect(stakeEvents).toHaveLength(2);
 
-    expect(stakeEvents).toEqual(expect.arrayContaining(
-      [
+    expect(stakeEvents).toEqual(
+      expect.arrayContaining([
         {
           amount: stakeAmount2.toString(),
           lockedUntil: userStakeLockDate2,
@@ -91,14 +88,12 @@ describe('Staking events', () => {
           staker: userAddress,
           totalStaked: stakeAmount1.toString(),
           transactionHash: userStake.transactionHash,
-        }
-      ]
-    ));
+        },
+      ])
+    );
   });
   it('properly sync when there are no stake events', async () => {
-    const {
-      provider,
-    } = babelfish;
+    const { provider } = babelfish;
 
     const [user, user2] = await getSigners(provider);
     const userAddress = (await user.getAddress()).toLowerCase();
@@ -121,12 +116,7 @@ describe('Users', () => {
   });
 
   it('properly sync user stake events and filter vesting onces', async () => {
-    const {
-      provider,
-      staking,
-      vesting,
-      fishToken,
-    } = babelfish;
+    const { provider, staking, vesting, fishToken } = babelfish;
 
     const [deployer, user, user2] = await getSigners(provider);
     const userAddress = (await user.getAddress()).toLowerCase();
@@ -134,49 +124,62 @@ describe('Users', () => {
 
     // ----- stake some fish tokens and vestings -----
 
-      const stakeAmount1 = utils.parseEther('1');
+    const stakeAmount1 = utils.parseEther('1');
 
-      await fishToken.connect(deployer).approve(staking.address, stakeAmount1);
+    await fishToken.connect(deployer).approve(staking.address, stakeAmount1);
 
-      let timestamp = await getCurrentTimestamp(provider);
-      const stakeUntilDate1 = timestamp + ONE_DAY * 115;
+    let timestamp = await getCurrentTimestamp(provider);
+    const stakeUntilDate1 = timestamp + ONE_DAY * 115;
 
-      const userStake = await (await staking
+    const userStake = await (
+      await staking
         .connect(deployer)
-        .stake(stakeAmount1, stakeUntilDate1, userAddress, userAddress)).wait();
+        .stake(stakeAmount1, stakeUntilDate1, userAddress, userAddress)
+    ).wait();
 
-      const userStakeLockDate1 = (await staking.timestampToLockDate(stakeUntilDate1)).toString();
+    const userStakeLockDate1 = (
+      await staking.timestampToLockDate(stakeUntilDate1)
+    ).toString();
 
-      await (await vesting
+    const { vestingAddress } = await createVesting({
+      stakeAmount: stakeAmount1,
+      deployer,
+      userAddress,
+      vesting,
+    });
+
+    await fishToken.connect(deployer).approve(staking.address, stakeAmount1);
+
+    timestamp = await getCurrentTimestamp(provider);
+    const stakeUntilDateVesting = timestamp + ONE_DAY * 121;
+
+    const userStakeVesting = await (
+      await staking
         .connect(deployer)
-        .createVesting(userAddress, stakeAmount1, ONE_DAY, ONE_DAY * 100)).wait();
-      const vestingAddress1 = (await vesting.getVesting(userAddress)).toLowerCase();
+        .stake(
+          stakeAmount1,
+          stakeUntilDateVesting,
+          vestingAddress,
+          vestingAddress
+        )
+    ).wait();
 
+    const userStakeLockDateVesting = (
+      await staking.timestampToLockDate(stakeUntilDateVesting)
+    ).toString();
 
+    const stakeAmount2 = utils.parseEther('2');
 
-      await fishToken.connect(deployer).approve(staking.address, stakeAmount1);
+    await fishToken.connect(deployer).approve(staking.address, stakeAmount2);
 
-      timestamp = await getCurrentTimestamp(provider);
-      const stakeUntilDateVesting = timestamp + ONE_DAY * 121;
+    timestamp = await getCurrentTimestamp(provider);
+    const stakeUntilDate2 = timestamp + ONE_DAY * 121;
 
-      const userStakeVesting = await (await staking
+    const userStake2 = await (
+      await staking
         .connect(deployer)
-        .stake(stakeAmount1, stakeUntilDateVesting, vestingAddress1, vestingAddress1)).wait();
-
-      const userStakeLockDateVesting = (await staking.timestampToLockDate(stakeUntilDateVesting)).toString();
-
-
-      const stakeAmount2 = utils.parseEther('2');
-
-      await fishToken.connect(deployer).approve(staking.address, stakeAmount2);
-
-      timestamp = await getCurrentTimestamp(provider);
-      const stakeUntilDate2 = timestamp + ONE_DAY * 121;
-
-      const userStake2 = await (await staking
-        .connect(deployer)
-        .stake(stakeAmount2, stakeUntilDate2, user2Address, user2Address)).wait();
-
+        .stake(stakeAmount2, stakeUntilDate2, user2Address, user2Address)
+    ).wait();
 
     await waitForGraphSync({
       provider,
@@ -190,24 +193,26 @@ describe('Users', () => {
 
     expect(data).toMatchObject({
       address: userAddress,
-      vests: [{
-        owner: userAddress,
-        address: vestingAddress1,
-        stakes: [
-          {
-            amount: stakeAmount1.toString(),
-            lockedUntil: userStakeLockDateVesting,
-            staker: vestingAddress1,
-            totalStaked: stakeAmount1.toString(),
-            transactionHash: userStakeVesting.transactionHash,
-          }
-        ]
-      }],
+      vests: [
+        {
+          owner: userAddress,
+          address: vestingAddress,
+          stakes: [
+            {
+              amount: stakeAmount1.toString(),
+              lockedUntil: userStakeLockDateVesting,
+              staker: vestingAddress,
+              totalStaked: stakeAmount1.toString(),
+              transactionHash: userStakeVesting.transactionHash,
+            },
+          ],
+        },
+      ],
       stakes: expect.arrayContaining([
         {
           amount: stakeAmount1.toString(),
           lockedUntil: userStakeLockDateVesting,
-          staker: vestingAddress1,
+          staker: vestingAddress,
           totalStaked: stakeAmount1.toString(),
           transactionHash: userStakeVesting.transactionHash,
         },
@@ -217,14 +222,12 @@ describe('Users', () => {
           staker: userAddress,
           totalStaked: stakeAmount1.toString(),
           transactionHash: userStake.transactionHash,
-        }
+        },
       ]),
     });
   });
   it('properly sync when there are no stake events', async () => {
-    const {
-      provider,
-    } = babelfish;
+    const { provider } = babelfish;
 
     const [user, user2] = await getSigners(provider);
     const userAddress = (await user.getAddress()).toLowerCase();

@@ -96,4 +96,6 @@ dataSources:
       eventHandlers:
         - event: VestingCreated(indexed address,address,uint256,uint256,uint256)
           handler: handleVestingCreated
+        - event: TeamVestingCreated(indexed address,address,uint256,uint256,uint256)
+          handler: handleTeamVestingCreated
       file: ./src/mappings/vestingRegistry.ts

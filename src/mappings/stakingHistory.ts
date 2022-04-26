@@ -4,7 +4,7 @@ import { Address } from '@graphprotocol/graph-ts';
 
 export function handleTokensStaked(event: TokensStaked): void {
   let stake = new StakeEvent(
-    event.transaction.hash.toHex() + "-" + event.logIndex.toString()
+    event.transaction.hash.toHex() + '-' + event.logIndex.toString()
   );
 
   stake.amount = event.params.amount;
@@ -12,24 +12,21 @@ export function handleTokensStaked(event: TokensStaked): void {
   stake.totalStaked = event.params.totalStaked;
   stake.staker = event.params.staker;
   stake.transactionHash = event.transaction.hash;
+  stake.blockTimeStamp = event.block.timestamp;
   stake.save();
 
-  // if vesting contract exist, staker is an address of vesting
+  // if vesting contract exist, staker is an address of vesting or team vesting
   let vestingContract = VestingContract.load(event.params.staker.toHex());
   let owner = event.params.staker;
 
-  if(vestingContract) {
+  if (vestingContract) {
     owner = vestingContract.owner as Address;
   }
 
-  let user = User.load(
-    owner.toHex()
-  );
+  let user = User.load(owner.toHex());
 
-  if(!user) {
-    user = new User(
-      owner.toHex()
-    );
+  if (!user) {
+    user = new User(owner.toHex());
     user.stakes = [] as string[];
     user.vests = [] as string[];
   }
@@ -43,7 +40,7 @@ export function handleTokensStaked(event: TokensStaked): void {
 
   user.stakes = events;
 
-  if(vestingContract) {
+  if (vestingContract) {
     vestingContractStakes = vestingContract.stakes as string[];
 
     vestingContractStakes.push(stake.id);

@@ -6,7 +6,8 @@ export type VestingContract = {
   owner: string;
   address: string;
   stakes: Array<Stake>;
-}
+  type: string;
+};
 
 type VestingContractListQueryResult = {
   vestingContracts: VestingContract;
@@ -17,12 +18,12 @@ type VestingContractListQueryResult = {
  */
 
 export const vestingContractsListQuery = async () => {
-
   const data = await querySubgraph<VestingContractListQueryResult>(`{
     vestingContracts {
       owner
       address
       stakes
+      type
     }
   }`);
 
