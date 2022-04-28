@@ -11,6 +11,10 @@ import {
   StakingProxy__factory,
   GovernorAlpha__factory,
   MassetV3__factory,
+  BasketManagerV3__factory,
+  MockERC20__factory,
+  MassetV3,
+  Token__factory,
 } from '../generated/types';
 import { execAsync } from './utils/bash';
 import { EVM_ENDPOINT } from './utils/constants';
@@ -20,6 +24,8 @@ import { buildSubgraphYaml, startGraph } from './utils/graph';
 const logger = new Logs().showInConsole(true);
 
 const TIMELOCK_DELAY = 50;
+const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
+const zeroBridges = ZERO_ADDRESS;
 
 const deployStaking = async (tokenAddress: string, deployer: JsonRpcSigner) => {
   const stakingLogic = await new Staking__factory(deployer).deploy();
@@ -32,6 +38,45 @@ const deployStaking = async (tokenAddress: string, deployer: JsonRpcSigner) => {
   const staking = Staking__factory.connect(stakingProxy.address, deployer);
 
   return staking;
+};
+
+const createXusd = async (masset: MassetV3, deployer: JsonRpcSigner) => {
+  const mockXusd = await new Token__factory(deployer).deploy(
+    'MockXusd',
+    'mx',
+    18
+  );
+  await mockXusd.transferOwnership(masset.address);
+  return mockXusd;
+};
+
+const createBasketManager = async (
+  masset: MassetV3,
+  deployer: JsonRpcSigner,
+  factor = 100,
+  bridge = zeroBridges
+) => {
+  const deployerAddress = await deployer.getAddress();
+
+  const mockToken = await new MockERC20__factory(deployer).deploy(
+    'mockToken',
+    'MT1',
+    18,
+    deployerAddress,
+    10000
+  );
+
+  const basset = mockToken.address;
+
+  const mins = 0;
+  const maxs = 1000;
+  const pauses = false;
+
+  const basketManager = await new BasketManagerV3__factory(deployer).deploy();
+  await basketManager.initialize(masset.address);
+  await basketManager.addBasset(basset, factor, bridge, mins, maxs, pauses);
+
+  return basketManager;
 };
 
 const prepareGovernor = async (
@@ -101,6 +146,11 @@ export const setupSystem = async () => {
 
   const masset = await new MassetV3__factory(deployer).deploy();
 
+  const basketManager = await createBasketManager(masset, deployer);
+  const mockXusd = await createXusd(masset, deployer);
+
+  await masset.initialize(basketManager.address, mockXusd.address, false);
+
   const staking = await deployStaking(fishToken.address, deployer);
 
   const [governorAdmin, adminTimelock] = await prepareGovernor(
@@ -143,6 +193,7 @@ export const setupSystem = async () => {
 
   return {
     provider,
+    masset,
     staking,
     fishToken,
     governorAdmin,
