@@ -12,7 +12,7 @@ export function handleTokensStaked(event: TokensStaked): void {
   stake.totalStaked = event.params.totalStaked;
   stake.staker = event.params.staker;
   stake.transactionHash = event.transaction.hash;
-  stake.blockTimeStamp = event.block.timestamp;
+  stake.blockTimestamp = event.block.timestamp;
   stake.save();
 
   // if vesting contract exist, staker is an address of vesting or team vesting
@@ -27,29 +27,36 @@ export function handleTokensStaked(event: TokensStaked): void {
 
   if (!user) {
     user = new User(owner.toHex());
-    user.stakes = [] as string[];
-    user.vests = [] as string[];
+    user.allStakes = [];
+    user.stakes = [];
+    user.vests = [];
   }
 
   let vestingContracts: string[] = [];
   let vestingContractStakes: string[] = [];
-  let events: string[] = [];
+  let stakeEvents: string[] = [];
+  let allStakesEvents: string[] = [];
 
-  events = user.stakes as string[];
-  events.push(stake.id);
+  allStakesEvents = user.allStakes;
+  allStakesEvents.push(stake.id);
 
-  user.stakes = events;
+  user.allStakes = allStakesEvents;
 
   if (vestingContract) {
-    vestingContractStakes = vestingContract.stakes as string[];
+    vestingContractStakes = vestingContract.stakes;
 
     vestingContractStakes.push(stake.id);
     vestingContract.stakes = vestingContractStakes;
     vestingContract.save();
 
-    vestingContracts = user.vests as string[];
+    vestingContracts = user.vests;
     vestingContracts.push(vestingContract.id);
     user.vests = vestingContracts;
+  } else {
+    stakeEvents = user.stakes;
+    stakeEvents.push(stake.id);
+
+    user.stakes = stakeEvents;
   }
   user.address = owner;
 

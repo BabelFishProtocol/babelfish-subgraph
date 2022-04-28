@@ -187,10 +187,11 @@ describe('Users', () => {
     });
     const data = await userQuery(userAddress);
 
-    expect(data.stakes).toHaveLength(2);
+    expect(data.stakes).toHaveLength(1);
+    expect(data.vests[0].stakes).toHaveLength(1);
+    expect(data.allStakes).toHaveLength(2);
     expect(data.vests[0].stakes).toHaveLength(1);
     expect(data.address).toEqual(data.vests[0].owner);
-
     expect(data).toMatchObject({
       address: userAddress,
       vests: [
@@ -208,7 +209,16 @@ describe('Users', () => {
           ],
         },
       ],
-      stakes: expect.arrayContaining([
+      stakes: [
+        {
+          amount: stakeAmount1.toString(),
+          lockedUntil: userStakeLockDate1,
+          staker: userAddress,
+          totalStaked: stakeAmount1.toString(),
+          transactionHash: userStake.transactionHash,
+        },
+      ],
+      allStakes: expect.arrayContaining([
         {
           amount: stakeAmount1.toString(),
           lockedUntil: userStakeLockDateVesting,

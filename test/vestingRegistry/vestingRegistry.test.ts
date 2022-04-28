@@ -111,6 +111,7 @@ describe('Vesting Contract', () => {
         {
           address: userVesting1.vestingAddress,
           owner: userAddress,
+          type: 'genesis',
         },
       ])
     );

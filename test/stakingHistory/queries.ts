@@ -14,6 +14,14 @@ type StakeEventsListQueryResult = {
   stakeEvents: Array<Stake>;
 };
 
+const stakeFragment = `
+  staker
+  amount
+  lockedUntil
+  totalStaked
+  transactionHash
+`;
+
 /**
  * Query to get the list of staking events
  * @param addressesList - list of addresses
@@ -24,11 +32,7 @@ export const stakeEventsListQuery = async (addressesList: string[]) => {
 
   const { stakeEvents } = await querySubgraph<StakeEventsListQueryResult>(`{
     stakeEvents(where: { staker_in: ${addressesToString} }) {
-      staker
-      amount
-      lockedUntil
-      totalStaked
-      transactionHash
+      ${stakeFragment}
     }
   }`);
 
@@ -38,6 +42,7 @@ export const stakeEventsListQuery = async (addressesList: string[]) => {
 type UserData = {
   id: string;
   address: string;
+  allStakes: Array<Stake>;
   stakes: Array<Stake>;
   vests: Array<VestingContract>;
 };
@@ -50,27 +55,21 @@ type UserQueryResult = {
  * Query to get the user data
  * @param accountAddress - user account addresses
  */
-
 export const userQuery = async (accountAddress: string) => {
   const { user } = await querySubgraph<UserQueryResult>(`{
     user(id: "${accountAddress}") {
       address
+      allStakes {
+        ${stakeFragment}
+      }
       stakes {
-        staker
-        amount
-        lockedUntil
-        totalStaked
-        transactionHash
+        ${stakeFragment}
       }
       vests {
         address
         owner
         stakes {
-          staker
-          amount
-          lockedUntil
-          totalStaked
-          transactionHash
+          ${stakeFragment}
         }
       }
     }
