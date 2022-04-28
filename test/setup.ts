@@ -10,6 +10,7 @@ import {
   TimelockMock__factory,
   StakingProxy__factory,
   GovernorAlpha__factory,
+  MassetV3__factory,
 } from '../generated/types';
 import { execAsync } from './utils/bash';
 import { EVM_ENDPOINT } from './utils/constants';
@@ -88,7 +89,7 @@ const prepareGovernor = async (
 export const setupSystem = async () => {
   const provider = new providers.JsonRpcProvider(EVM_ENDPOINT);
 
-  const deployer = await provider.getSigner(0);
+  const deployer = provider.getSigner(0);
 
   logger.info('Deploying contracts...');
 
@@ -97,6 +98,8 @@ export const setupSystem = async () => {
   const fishToken = await new Fish__factory(deployer).deploy(
     initialTokenAmount
   );
+
+  const masset = await new MassetV3__factory(deployer).deploy();
 
   const staking = await deployStaking(fishToken.address, deployer);
 
@@ -125,6 +128,9 @@ export const setupSystem = async () => {
       },
       Staking: {
         address: staking.address,
+      },
+      Masset: {
+        address: masset.address,
       },
     },
   });
