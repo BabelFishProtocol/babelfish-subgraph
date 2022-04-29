@@ -1,5 +1,5 @@
 import { JsonRpcSigner } from '@ethersproject/providers';
-import { BigNumber, providers, utils } from 'ethers';
+import { providers, utils } from 'ethers';
 import { AbiCoder } from 'ethers/lib/utils';
 import Logs from 'node-logs';
 
@@ -19,19 +19,12 @@ import {
   FeesVault__factory,
 } from '../generated/types';
 import { execAsync } from './utils/bash';
-import { EVM_ENDPOINT, zeroBridges } from './utils/constants';
+import { EVM_ENDPOINT, standardFees, zeroBridges } from './utils/constants';
 import { mineBlock } from './utils/evm';
 import { buildSubgraphYaml, startGraph } from './utils/graph';
 import { Fees } from './utils/types';
 
 const logger = new Logs().showInConsole(true);
-
-const standardFees: Fees = {
-  deposit: utils.parseUnits('100'),
-  depositBridge: utils.parseUnits('200'),
-  withdrawal: utils.parseUnits('300'),
-  withdrawalBridge: utils.parseUnits('400'),
-};
 
 const TIMELOCK_DELAY = 50;
 
@@ -63,10 +56,10 @@ const initMassetV3 = async (
   deployer: JsonRpcSigner,
   basketManagerAddress: string,
   mockXusdAddress: string,
-  vaultAddress: string,
   fees: Fees
 ) => {
   const feesManager = await new FeesManager__factory(deployer).deploy();
+  const vault = await new FeesVault__factory(deployer).deploy();
 
   await feesManager.initialize(
     fees.deposit,
@@ -80,7 +73,7 @@ const initMassetV3 = async (
   await masset.upgradeToV3(
     basketManagerAddress,
     mockXusdAddress,
-    vaultAddress,
+    vault.address,
     feesManager.address
   );
 };
@@ -180,19 +173,15 @@ export const setupSystem = async () => {
   );
 
   const masset = await new MassetV3__factory(deployer).deploy();
-  const vault = await new FeesVault__factory(deployer).deploy();
 
   const basketManager = await createBasketManager(masset, deployer);
   const mockXusd = await createXusd(masset, deployer);
-
-  await masset.initialize(basketManager.address, mockXusd.address, false);
 
   await initMassetV3(
     masset,
     deployer,
     basketManager.address,
     mockXusd.address,
-    vault.address,
     standardFees
   );
 
