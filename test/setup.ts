@@ -1,5 +1,5 @@
 import { JsonRpcSigner } from '@ethersproject/providers';
-import { providers, utils } from 'ethers';
+import { BigNumber, providers, utils } from 'ethers';
 import { AbiCoder } from 'ethers/lib/utils';
 import Logs from 'node-logs';
 
@@ -15,17 +15,25 @@ import {
   MockERC20__factory,
   MassetV3,
   Token__factory,
+  FeesManager__factory,
+  FeesVault__factory,
 } from '../generated/types';
 import { execAsync } from './utils/bash';
-import { EVM_ENDPOINT } from './utils/constants';
+import { EVM_ENDPOINT, zeroBridges } from './utils/constants';
 import { mineBlock } from './utils/evm';
 import { buildSubgraphYaml, startGraph } from './utils/graph';
+import { Fees } from './utils/types';
 
 const logger = new Logs().showInConsole(true);
 
+const standardFees: Fees = {
+  deposit: utils.parseUnits('100'),
+  depositBridge: utils.parseUnits('200'),
+  withdrawal: utils.parseUnits('300'),
+  withdrawalBridge: utils.parseUnits('400'),
+};
+
 const TIMELOCK_DELAY = 50;
-const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
-const zeroBridges = ZERO_ADDRESS;
 
 const deployStaking = async (tokenAddress: string, deployer: JsonRpcSigner) => {
   const stakingLogic = await new Staking__factory(deployer).deploy();
@@ -48,6 +56,33 @@ const createXusd = async (masset: MassetV3, deployer: JsonRpcSigner) => {
   );
   await mockXusd.transferOwnership(masset.address);
   return mockXusd;
+};
+
+const initMassetV3 = async (
+  masset: MassetV3,
+  deployer: JsonRpcSigner,
+  basketManagerAddress: string,
+  mockXusdAddress: string,
+  vaultAddress: string,
+  fees: Fees
+) => {
+  const feesManager = await new FeesManager__factory(deployer).deploy();
+
+  await feesManager.initialize(
+    fees.deposit,
+    fees.depositBridge,
+    fees.withdrawal,
+    fees.withdrawalBridge
+  );
+
+  await masset.initialize(basketManagerAddress, mockXusdAddress, false);
+
+  await masset.upgradeToV3(
+    basketManagerAddress,
+    mockXusdAddress,
+    vaultAddress,
+    feesManager.address
+  );
 };
 
 const createBasketManager = async (
@@ -145,11 +180,21 @@ export const setupSystem = async () => {
   );
 
   const masset = await new MassetV3__factory(deployer).deploy();
+  const vault = await new FeesVault__factory(deployer).deploy();
 
   const basketManager = await createBasketManager(masset, deployer);
   const mockXusd = await createXusd(masset, deployer);
 
   await masset.initialize(basketManager.address, mockXusd.address, false);
+
+  await initMassetV3(
+    masset,
+    deployer,
+    basketManager.address,
+    mockXusd.address,
+    vault.address,
+    standardFees
+  );
 
   const staking = await deployStaking(fishToken.address, deployer);
 
