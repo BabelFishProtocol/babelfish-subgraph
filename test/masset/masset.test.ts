@@ -69,7 +69,9 @@ describe('Transactions events', () => {
 
     await mockXusd.approve(masset.address, mintedMassets);
 
-    const redeemTx = await masset.redeem(mockToken.address, mintedMassets);
+    const redeemTx = await (
+      await masset.redeem(mockToken.address, mintedMassets)
+    ).wait();
 
     await waitForGraphSync({
       provider,

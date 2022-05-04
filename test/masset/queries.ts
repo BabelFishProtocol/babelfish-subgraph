@@ -16,7 +16,7 @@ type TransactionsQueryResult = {
 
 export const transactionsQuery = async () => {
   const { transactions } = await querySubgraph<TransactionsQueryResult>(`{
-    transactions {
+    transactions(orderBy: date) {
       id
       event
       asset
