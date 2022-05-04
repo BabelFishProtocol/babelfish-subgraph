@@ -1,4 +1,3 @@
-import { utils } from 'ethers';
 import { Fees } from './types';
 
 // The Graph GraphQL endpoint
@@ -17,8 +16,8 @@ const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 export const zeroBridges = ZERO_ADDRESS;
 
 export const standardFees: Fees = {
-  deposit: utils.parseUnits('100'),
-  depositBridge: utils.parseUnits('200'),
-  withdrawal: utils.parseUnits('300'),
-  withdrawalBridge: utils.parseUnits('400'),
+  deposit: '100',
+  depositBridge: '200',
+  withdrawal: '300',
+  withdrawalBridge: '400',
 };
