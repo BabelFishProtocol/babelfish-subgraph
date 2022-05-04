@@ -1,7 +1,7 @@
 import { BigNumber, utils } from 'ethers';
 
 import { clearSubgraph, prepareTest, setupSystem } from '../setup';
-import { transactionsQuery } from './queries';
+import { xusdTransactionsQuery } from './queries';
 import { waitForGraphSync } from '../utils/graph';
 import { FEE_PRECISION, standardFees } from '../utils/constants';
 
@@ -40,7 +40,7 @@ describe('Transactions events', () => {
       targetBlockNumber: secondTx.blockNumber,
     });
 
-    const transactions = await transactionsQuery();
+    const transactions = await xusdTransactionsQuery();
     expect(transactions).toHaveLength(2);
   });
 
@@ -78,7 +78,7 @@ describe('Transactions events', () => {
       targetBlockNumber: redeemTx.blockNumber,
     });
 
-    const transactions = await transactionsQuery();
+    const transactions = await xusdTransactionsQuery();
     const firstTx = transactions[0];
     const secTx = transactions[1];
 

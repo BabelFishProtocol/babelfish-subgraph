@@ -1,8 +1,8 @@
-import { Transaction } from '../../generated/schema';
+import { XusdTransaction } from '../../generated/schema';
 import { Minted, Redeemed } from '../../generated/MassetV3/MassetV3';
 
 export function handleMinted(event: Minted): void {
-  let tx = new Transaction(
+  let tx = new XusdTransaction(
     event.transaction.hash.toHex() + '-' + event.logIndex.toString()
   );
 
@@ -15,7 +15,7 @@ export function handleMinted(event: Minted): void {
 }
 
 export function handleRedeemed(event: Redeemed): void {
-  let tx = new Transaction(
+  let tx = new XusdTransaction(
     event.transaction.hash.toHex() + '-' + event.logIndex.toString()
   );
 

@@ -1,7 +1,7 @@
 import { querySubgraph } from '../utils/graph';
 
 type TransactionsQueryResult = {
-  transactions: Array<{
+  xusdTransactions: Array<{
     id: string;
     event: 'Deposit' | 'Withdraw';
     asset: string;
@@ -14,9 +14,9 @@ type TransactionsQueryResult = {
  * Query to get the transactions
  */
 
-export const transactionsQuery = async () => {
-  const { transactions } = await querySubgraph<TransactionsQueryResult>(`{
-    transactions(orderBy: date) {
+export const xusdTransactionsQuery = async () => {
+  const { xusdTransactions } = await querySubgraph<TransactionsQueryResult>(`{
+    xusdTransactions(orderBy: date) {
       id
       event
       asset
@@ -25,5 +25,5 @@ export const transactionsQuery = async () => {
     }
   }`);
 
-  return transactions;
+  return xusdTransactions;
 };

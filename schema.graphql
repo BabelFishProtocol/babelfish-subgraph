@@ -45,7 +45,7 @@ enum Event {
   Withdraw
 }
 
-type Transaction @entity {
+type XusdTransaction @entity {
   id: ID!
   event: Event!
   asset: String!
