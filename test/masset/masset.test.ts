@@ -1,9 +1,7 @@
 import { utils } from 'ethers';
 
 import { clearSubgraph, prepareTest, setupSystem } from '../setup';
-import { getSigners } from '../utils/evm';
 import { transactionsQuery } from './queries';
-// import { ONE_DAY } from '../utils/constants';
 import { waitForGraphSync } from '../utils/graph';
 
 afterAll(async () => {
@@ -21,19 +19,22 @@ describe('Transactions events', () => {
     babelfish = await setupSystem();
   });
 
-  it('properly detect transactions events', async () => {
-    const { provider, masset } = babelfish;
+  it('properly detect transactions', async () => {
+    const { provider, masset, mockToken } = babelfish;
 
-    const [deployer, user, user2] = getSigners(provider);
-    const userAddress = (await user.getAddress()).toLowerCase();
-    const user2Address = (await user2.getAddress()).toLowerCase();
+    const sum = utils.parseUnits('1024');
 
-    // ----- stake some fish tokens with delegation for users -----
-    console.log(masset);
+    await mockToken.approve(masset.address, sum);
 
-    // const stakeAmount1 = utils.parseEther('1');
+    const firstTx = await (await masset.mint(mockToken.address, sum)).wait();
+
+    await waitForGraphSync({
+      provider,
+      targetBlockNumber: firstTx.blockNumber,
+    });
+
     const transactions = await transactionsQuery();
-    console.log(transactions);
-    console.log(userAddress, user2Address, deployer);
+
+    expect(transactions).toHaveLength(1);
   });
 });

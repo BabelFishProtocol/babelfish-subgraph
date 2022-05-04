@@ -104,7 +104,7 @@ const deployBasketManager = async (
   await basketManager.initialize(masset.address);
   await basketManager.addBasset(basset, factor, bridge, mins, maxs, pauses);
 
-  return basketManager;
+  return { basketManager, mockToken };
 };
 
 const prepareGovernor = async (
@@ -174,7 +174,10 @@ export const setupSystem = async () => {
 
   const masset = await new MassetV3__factory(deployer).deploy();
 
-  const basketManager = await deployBasketManager(masset, deployer);
+  const { basketManager, mockToken } = await deployBasketManager(
+    masset,
+    deployer
+  );
   const mockXusd = await deployXusd(masset, deployer);
 
   await initMassetV3(
@@ -228,6 +231,7 @@ export const setupSystem = async () => {
   return {
     provider,
     masset,
+    mockToken,
     staking,
     fishToken,
     governorAdmin,
