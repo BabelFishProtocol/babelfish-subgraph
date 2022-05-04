@@ -19,7 +19,7 @@ import {
   FeesVault__factory,
 } from '../generated/types';
 import { execAsync } from './utils/bash';
-import { EVM_ENDPOINT, standardFees, zeroBridges } from './utils/constants';
+import { EVM_ENDPOINT, standardFees, ZERO_ADDRESS } from './utils/constants';
 import { mineBlock } from './utils/evm';
 import { buildSubgraphYaml, startGraph } from './utils/graph';
 import { Fees } from './utils/types';
@@ -82,7 +82,7 @@ const deployBasketManager = async (
   masset: MassetV3,
   deployer: JsonRpcSigner,
   factor = 100,
-  bridge = zeroBridges
+  bridge = ZERO_ADDRESS
 ) => {
   const deployerAddress = await deployer.getAddress();
 
@@ -232,7 +232,9 @@ export const setupSystem = async () => {
     provider,
     masset,
     mockToken,
+    basketManager,
     staking,
+    mockXusd,
     fishToken,
     governorAdmin,
     governorOwner,

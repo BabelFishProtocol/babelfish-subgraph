@@ -3,7 +3,7 @@ import { querySubgraph } from '../utils/graph';
 type TransactionsQueryResult = {
   transactions: Array<{
     id: string;
-    event: string;
+    event: 'Deposit' | 'Withdraw';
     asset: string;
     amount: string;
     date: string;

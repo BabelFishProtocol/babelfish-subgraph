@@ -1,3 +1,4 @@
+import { BigNumber } from 'ethers';
 import { Fees } from './types';
 
 // The Graph GraphQL endpoint
@@ -12,11 +13,12 @@ export const ONE_MINUTE = 60;
 export const ONE_HOUR = ONE_MINUTE * 60;
 export const ONE_DAY = ONE_HOUR * 24;
 
-const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
-export const zeroBridges = ZERO_ADDRESS;
+export const FEE_PRECISION = BigNumber.from('10000');
+
+export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 
 export const standardFees: Fees = {
-  deposit: '100',
+  deposit: '20',
   depositBridge: '200',
   withdrawal: '300',
   withdrawalBridge: '400',
