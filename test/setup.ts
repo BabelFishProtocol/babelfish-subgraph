@@ -41,7 +41,7 @@ const deployStaking = async (tokenAddress: string, deployer: JsonRpcSigner) => {
   return staking;
 };
 
-const createXusd = async (masset: MassetV3, deployer: JsonRpcSigner) => {
+const deployXusd = async (masset: MassetV3, deployer: JsonRpcSigner) => {
   const mockXusd = await new Token__factory(deployer).deploy(
     'MockXusd',
     'mx',
@@ -78,7 +78,7 @@ const initMassetV3 = async (
   );
 };
 
-const createBasketManager = async (
+const deployBasketManager = async (
   masset: MassetV3,
   deployer: JsonRpcSigner,
   factor = 100,
@@ -174,8 +174,8 @@ export const setupSystem = async () => {
 
   const masset = await new MassetV3__factory(deployer).deploy();
 
-  const basketManager = await createBasketManager(masset, deployer);
-  const mockXusd = await createXusd(masset, deployer);
+  const basketManager = await deployBasketManager(masset, deployer);
+  const mockXusd = await deployXusd(masset, deployer);
 
   await initMassetV3(
     masset,
