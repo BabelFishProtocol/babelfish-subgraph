@@ -1,6 +1,6 @@
 {
   "network": "rsk",
-  "startBlock": 3629154,
+  "startBlock": 3416026,
   "contracts": {
     "GovernorAdmin": {
       "address": "0xA91b53289375836565ea0c276286561fEd555C85"
