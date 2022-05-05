@@ -39,3 +39,16 @@ type StakeEvent @entity {
   totalStaked: BigInt!
   transactionHash: Bytes!
 }
+
+enum Event {
+  Deposit
+  Withdraw
+}
+
+type XusdTransaction @entity {
+  id: ID!
+  event: Event!
+  asset: String!
+  amount: BigInt!
+  date: BigInt!
+}

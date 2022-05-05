@@ -27,6 +27,9 @@ export type BuildSubgraphYmlProps = {
     Staking: {
       address: string;
     };
+    Masset: {
+      address: string;
+    };
   };
 };
 export const buildSubgraphYaml = async (viewProps: BuildSubgraphYmlProps) => {

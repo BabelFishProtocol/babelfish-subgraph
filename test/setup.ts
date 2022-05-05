@@ -10,11 +10,19 @@ import {
   TimelockMock__factory,
   StakingProxy__factory,
   GovernorAlpha__factory,
+  MassetV3__factory,
+  BasketManagerV3__factory,
+  MockERC20__factory,
+  MassetV3,
+  Token__factory,
+  FeesManager__factory,
+  FeesVault__factory,
 } from '../generated/types';
 import { execAsync } from './utils/bash';
-import { EVM_ENDPOINT } from './utils/constants';
+import { EVM_ENDPOINT, standardFees, ZERO_ADDRESS } from './utils/constants';
 import { mineBlock } from './utils/evm';
 import { buildSubgraphYaml, startGraph } from './utils/graph';
+import { Fees } from './utils/types';
 
 const logger = new Logs().showInConsole(true);
 
@@ -31,6 +39,72 @@ const deployStaking = async (tokenAddress: string, deployer: JsonRpcSigner) => {
   const staking = Staking__factory.connect(stakingProxy.address, deployer);
 
   return staking;
+};
+
+const deployXusd = async (masset: MassetV3, deployer: JsonRpcSigner) => {
+  const mockXusd = await new Token__factory(deployer).deploy(
+    'MockXusd',
+    'mx',
+    18
+  );
+  await mockXusd.transferOwnership(masset.address);
+  return mockXusd;
+};
+
+const initMassetV3 = async (
+  masset: MassetV3,
+  deployer: JsonRpcSigner,
+  basketManagerAddress: string,
+  mockXusdAddress: string,
+  fees: Fees
+) => {
+  const feesManager = await new FeesManager__factory(deployer).deploy();
+  const vault = await new FeesVault__factory(deployer).deploy();
+
+  await feesManager.initialize(
+    fees.deposit,
+    fees.depositBridge,
+    fees.withdrawal,
+    fees.withdrawalBridge
+  );
+
+  await masset.initialize(basketManagerAddress, mockXusdAddress, false);
+
+  await masset.upgradeToV3(
+    basketManagerAddress,
+    mockXusdAddress,
+    vault.address,
+    feesManager.address
+  );
+};
+
+const deployBasketManager = async (
+  masset: MassetV3,
+  deployer: JsonRpcSigner,
+  factor = 100,
+  bridge = ZERO_ADDRESS
+) => {
+  const deployerAddress = await deployer.getAddress();
+
+  const mockToken = await new MockERC20__factory(deployer).deploy(
+    'mockToken',
+    'MT1',
+    18,
+    deployerAddress,
+    10000
+  );
+
+  const basset = mockToken.address;
+
+  const mins = 0;
+  const maxs = 1000;
+  const pauses = false;
+
+  const basketManager = await new BasketManagerV3__factory(deployer).deploy();
+  await basketManager.initialize(masset.address);
+  await basketManager.addBasset(basset, factor, bridge, mins, maxs, pauses);
+
+  return { basketManager, mockToken };
 };
 
 const prepareGovernor = async (
@@ -88,7 +162,7 @@ const prepareGovernor = async (
 export const setupSystem = async () => {
   const provider = new providers.JsonRpcProvider(EVM_ENDPOINT);
 
-  const deployer = await provider.getSigner(0);
+  const deployer = provider.getSigner(0);
 
   logger.info('Deploying contracts...');
 
@@ -96,6 +170,22 @@ export const setupSystem = async () => {
 
   const fishToken = await new Fish__factory(deployer).deploy(
     initialTokenAmount
+  );
+
+  const masset = await new MassetV3__factory(deployer).deploy();
+
+  const { basketManager, mockToken } = await deployBasketManager(
+    masset,
+    deployer
+  );
+  const mockXusd = await deployXusd(masset, deployer);
+
+  await initMassetV3(
+    masset,
+    deployer,
+    basketManager.address,
+    mockXusd.address,
+    standardFees
   );
 
   const staking = await deployStaking(fishToken.address, deployer);
@@ -126,6 +216,9 @@ export const setupSystem = async () => {
       Staking: {
         address: staking.address,
       },
+      Masset: {
+        address: masset.address,
+      },
     },
   });
 
@@ -137,7 +230,11 @@ export const setupSystem = async () => {
 
   return {
     provider,
+    masset,
+    mockToken,
+    basketManager,
     staking,
+    mockXusd,
     fishToken,
     governorAdmin,
     governorOwner,

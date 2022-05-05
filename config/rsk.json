@@ -1,6 +1,6 @@
 {
   "network": "rsk",
-  "startBlock": 3629154,
+  "startBlock": 3416026,
   "contracts": {
     "GovernorAdmin": {
       "address": "0xA91b53289375836565ea0c276286561fEd555C85"
@@ -13,6 +13,9 @@
     },
     "VestingRegistry": {
       "address": "0x036ab2DB0a3d1574469a4a7E09887Ed76fB56C41"
+    },
+    "Masset": {
+      "address": "0x1440d19436bEeaF8517896bffB957a88EC95a00F"
     }
   }
 }

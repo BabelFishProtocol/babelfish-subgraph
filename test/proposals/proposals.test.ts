@@ -40,7 +40,7 @@ describe('Proposals', () => {
       governorOwner,
     } = babelfish;
 
-    const [deployer, user] = await getSigners(provider);
+    const [deployer, user] = getSigners(provider);
     const userAddress = await user.getAddress();
 
     // ----- stake some fish tokens with delegation for users to gain the required voting power to add proposals -----
@@ -134,7 +134,7 @@ describe('Proposals', () => {
       TIMELOCK_DELAY,
     } = babelfish;
 
-    const [deployer, user, user2] = await getSigners(provider);
+    const [deployer, user, user2] = getSigners(provider);
     const userAddress = await user.getAddress();
     const user2Address = await user2.getAddress();
     const deployerAddress = await deployer.getAddress();
