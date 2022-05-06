@@ -85,8 +85,6 @@ export const waitForGraphSync = async ({
         }`,
       });
 
-      console.log({ indexingStatusForCurrentVersion });
-
       if (
         indexingStatusForCurrentVersion.synced &&
         indexingStatusForCurrentVersion.chains[0].latestBlock.number >=

@@ -8,7 +8,7 @@ services:
       - .:/app
     depends_on:
       - graph-node-test
-    command: ["./scripts/wait-for-it.sh", "graph-node-test:8030",  "--", "yarn", "test"]
+    command: ["./scripts/wait-for-it.sh", "graph-node-test:8030",  "--", "yarn", "test-run"]
 
 
   graph-node-test:
