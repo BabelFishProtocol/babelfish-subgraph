@@ -4,6 +4,7 @@ import { clearSubgraph, prepareTest, setupSystem } from '../setup';
 import { xusdTransactionsQuery } from './queries';
 import { waitForGraphSync } from '../utils/graph';
 import { FEE_PRECISION, standardFees } from '../utils/constants';
+import { getSigners } from '../utils/evm';
 
 afterAll(async () => {
   await clearSubgraph();
@@ -84,5 +85,53 @@ describe('Transactions events', () => {
 
     expect(firstTx.event).toBe('Deposit');
     expect(secTx.event).toBe('Withdraw');
+  });
+
+  it('properly detect users addresses', async () => {
+    const { provider, masset, mockToken } = babelfish;
+    const sum = utils.parseUnits('1024');
+
+    const [deployer, user1, user2] = getSigners(provider);
+
+    const user1Address = await user1.getAddress();
+    const user2Address = await user2.getAddress();
+    await mockToken.connect(deployer).transfer(user1Address, sum);
+    await mockToken.connect(deployer).transfer(user2Address, sum);
+
+    // ----- check user1 address
+
+    await mockToken.connect(user1).approve(masset.address, sum);
+
+    const deployerTx = await (
+      await masset.connect(user1).mint(mockToken.address, sum)
+    ).wait();
+
+    await waitForGraphSync({
+      provider,
+      targetBlockNumber: deployerTx.blockNumber,
+    });
+
+    let transactions = await xusdTransactionsQuery();
+    let addressOnTx = transactions[0].user;
+
+    expect(user1Address.toLowerCase()).toEqual(addressOnTx.toLowerCase());
+
+    // ----- check user2 address
+
+    await mockToken.connect(user2).approve(masset.address, sum);
+
+    const userTx = await (
+      await masset.connect(user2).mint(mockToken.address, sum)
+    ).wait();
+
+    await waitForGraphSync({
+      provider,
+      targetBlockNumber: userTx.blockNumber,
+    });
+
+    transactions = await xusdTransactionsQuery();
+    addressOnTx = transactions[1].user;
+
+    expect(user2Address.toLowerCase()).toEqual(addressOnTx.toLowerCase());
   });
 });
