@@ -131,13 +131,10 @@ export const querySubgraph = async <T>(query: string) => {
 
 export const startGraph = async (provider: providers.JsonRpcProvider) => {
   logger.info('Creating and deploying subgraph');
-  try {
-    await execAsync('yarn build');
-    await execAsync('yarn run create-local');
-    await execAsync('yarn deploy-local');
 
-    await waitForGraphSync({ provider }); // tutaj sie wywalil
-  } catch (e) {
-    console.log('error in starting suvbgrpaogusdfghjdgfh', e);
-  }
+  await execAsync('yarn build');
+  await execAsync('yarn run create-local');
+  await execAsync('yarn deploy-local');
+
+  await waitForGraphSync({ provider });
 };
