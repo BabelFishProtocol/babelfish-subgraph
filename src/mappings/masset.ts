@@ -10,6 +10,7 @@ export function handleMinted(event: Minted): void {
   tx.asset = 'XUSD';
   tx.amount = event.params.massetQuantity;
   tx.date = event.block.timestamp;
+  tx.user = event.params.minter
 
   tx.save();
 }
@@ -23,6 +24,7 @@ export function handleRedeemed(event: Redeemed): void {
   tx.asset = 'XUSD';
   tx.amount = event.params.massetQuantity;
   tx.date = event.block.timestamp;
+  tx.user = event.params.redeemer
 
   tx.save();
 }

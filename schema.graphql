@@ -51,4 +51,5 @@ type XusdTransaction @entity {
   asset: String!
   amount: BigInt!
   date: BigInt!
+  user: Bytes!
 }
