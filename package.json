@@ -20,7 +20,7 @@
     "prepare-rskTestnet": "mustache config/rskTestnet.json subgraph.template.yaml > subgraph.yaml",
     "remove-local": "graph remove --node http://graph-node-test:8020/ babelfish/test-graph",
     "test-run": "jest --runInBand",
-    "test": "docker-compose up --force-recreate test-runner",
+    "test": "docker-compose up --force-recreate --renew-anon-volumes test-runner",
     "codegen": "graph codegen",
     "build": "graph build",
     "wait-for-healthy": "./scripts/wait-for-healthy.sh",
