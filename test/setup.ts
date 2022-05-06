@@ -204,7 +204,7 @@ export const setupSystem = async () => {
   logger.info('Contracts deployed!');
 
   await buildSubgraphYaml({
-    network: 'local',
+    network: 'mainnet',
     startBlock: fishToken.deployTransaction.blockNumber as number,
     contracts: {
       GovernorAdmin: {
@@ -242,10 +242,6 @@ export const setupSystem = async () => {
     ownerTimelock,
     TIMELOCK_DELAY,
   };
-};
-
-export const prepareTest = async () => {
-  await execAsync('yarn prepare-test');
 };
 
 export const clearSubgraph = async () => {

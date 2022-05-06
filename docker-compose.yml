@@ -1,34 +1,53 @@
 version: '3'
 services:
-  graph-node:
-    image: graphprotocol/graph-node:8b5cf75
+  test-runner:
+    image: node:14-buster
+    user: node
+    working_dir: /app
+    volumes:
+      - .:/app
+    depends_on:
+      - graph-node-test
+    command: ["./scripts/wait-for-it.sh", "graph-node-test:8030",  "--", "yarn", "test"]
 
+
+  graph-node-test:
+    image: graphprotocol/graph-node:v0.25.0
+    extra_hosts:
+      - host.docker.internal:host-gateway
     ports:
-      - '${SUBGRAPH_HTTP_PORT}:8000'
-      - '${SUBGRAPH_WS_PORT}:8001'
-      - '${SUBGRAPH_PORT_3}:8020'
-      - '${GRAPHQL_PORT}:8030'
-      - '${SUBGRAPH_PORT_5}:8040'
+      - '8000:8000'
+      # - '8001:8001'
+      - '8020:8020'
+      - '8030:8030'
+      # - '8040:8040'
     depends_on:
       - ipfs
       - postgres
+      - ganache
     environment:
       postgres_host: postgres
       postgres_user: graph-node
       postgres_pass: let-me-in
       postgres_db: graph-node
       ipfs: 'ipfs:5001'
-      ethereum: ${RPC_NODE}
+      ethereum: mainnet:http://ganache:8545
       GRAPH_LOG: info
+      RUST_BACKTRACE: 1
+
   ipfs:
     image: ipfs/go-ipfs:v0.4.23
     ports:
-      - '${IPFS_PORT}:5001'
+      - '5001:5001'
   postgres:
     image: postgres
     ports:
-      - '${POSTGRES_PORT}:5432'
-    command: ["postgres", "-cshared_preload_libraries=pg_stat_statements"]
+      - '5432:5432'
+    command:
+      [
+        "postgres",
+        "-cshared_preload_libraries=pg_stat_statements"
+      ]
     environment:
       POSTGRES_USER: graph-node
       POSTGRES_PASSWORD: let-me-in

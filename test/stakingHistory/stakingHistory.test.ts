@@ -1,6 +1,6 @@
 import { utils } from 'ethers';
 
-import { clearSubgraph, prepareTest, setupSystem } from '../setup';
+import { clearSubgraph, setupSystem } from '../setup';
 import { getSigners, getCurrentTimestamp } from '../utils/evm';
 import { stakeEventsListQuery } from './queries';
 import { ONE_DAY } from '../utils/constants';
@@ -8,10 +8,6 @@ import { waitForGraphSync } from '../utils/graph';
 
 afterAll(async () => {
   await clearSubgraph();
-});
-
-beforeAll(async () => {
-  await prepareTest();
 });
 
 describe('Staking events', () => {
