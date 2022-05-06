@@ -102,13 +102,13 @@ describe('Transactions events', () => {
 
     await mockToken.connect(user1).approve(masset.address, sum);
 
-    const deployerTx = await (
+    const user1Tx = await (
       await masset.connect(user1).mint(mockToken.address, sum)
     ).wait();
 
     await waitForGraphSync({
       provider,
-      targetBlockNumber: deployerTx.blockNumber,
+      targetBlockNumber: user1Tx.blockNumber,
     });
 
     let transactions = await xusdTransactionsQuery();
@@ -120,13 +120,13 @@ describe('Transactions events', () => {
 
     await mockToken.connect(user2).approve(masset.address, sum);
 
-    const userTx = await (
+    const user2Tx = await (
       await masset.connect(user2).mint(mockToken.address, sum)
     ).wait();
 
     await waitForGraphSync({
       provider,
-      targetBlockNumber: userTx.blockNumber,
+      targetBlockNumber: user2Tx.blockNumber,
     });
 
     transactions = await xusdTransactionsQuery();
