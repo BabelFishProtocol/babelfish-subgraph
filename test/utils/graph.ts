@@ -27,6 +27,9 @@ export type BuildSubgraphYmlProps = {
     Staking: {
       address: string;
     };
+    VestingRegistry: {
+      address: string;
+    };
     Masset: {
       address: string;
     };
