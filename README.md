@@ -6,52 +6,24 @@ Install
 
 - `yarn install`
 
-# Deployment
+# Development
 
 ## Set up config file
 
 Each network deployment requires setting up a JSON configuration file in `config/<NetworkName>.json`.
 
-## Build, Deploy and run subgraph for specific network:
+## Build, Deploy and run subgraph for specific network. This will run docker containers on your local machine, execute all needed commands inside:
 
 ```bash
-$ yarn run-<NetworkName>
+$ yarn <NetworkName>
 ```
 
-## Or you can do it step by step:
+# Deployment
 
-### - Prepare `subgraph.yaml`
-
-To build proper `subgraph.yaml` for specific network you need to run:
+## To deploy subgraphs for specific network, you just need to run this command on some server:
 
 ```bash
-$ yarn prepare-<NetworkName>
-```
-
-rsk and rskTestnet networks are supported.
-
-### - Start docker for specific network
-
-```bash
-$ yarn docker-up-<NetworkName>
-```
-
-### - Build
-
-```bash
-$ yarn build
-```
-
-### - Create
-
-```bash
-$ yarn run create-<NetworkName>
-```
-
-### - Deploy
-
-```bash
-$ yarn deploy-<NetworkName>
+$ yarn <NetworkName>
 ```
 
 # Testing
