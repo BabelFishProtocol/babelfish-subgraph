@@ -2,7 +2,6 @@ version: '3'
 services:
   test-runner:
     image: node:14-buster
-    user: node
     working_dir: /app
     volumes:
       - .:/app
