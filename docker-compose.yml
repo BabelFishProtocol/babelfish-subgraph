@@ -99,7 +99,7 @@ services:
       - .:/app
     depends_on:
       - graph-node-rsk
-    command: ["./scripts/wait-for-it.sh", "graph-node-rsk-testnet:8030",  "--", "yarn", "run-rsk"]
+    command: ["./scripts/wait-for-it.sh", "graph-node-rsk:8030",  "--", "yarn", "run-rsk"]
 
   graph-node-rsk:
     image: graphprotocol/graph-node:v0.25.0
