@@ -41,10 +41,13 @@ export const buildSubgraphYaml = async (viewProps: BuildSubgraphYmlProps) => {
   const subgraphYamlOut = render(subgraphYamlTemplate, viewProps);
 
   logger.info('Before creating subgraph.yaml');
-
-  await execAsync('pwd');
-  await execAsync('ls -la');
-  await writeFile('./subgraph.yaml', subgraphYamlOut);
+  try {
+    await execAsync('pwd');
+    await execAsync('ls -la');
+    await writeFile('./subgraph.yaml', subgraphYamlOut);
+  } catch (e) {
+    logger.error(e);
+  }
 
   logger.info('subgraph.yaml file created!');
 };
