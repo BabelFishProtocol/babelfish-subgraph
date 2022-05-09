@@ -135,6 +135,7 @@ export const querySubgraph = async <T>(query: string) => {
 export const startGraph = async (provider: providers.JsonRpcProvider) => {
   logger.info('Creating and deploying subgraph');
 
+  await execAsync('yarn codegen');
   await execAsync('yarn build');
   await execAsync('yarn run create-local');
   await execAsync('yarn deploy-local');
