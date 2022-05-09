@@ -56,3 +56,17 @@ type User @entity {
   stakes: [StakeEvent!]!
   vests: [VestingContract!]!
 }
+
+enum Event {
+  Deposit
+  Withdraw
+}
+
+type XusdTransaction @entity {
+  id: ID!
+  event: Event!
+  asset: String!
+  amount: BigInt!
+  date: BigInt!
+  user: Bytes!
+}

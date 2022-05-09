@@ -25,7 +25,7 @@ describe('Staking events', () => {
   it('properly sync new stake events', async () => {
     const { provider, staking, fishToken } = babelfish;
 
-    const [deployer, user, user2] = await getSigners(provider);
+    const [deployer, user, user2] = getSigners(provider);
     const userAddress = (await user.getAddress()).toLowerCase();
     const user2Address = (await user2.getAddress()).toLowerCase();
 
@@ -239,7 +239,7 @@ describe('Users', () => {
   it('properly sync when there are no stake events', async () => {
     const { provider } = babelfish;
 
-    const [user, user2] = await getSigners(provider);
+    const [user, user2] = getSigners(provider);
     const userAddress = (await user.getAddress()).toLowerCase();
     const user2Address = (await user2.getAddress()).toLowerCase();
 

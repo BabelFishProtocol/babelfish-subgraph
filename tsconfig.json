@@ -31,10 +31,13 @@
   "exclude": [
     "node_modules"
   ],
-  "files": ["jest.config.ts"],
+  "files": [
+    "jest.config.ts"
+  ],
   "include": [
     "./src/**/*.tsx",
     "./src/**/*.ts",
     "./test/**/*.ts",
+    "./generated/**/*.ts"
   ]
 }

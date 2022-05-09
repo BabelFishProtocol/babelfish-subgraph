@@ -78,6 +78,28 @@ dataSources:
           handler: handleTokensStaked
       file: ./src/mappings/stakingHistory.ts
   - kind: ethereum/contract
+    name: MassetV3
+    network: {{network}}
+    source:
+      address: '{{contracts.Masset.address}}'
+      abi: MassetV3
+      startBlock: {{startBlock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      entities:
+        - MassetV3
+      abis:
+        - name: MassetV3
+          file: ./abis/MassetV3.json
+      eventHandlers:
+        - event: Minted(indexed address,indexed address,uint256,address,uint256)
+          handler: handleMinted
+        - event: Redeemed(indexed address,indexed address,uint256,address,uint256)
+          handler: handleRedeemed
+      file: ./src/mappings/masset.ts
+  - kind: ethereum/contract
     name: VestingRegistry
     network: {{network}}
     source:
