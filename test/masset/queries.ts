@@ -7,6 +7,7 @@ type TransactionsQueryResult = {
     asset: string;
     amount: string;
     date: string;
+    user: string;
   }>;
 };
 
@@ -22,6 +23,7 @@ export const xusdTransactionsQuery = async () => {
       asset
       amount
       date
+      user
     }
   }`);
 

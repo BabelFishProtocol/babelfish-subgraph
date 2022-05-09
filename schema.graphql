@@ -38,6 +38,23 @@ type StakeEvent @entity {
   lockedUntil: BigInt!
   totalStaked: BigInt!
   transactionHash: Bytes!
+  blockTimestamp: BigInt!
+}
+
+type VestingContract @entity {
+  id: ID!
+  owner: Bytes!
+  address: Bytes!
+  stakes: [StakeEvent!]!
+  type: String!
+}
+
+type User @entity {
+  id: ID!
+  address: Bytes!
+  allStakes: [StakeEvent!]!
+  stakes: [StakeEvent!]!
+  vests: [VestingContract!]!
 }
 
 enum Event {
@@ -51,4 +68,5 @@ type XusdTransaction @entity {
   asset: String!
   amount: BigInt!
   date: BigInt!
+  user: Bytes!
 }
