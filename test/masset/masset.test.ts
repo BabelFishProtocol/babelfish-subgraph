@@ -37,7 +37,7 @@ describe('Transactions events', () => {
     });
 
     const transactions = await xusdTransactionsQuery();
-    expect(transactions).toHaveLength(2);
+    expect(transactions).toHaveLength(3);
   });
 
   it('properly detect transaction type', async () => {
