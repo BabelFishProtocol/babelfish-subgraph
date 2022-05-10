@@ -45,3 +45,9 @@ generate-contracts-types
 ```bash
 $ yarn test
 ```
+
+## To remove all containers started by tests you need to run:
+
+```bash
+$ yarn clear-tests-dockers
+```
