@@ -1,8 +1,9 @@
-import { JsonRpcSigner } from '@ethersproject/providers';
 import { constants, providers, utils } from 'ethers';
 import { AbiCoder } from 'ethers/lib/utils';
-import Logs from 'node-logs';
+import { JsonRpcSigner } from '@ethersproject/providers';
 
+import { Fees } from '../utils/types';
+import { mineBlock } from '../utils/evm';
 import {
   Staking,
   Fish__factory,
@@ -21,18 +22,13 @@ import {
   Token__factory,
   FeesManager__factory,
   FeesVault__factory,
-} from '../generated/types';
-import { execAsync } from './utils/bash';
-import { EVM_ENDPOINT, standardFees, ZERO_ADDRESS } from './utils/constants';
-import { mineBlock } from './utils/evm';
-import { buildSubgraphYaml, startGraph } from './utils/graph';
-import { Fees } from './utils/types';
+} from '../../generated/types';
+import { TIMELOCK_DELAY, ZERO_ADDRESS } from '../utils/constants';
 
-const logger = new Logs().showInConsole(true);
-
-const TIMELOCK_DELAY = 50;
-
-const deployStaking = async (tokenAddress: string, deployer: JsonRpcSigner) => {
+export const deployStaking = async (
+  tokenAddress: string,
+  deployer: JsonRpcSigner
+) => {
   const stakingLogic = await new Staking__factory(deployer).deploy();
   const stakingProxy = await new StakingProxy__factory(deployer).deploy(
     tokenAddress
@@ -45,7 +41,7 @@ const deployStaking = async (tokenAddress: string, deployer: JsonRpcSigner) => {
   return staking;
 };
 
-const deployVesting = async (
+export const deployVesting = async (
   tokenAddress: string,
   staking: Staking,
   multisigAddress: string,
@@ -77,7 +73,19 @@ const deployVesting = async (
   return vestingRegistry;
 };
 
-const deployXusd = async (masset: MassetV3, deployer: JsonRpcSigner) => {
+export const deployMasset = async (deployer: JsonRpcSigner) =>
+  await new MassetV3__factory(deployer).deploy();
+
+export const deployfishToken = async (deployer: JsonRpcSigner) => {
+  const initialFishAmount = utils.parseEther('100');
+
+  const fishToken = await new Fish__factory(deployer).deploy(initialFishAmount);
+  const fishTokenOwner = await fishToken.owner();
+
+  return { fishToken, fishTokenOwner };
+};
+
+export const deployXusd = async (masset: MassetV3, deployer: JsonRpcSigner) => {
   const mockXusd = await new Token__factory(deployer).deploy(
     'MockXusd',
     'mx',
@@ -87,7 +95,7 @@ const deployXusd = async (masset: MassetV3, deployer: JsonRpcSigner) => {
   return mockXusd;
 };
 
-const initMassetV3 = async (
+export const initMassetV3 = async (
   masset: MassetV3,
   deployer: JsonRpcSigner,
   basketManagerAddress: string,
@@ -114,7 +122,7 @@ const initMassetV3 = async (
   );
 };
 
-const deployBasketManager = async (
+export const deployBasketManager = async (
   masset: MassetV3,
   deployer: JsonRpcSigner,
   factor = 100,
@@ -143,7 +151,7 @@ const deployBasketManager = async (
   return { basketManager, mockToken };
 };
 
-const prepareGovernor = async (
+export const prepareGovernor = async (
   provider: providers.JsonRpcProvider,
   deployer: JsonRpcSigner,
   staking: Staking
@@ -193,104 +201,4 @@ const prepareGovernor = async (
   await (await governor.__acceptAdmin()).wait();
 
   return [governor, timelockMock] as const;
-};
-
-export const setupSystem = async () => {
-  const provider = new providers.JsonRpcProvider(EVM_ENDPOINT);
-
-  const deployer = provider.getSigner(0);
-
-  logger.info('Deploying contracts...');
-
-  const initialTokenAmount = utils.parseEther('100');
-
-  const fishToken = await new Fish__factory(deployer).deploy(
-    initialTokenAmount
-  );
-  const fishTokenOwner = await fishToken.owner();
-
-  const masset = await new MassetV3__factory(deployer).deploy();
-
-  const { basketManager, mockToken } = await deployBasketManager(
-    masset,
-    deployer
-  );
-  const mockXusd = await deployXusd(masset, deployer);
-
-  await initMassetV3(
-    masset,
-    deployer,
-    basketManager.address,
-    mockXusd.address,
-    standardFees
-  );
-
-  const staking = await deployStaking(fishToken.address, deployer);
-  const vesting = await deployVesting(
-    fishToken.address,
-    staking,
-    fishTokenOwner,
-    deployer
-  );
-
-  const [governorAdmin, adminTimelock] = await prepareGovernor(
-    provider,
-    deployer,
-    staking
-  );
-  const [governorOwner, ownerTimelock] = await prepareGovernor(
-    provider,
-    deployer,
-    staking
-  );
-
-  logger.info('Contracts deployed!');
-
-  await buildSubgraphYaml({
-    network: 'mainnet',
-    startBlock: fishToken.deployTransaction.blockNumber as number,
-    contracts: {
-      GovernorAdmin: {
-        address: governorAdmin.address,
-      },
-      GovernorOwner: {
-        address: governorOwner.address,
-      },
-      Staking: {
-        address: staking.address,
-      },
-      VestingRegistry: {
-        address: vesting.address,
-      },
-      Masset: {
-        address: masset.address,
-      },
-    },
-  });
-
-  await execAsync('yarn codegen');
-
-  await startGraph(provider);
-
-  logger.info('Setup complete!');
-
-  return {
-    provider,
-    masset,
-    mockToken,
-    basketManager,
-    staking,
-    vesting,
-    mockXusd,
-    fishToken,
-    governorAdmin,
-    governorOwner,
-    adminTimelock,
-    ownerTimelock,
-    TIMELOCK_DELAY,
-  };
-};
-
-export const clearSubgraph = async () => {
-  await execAsync('yarn remove-local');
 };

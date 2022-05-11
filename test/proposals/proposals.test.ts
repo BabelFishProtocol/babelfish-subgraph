@@ -1,6 +1,6 @@
 import { constants, utils } from 'ethers';
 
-import { clearSubgraph, setupSystem } from '../setup';
+import { setupSystem } from '../setup';
 import {
   mineBlock,
   getSigners,
@@ -13,8 +13,8 @@ import {
   proposalsListQuery,
   proposalsWithVotesListQuery,
 } from './queries';
-import { ONE_DAY } from '../utils/constants';
-import { waitForGraphSync } from '../utils/graph';
+import { ONE_DAY, TIMELOCK_DELAY } from '../utils/constants';
+import { clearSubgraph, waitForGraphSync } from '../utils/graph';
 
 afterAll(async () => {
   await clearSubgraph();
@@ -127,7 +127,6 @@ describe('Proposals', () => {
       staking,
       fishToken,
       governorOwner,
-      TIMELOCK_DELAY,
     } = babelfish;
 
     const [deployer, user, user2] = getSigners(provider);

@@ -1,8 +1,8 @@
 import { BigNumber, utils } from 'ethers';
 
-import { clearSubgraph, setupSystem } from '../setup';
+import { setupSystem } from '../setup';
 import { xusdTransactionsQuery } from './queries';
-import { waitForGraphSync } from '../utils/graph';
+import { clearSubgraph, waitForGraphSync } from '../utils/graph';
 import { FEE_PRECISION, standardFees } from '../utils/constants';
 import { getSigners } from '../utils/evm';
 

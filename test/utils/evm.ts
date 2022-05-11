@@ -1,7 +1,5 @@
 import { providers } from 'ethers';
-import Logs from 'node-logs';
-
-const logger = new Logs().showInConsole(true);
+import { logger } from './logger';
 
 /**
  * Gets the first 10 signers
