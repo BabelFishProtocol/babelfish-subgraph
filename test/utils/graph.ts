@@ -1,5 +1,4 @@
 import axios from 'axios';
-import Logs from 'node-logs';
 import { inspect } from 'util';
 import { render } from 'mustache';
 import { providers } from 'ethers';
@@ -11,8 +10,7 @@ import { execAsync } from './bash';
 import { getLastBlock } from './evm';
 import { SUBGRAPH_NAME } from './constants';
 import { Networks } from './types';
-
-const logger = new Logs().showInConsole(true);
+import { logger } from './logger';
 
 export type BuildSubgraphYmlProps = {
   network: Networks;
@@ -141,4 +139,8 @@ export const startGraph = async (provider: providers.JsonRpcProvider) => {
   await execAsync('yarn deploy-local');
 
   await waitForGraphSync({ provider });
+};
+
+export const clearSubgraph = async () => {
+  await execAsync('yarn remove-local');
 };

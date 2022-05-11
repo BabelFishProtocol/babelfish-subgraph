@@ -1,10 +1,10 @@
 import { utils } from 'ethers';
 
-import { clearSubgraph, setupSystem } from '../setup';
+import { setupSystem } from '../setup';
 import { getSigners, getCurrentTimestamp } from '../utils/evm';
 import { stakeEventsListQuery, userQuery } from './queries';
 import { ONE_DAY } from '../utils/constants';
-import { waitForGraphSync } from '../utils/graph';
+import { clearSubgraph, waitForGraphSync } from '../utils/graph';
 import { createVesting } from '../utils/helpers';
 
 afterAll(async () => {
