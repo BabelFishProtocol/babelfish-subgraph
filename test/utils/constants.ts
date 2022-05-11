@@ -16,7 +16,6 @@ export const TIMELOCK_DELAY = 50;
 
 export const FEE_PRECISION = BigNumber.from('10000');
 
-
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 
 export const standardFees: Fees = {
