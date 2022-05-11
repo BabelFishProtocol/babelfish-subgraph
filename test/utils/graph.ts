@@ -72,7 +72,7 @@ export const waitForGraphSync = async ({
         data: {
           data: { indexingStatusForCurrentVersion },
         },
-      } = await axios.post('http://localhost:8030/graphql', {
+      } = await axios.post('http://graph-node-test:8030/graphql', {
         query: `{
             indexingStatusForCurrentVersion(subgraphName: "${SUBGRAPH_NAME}") {
             synced
@@ -112,7 +112,7 @@ export const waitForGraphSync = async ({
  */
 export const querySubgraph = async <T>(query: string) => {
   const res = await axios.post(
-    `http://localhost:8000/subgraphs/name/${SUBGRAPH_NAME}`,
+    `http://graph-node-test:8000/subgraphs/name/${SUBGRAPH_NAME}`,
     {
       query,
     },
@@ -135,6 +135,7 @@ export const querySubgraph = async <T>(query: string) => {
 export const startGraph = async (provider: providers.JsonRpcProvider) => {
   logger.info('Creating and deploying subgraph');
 
+  await execAsync('yarn codegen');
   await execAsync('yarn build');
   await execAsync('yarn run create-local');
   await execAsync('yarn deploy-local');

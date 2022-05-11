@@ -1,6 +1,6 @@
 import { BigNumber, utils } from 'ethers';
 
-import { clearSubgraph, prepareTest, setupSystem } from '../setup';
+import { clearSubgraph, setupSystem } from '../setup';
 import { xusdTransactionsQuery } from './queries';
 import { waitForGraphSync } from '../utils/graph';
 import { FEE_PRECISION, standardFees } from '../utils/constants';
@@ -9,11 +9,6 @@ import { getSigners } from '../utils/evm';
 afterAll(async () => {
   await clearSubgraph();
 });
-
-beforeAll(async () => {
-  await prepareTest();
-});
-
 describe('Transactions events', () => {
   let babelfish: Awaited<ReturnType<typeof setupSystem>>;
 

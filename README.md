@@ -6,56 +6,48 @@ Install
 
 - `yarn install`
 
-# Deployment
+# Development
 
 ## Set up config file
 
 Each network deployment requires setting up a JSON configuration file in `config/<NetworkName>.json`.
 
-## Build, Deploy and run subgraph for specific network:
+## Build, Deploy and run subgraph for specific network. This will run docker containers on your local machine, execute all needed commands inside:
 
 ```bash
-$ yarn run-<NetworkName>
+$ yarn rsk
 ```
 
-## Or you can do it step by step:
-
-### - Prepare `subgraph.yaml`
-
-To build proper `subgraph.yaml` for specific network you need to run:
-
 ```bash
-$ yarn prepare-<NetworkName>
+$ yarn rsk-testnet
 ```
 
-rsk and rskTestnet networks are supported.
+# Deployment
 
-### - Start docker for specific network
+## To deploy subgraphs for specific network, you just need to run this command on some server:
 
 ```bash
-$ yarn docker-up-<NetworkName>
+$ yarn rsk
 ```
 
-### - Build
-
 ```bash
-$ yarn build
+$ yarn rsk-testnet
 ```
 
-### - Create
+## Remember to generate contracts types on each ABI change.
 
 ```bash
-$ yarn run create-<NetworkName>
-```
-
-### - Deploy
-
-```bash
-$ yarn deploy-<NetworkName>
+generate-contracts-types
 ```
 
 # Testing
 
 ```bash
 $ yarn test
+```
+
+## To remove all containers started by tests you need to run:
+
+```bash
+$ yarn clear-tests-dockers
 ```

@@ -1,5 +1,5 @@
 {
-  "network": "rsk",
+  "network": "mainnet",
   "startBlock": 3416026,
   "contracts": {
     "GovernorAdmin": {

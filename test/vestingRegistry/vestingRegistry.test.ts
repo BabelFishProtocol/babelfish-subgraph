@@ -1,6 +1,6 @@
 import { utils } from 'ethers';
 
-import { clearSubgraph, prepareTest, setupSystem } from '../setup';
+import { clearSubgraph, setupSystem } from '../setup';
 import { getSigners } from '../utils/evm';
 import { vestingContractsListQuery } from './queries';
 import { ONE_DAY } from '../utils/constants';
@@ -14,10 +14,6 @@ describe('Vesting Contract', () => {
     await clearSubgraph();
   });
 
-  beforeAll(async () => {
-    await prepareTest();
-  });
-
   beforeEach(async () => {
     babelfish = await setupSystem();
   });
@@ -25,7 +21,7 @@ describe('Vesting Contract', () => {
   it('properly sync', async () => {
     const { provider, vesting } = babelfish;
 
-    const [deployer, user, user2] = await getSigners(provider);
+    const [deployer, user, user2] = getSigners(provider);
     const userAddress = (await user.getAddress()).toLowerCase();
     const user2Address = (await user2.getAddress()).toLowerCase();
 
@@ -63,11 +59,13 @@ describe('Vesting Contract', () => {
           address: userVesting1.vestingAddress,
           owner: userAddress,
           type: 'genesis',
+          stakes: [],
         },
         {
           address: userVesting2.vestingAddress,
           owner: user2Address,
           type: 'genesis',
+          stakes: [],
         },
       ])
     );
@@ -75,7 +73,7 @@ describe('Vesting Contract', () => {
   it('created only once per user address', async () => {
     const { provider, vesting } = babelfish;
 
-    const [deployer, user] = await getSigners(provider);
+    const [deployer, user] = getSigners(provider);
     const userAddress = (await user.getAddress()).toLowerCase();
 
     // ----- create vestings -----
@@ -112,6 +110,7 @@ describe('Vesting Contract', () => {
           address: userVesting1.vestingAddress,
           owner: userAddress,
           type: 'genesis',
+          stakes: [],
         },
       ])
     );
