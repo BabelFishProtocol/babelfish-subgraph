@@ -116,8 +116,8 @@ export const startGraph = async ({
 }: StartGraphParams) => {
   logger.info('Creating and deploying subgraph');
 
-  await execAsync('yarn codegen');
-  await execAsync('yarn build');
+  await execAsync(`graph codegen ${subgraphName}-subgraph.yaml`);
+  await execAsync(`graph build ${subgraphName}-subgraph.yaml`);
   await execAsync(
     `graph create --node http://graph-node-test:8020 babelfish/${subgraphName} ${subgraphName}-subgraph.yaml`
   );
