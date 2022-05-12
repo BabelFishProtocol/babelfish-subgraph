@@ -1,39 +1,23 @@
 import axios from 'axios';
 import { inspect } from 'util';
 import { render } from 'mustache';
-import { providers } from 'ethers';
 import { writeFile, readFile } from 'fs/promises';
 
 // EVM utils
 import { wait } from './time';
 import { execAsync } from './bash';
 import { getLastBlock } from './evm';
-import { SUBGRAPH_NAME } from './constants';
-import { Networks } from './types';
+// import { SUBGRAPH_NAME } from './constants';
+import {
+  BuildSubgraphYmlProps,
+  StartGraphParams,
+  WaitForGraphSyncParams,
+} from './types';
 import { logger } from './logger';
 
-export type BuildSubgraphYmlProps = {
-  network: Networks;
-  startBlock: number;
-  contracts: {
-    GovernorAdmin: {
-      address: string;
-    };
-    GovernorOwner: {
-      address: string;
-    };
-    Staking: {
-      address: string;
-    };
-    VestingRegistry: {
-      address: string;
-    };
-    Masset: {
-      address: string;
-    };
-  };
-};
 export const buildSubgraphYaml = async (viewProps: BuildSubgraphYmlProps) => {
+  const { subgraphName } = viewProps;
+
   logger.info('Building subgraph manifest...');
 
   const subgraphYamlTemplate = await readFile('./subgraph.template.yaml', {
@@ -41,20 +25,21 @@ export const buildSubgraphYaml = async (viewProps: BuildSubgraphYmlProps) => {
   });
   const subgraphYamlOut = render(subgraphYamlTemplate, viewProps);
 
-  await writeFile('./subgraph.yaml', subgraphYamlOut);
+  await writeFile(`./${subgraphName}-subgraph.yaml`, subgraphYamlOut);
 
-  logger.info('subgraph.yaml file created!');
-};
+  logger.info(`${subgraphName}-subgraph.yaml file created!`);
 
-type WaitForGraphSyncParams = {
-  provider: providers.JsonRpcProvider;
-  targetBlockNumber?: number;
+  const data = JSON.stringify({ subgraphName });
+  await writeFile('./subgraphName.json', data);
 };
 
 export const waitForGraphSync = async ({
   provider,
   targetBlockNumber,
 }: WaitForGraphSyncParams) => {
+  const data = await readFile('./subgraphName.json')
+  const SUBGRAPH_NAME = JSON.parse(data.toString()).subgraphName;
+
   targetBlockNumber =
     targetBlockNumber || (await getLastBlock(provider)).number;
 
@@ -72,7 +57,7 @@ export const waitForGraphSync = async ({
         },
       } = await axios.post('http://graph-node-test:8030/graphql', {
         query: `{
-            indexingStatusForCurrentVersion(subgraphName: "${SUBGRAPH_NAME}") {
+            indexingStatusForCurrentVersion(subgraphName: "${SUBGRAPH_NAME}-babelfish/test-graph") {
             synced
             chains {
               chainHeadBlock {
@@ -109,8 +94,11 @@ export const waitForGraphSync = async ({
  * @returns
  */
 export const querySubgraph = async <T>(query: string) => {
+  const data = await readFile('./subgraphName.json')
+  const SUBGRAPH_NAME = JSON.parse(data.toString()).subgraphName;
+
   const res = await axios.post(
-    `http://graph-node-test:8000/subgraphs/name/${SUBGRAPH_NAME}`,
+    `http://graph-node-test:8000/subgraphs/name/${SUBGRAPH_NAME}-babelfish/test-graph`,
     {
       query,
     },
@@ -130,13 +118,20 @@ export const querySubgraph = async <T>(query: string) => {
   }
 };
 
-export const startGraph = async (provider: providers.JsonRpcProvider) => {
+export const startGraph = async ({
+  provider,
+  subgraphName,
+}: StartGraphParams) => {
   logger.info('Creating and deploying subgraph');
 
   await execAsync('yarn codegen');
   await execAsync('yarn build');
-  await execAsync('yarn run create-local');
-  await execAsync('yarn deploy-local');
+  await execAsync(
+    `graph create --node http://graph-node-test:8020 ${subgraphName}-babelfish/test-graph ${subgraphName}-subgraph.yaml`
+  );
+  await execAsync(
+    `graph deploy ${subgraphName}-babelfish/test-graph --ipfs http://ipfs-test:5001 --node http://graph-node-test:8020 ${subgraphName}-subgraph.yaml`
+  );
 
   await waitForGraphSync({ provider });
 };

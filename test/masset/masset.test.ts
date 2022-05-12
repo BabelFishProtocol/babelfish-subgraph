@@ -13,7 +13,7 @@ describe('Transactions events', () => {
   let babelfish: Awaited<ReturnType<typeof setupSystem>>;
 
   beforeEach(async () => {
-    babelfish = await setupSystem();
+    babelfish = await setupSystem({ subgraphName: 'masset' });
   });
 
   it('properly detect transactions quantity', async () => {

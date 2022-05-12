@@ -15,7 +15,7 @@ describe('Staking events', () => {
   let babelfish: Awaited<ReturnType<typeof setupSystem>>;
 
   beforeEach(async () => {
-    babelfish = await setupSystem();
+    babelfish = await setupSystem({ subgraphName: 'stakingHistory' });
   });
 
   it('properly sync new stake events', async () => {
@@ -91,7 +91,7 @@ describe('Staking events', () => {
   it('properly sync when there are no stake events', async () => {
     const { provider } = babelfish;
 
-    const [user, user2] = await getSigners(provider);
+    const [user, user2] = getSigners(provider);
     const userAddress = (await user.getAddress()).toLowerCase();
     const user2Address = (await user2.getAddress()).toLowerCase();
 
@@ -108,13 +108,13 @@ describe('Users', () => {
   let babelfish: Awaited<ReturnType<typeof setupSystem>>;
 
   beforeEach(async () => {
-    babelfish = await setupSystem();
+    babelfish = await setupSystem({subgraphName: 'stakingHistoryUsers'});
   });
 
   it('properly sync user stake events and filter vesting onces', async () => {
     const { provider, staking, vesting, fishToken } = babelfish;
 
-    const [deployer, user, user2] = await getSigners(provider);
+    const [deployer, user, user2] = getSigners(provider);
     const userAddress = (await user.getAddress()).toLowerCase();
     const user2Address = (await user2.getAddress()).toLowerCase();
 

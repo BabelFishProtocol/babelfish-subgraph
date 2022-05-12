@@ -24,7 +24,7 @@ describe('Proposals', () => {
   let babelfish: Awaited<ReturnType<typeof setupSystem>>;
 
   beforeEach(async () => {
-    babelfish = await setupSystem();
+    babelfish = await setupSystem({ subgraphName: 'proposals' });
   });
 
   it('properly sync new proposals from both governorAdmin and governorOwner', async () => {
@@ -122,12 +122,7 @@ describe('Proposals', () => {
   });
 
   it('properly adds votes data', async () => {
-    const {
-      provider,
-      staking,
-      fishToken,
-      governorOwner,
-    } = babelfish;
+    const { provider, staking, fishToken, governorOwner } = babelfish;
 
     const [deployer, user, user2] = getSigners(provider);
     const userAddress = await user.getAddress();

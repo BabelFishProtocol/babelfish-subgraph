@@ -1,10 +1,6 @@
 import { BigNumber } from 'ethers';
 import { Fees } from './types';
 
-// The Graph GraphQL endpoint
-export const SUBGRAPH_NAME = 'babelfish/test-graph';
-export const GRAPHQL_ENDPOINT = `http://graph-node-test:8000/subgraphs/name/${SUBGRAPH_NAME}`;
-
 // Ganache EVM endpoint
 export const EVM_ENDPOINT = 'http://ganache:8545';
 

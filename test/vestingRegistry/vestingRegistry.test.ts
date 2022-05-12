@@ -15,7 +15,7 @@ describe('Vesting Contract', () => {
   });
 
   beforeEach(async () => {
-    babelfish = await setupSystem();
+    babelfish = await setupSystem({ subgraphName: 'vestingRegistry' });
   });
 
   it('properly sync', async () => {

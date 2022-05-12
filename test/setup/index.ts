@@ -14,8 +14,9 @@ import {
   initMassetV3,
   prepareGovernor,
 } from './initializeContracts';
+import { SetupSystemParams } from '../utils/types';
 
-export const setupSystem = async () => {
+export const setupSystem = async ({ subgraphName }: SetupSystemParams) => {
   const provider = new providers.JsonRpcProvider(EVM_ENDPOINT);
   const deployer = provider.getSigner(0);
 
@@ -63,6 +64,7 @@ export const setupSystem = async () => {
   logger.info('Contracts deployed!');
 
   await buildSubgraphYaml({
+    subgraphName,
     network: 'mainnet',
     startBlock: fishToken.deployTransaction.blockNumber as number,
     contracts: {
@@ -86,7 +88,7 @@ export const setupSystem = async () => {
 
   await execAsync('yarn codegen');
 
-  await startGraph(provider);
+  await startGraph({ provider, subgraphName });
 
   logger.info('Setup complete!');
 
