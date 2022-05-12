@@ -27,14 +27,20 @@ const stakeFragment = `
  * @param addressesList - list of addresses
  */
 
-export const stakeEventsListQuery = async (addressesList: string[]) => {
+export const stakeEventsListQuery = async (
+  addressesList: string[],
+  subgraphName: string
+) => {
   const addressesToString = mapToGraphqlArrayOfString(addressesList);
 
-  const { stakeEvents } = await querySubgraph<StakeEventsListQueryResult>(`{
+  const { stakeEvents } = await querySubgraph<StakeEventsListQueryResult>(
+    `{
     stakeEvents(where: { staker_in: ${addressesToString} }) {
       ${stakeFragment}
     }
-  }`);
+  }`,
+    subgraphName
+  );
 
   return stakeEvents;
 };
@@ -55,8 +61,12 @@ type UserQueryResult = {
  * Query to get the user data
  * @param accountAddress - user account addresses
  */
-export const userQuery = async (accountAddress: string) => {
-  const { user } = await querySubgraph<UserQueryResult>(`{
+export const userQuery = async (
+  accountAddress: string,
+  subgraphName: string
+) => {
+  const { user } = await querySubgraph<UserQueryResult>(
+    `{
     user(id: "${accountAddress}") {
       address
       allStakes {
@@ -73,7 +83,9 @@ export const userQuery = async (accountAddress: string) => {
         }
       }
     }
-  }`);
+  }`,
+    subgraphName
+  );
 
   return user;
 };

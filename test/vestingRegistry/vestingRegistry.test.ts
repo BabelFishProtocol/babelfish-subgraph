@@ -4,22 +4,27 @@ import { setupSystem } from '../setup';
 import { getSigners } from '../utils/evm';
 import { vestingContractsListQuery } from './queries';
 import { ONE_DAY } from '../utils/constants';
-import { clearSubgraph, waitForGraphSync } from '../utils/graph';
 import { createVesting } from '../utils/helpers';
 
 describe('Vesting Contract', () => {
   let babelfish: Awaited<ReturnType<typeof setupSystem>>;
 
-  afterAll(async () => {
-    await clearSubgraph();
-  });
+  let testIndex = 0;
 
   beforeEach(async () => {
-    babelfish = await setupSystem({ subgraphName: 'vestingRegistry' });
+    babelfish = await setupSystem({
+      subgraphName: `${testIndex}-vestingRegistry`,
+    });
+
+    testIndex++;
+  });
+
+  afterEach(async () => {
+    await babelfish.stopSubgraph();
   });
 
   it('properly sync', async () => {
-    const { provider, vesting } = babelfish;
+    const { provider, vesting, syncSubgraph, subgraphName } = babelfish;
 
     const [deployer, user, user2] = getSigners(provider);
     const userAddress = (await user.getAddress()).toLowerCase();
@@ -46,11 +51,11 @@ describe('Vesting Contract', () => {
       duration: ONE_DAY * 121,
     });
 
-    await waitForGraphSync({
-      provider,
+    await syncSubgraph({
       targetBlockNumber: userVesting2.createdVesting.blockNumber,
     });
-    const { vestingContracts } = await vestingContractsListQuery();
+
+    const { vestingContracts } = await vestingContractsListQuery(subgraphName);
     expect(vestingContracts).toHaveLength(2);
 
     expect(vestingContracts).toEqual(
@@ -71,7 +76,7 @@ describe('Vesting Contract', () => {
     );
   });
   it('created only once per user address', async () => {
-    const { provider, vesting } = babelfish;
+    const { provider, vesting, syncSubgraph, subgraphName } = babelfish;
 
     const [deployer, user] = getSigners(provider);
     const userAddress = (await user.getAddress()).toLowerCase();
@@ -97,11 +102,11 @@ describe('Vesting Contract', () => {
       duration: ONE_DAY * 121,
     });
 
-    await waitForGraphSync({
-      provider,
+    await syncSubgraph({
       targetBlockNumber: userVesting2.createdVesting.blockNumber,
     });
-    const { vestingContracts } = await vestingContractsListQuery();
+
+    const { vestingContracts } = await vestingContractsListQuery(subgraphName);
     expect(vestingContracts).toHaveLength(1);
 
     expect(vestingContracts).toEqual(
@@ -116,13 +121,11 @@ describe('Vesting Contract', () => {
     );
   });
   it('properly sync when there are no created vesting', async () => {
-    const { provider } = babelfish;
+    const { provider, syncSubgraph, subgraphName } = babelfish;
 
-    await waitForGraphSync({
-      provider,
-      targetBlockNumber: await provider.getBlockNumber(),
-    });
-    const vests = await vestingContractsListQuery();
+    await syncSubgraph({ targetBlockNumber: await provider.getBlockNumber() });
+
+    const vests = await vestingContractsListQuery(subgraphName);
 
     expect(vests.vestingContracts).toHaveLength(0);
   });

@@ -4,22 +4,31 @@ import { setupSystem } from '../setup';
 import { getSigners, getCurrentTimestamp } from '../utils/evm';
 import { stakeEventsListQuery, userQuery } from './queries';
 import { ONE_DAY } from '../utils/constants';
-import { clearSubgraph, waitForGraphSync } from '../utils/graph';
 import { createVesting } from '../utils/helpers';
-
-afterAll(async () => {
-  await clearSubgraph();
-});
 
 describe('Staking events', () => {
   let babelfish: Awaited<ReturnType<typeof setupSystem>>;
+  let testIndex = 0;
 
   beforeEach(async () => {
-    babelfish = await setupSystem({ subgraphName: 'stakingHistory' });
+    babelfish = await setupSystem({
+      subgraphName: `stakingHistory-${testIndex}`,
+    });
+    testIndex++;
+  });
+
+  afterEach(async () => {
+    await babelfish.stopSubgraph();
   });
 
   it('properly sync new stake events', async () => {
-    const { provider, staking, fishToken } = babelfish;
+    const {
+      provider,
+      staking,
+      fishToken,
+      syncSubgraph,
+      subgraphName,
+    } = babelfish;
 
     const [deployer, user, user2] = getSigners(provider);
     const userAddress = (await user.getAddress()).toLowerCase();
@@ -61,11 +70,12 @@ describe('Staking events', () => {
       await staking.timestampToLockDate(stakeUntilDate2)
     ).toString();
 
-    await waitForGraphSync({
-      provider,
-      targetBlockNumber: userStake2.blockNumber,
-    });
-    const stakeEvents = await stakeEventsListQuery([userAddress, user2Address]);
+    await syncSubgraph({ targetBlockNumber: userStake2.blockNumber });
+
+    const stakeEvents = await stakeEventsListQuery(
+      [userAddress, user2Address],
+      subgraphName
+    );
 
     expect(stakeEvents).toHaveLength(2);
 
@@ -89,30 +99,43 @@ describe('Staking events', () => {
     );
   });
   it('properly sync when there are no stake events', async () => {
-    const { provider } = babelfish;
+    const { provider, syncSubgraph, subgraphName } = babelfish;
 
     const [user, user2] = getSigners(provider);
     const userAddress = (await user.getAddress()).toLowerCase();
     const user2Address = (await user2.getAddress()).toLowerCase();
 
-    await waitForGraphSync({
-      provider,
-      targetBlockNumber: await provider.getBlockNumber(),
-    });
-    const stakeEvents = await stakeEventsListQuery([userAddress, user2Address]);
+    await syncSubgraph({ targetBlockNumber: await provider.getBlockNumber() });
+
+    const stakeEvents = await stakeEventsListQuery(
+      [userAddress, user2Address],
+      subgraphName
+    );
 
     expect(stakeEvents).toHaveLength(0);
   });
 });
+
 describe('Users', () => {
   let babelfish: Awaited<ReturnType<typeof setupSystem>>;
+  let testIndex = 0;
 
   beforeEach(async () => {
-    babelfish = await setupSystem({subgraphName: 'stakingHistoryUsers'});
+    babelfish = await setupSystem({
+      subgraphName: `stakingHistoryUsers-${testIndex}`,
+    });
+    testIndex++;
   });
 
   it('properly sync user stake events and filter vesting onces', async () => {
-    const { provider, staking, vesting, fishToken } = babelfish;
+    const {
+      provider,
+      staking,
+      vesting,
+      fishToken,
+      syncSubgraph,
+      subgraphName,
+    } = babelfish;
 
     const [deployer, user, user2] = getSigners(provider);
     const userAddress = (await user.getAddress()).toLowerCase();
@@ -177,11 +200,9 @@ describe('Users', () => {
         .stake(stakeAmount2, stakeUntilDate2, user2Address, user2Address)
     ).wait();
 
-    await waitForGraphSync({
-      provider,
-      targetBlockNumber: userStake2.blockNumber,
-    });
-    const data = await userQuery(userAddress);
+    await syncSubgraph({ targetBlockNumber: userStake2.blockNumber });
+
+    const data = await userQuery(userAddress, subgraphName);
 
     expect(data.stakes).toHaveLength(1);
     expect(data.vests[0].stakes).toHaveLength(1);
@@ -232,18 +253,20 @@ describe('Users', () => {
       ]),
     });
   });
+
   it('properly sync when there are no stake events', async () => {
-    const { provider } = babelfish;
+    const { provider, syncSubgraph, subgraphName } = babelfish;
 
     const [user, user2] = getSigners(provider);
     const userAddress = (await user.getAddress()).toLowerCase();
     const user2Address = (await user2.getAddress()).toLowerCase();
 
-    await waitForGraphSync({
-      provider,
-      targetBlockNumber: await provider.getBlockNumber(),
-    });
-    const stakeEvents = await stakeEventsListQuery([userAddress, user2Address]);
+    await syncSubgraph({ targetBlockNumber: await provider.getBlockNumber() });
+
+    const stakeEvents = await stakeEventsListQuery(
+      [userAddress, user2Address],
+      subgraphName
+    );
 
     expect(stakeEvents).toHaveLength(0);
   });

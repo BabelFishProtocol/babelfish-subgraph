@@ -14,17 +14,18 @@ import {
   proposalsWithVotesListQuery,
 } from './queries';
 import { ONE_DAY, TIMELOCK_DELAY } from '../utils/constants';
-import { clearSubgraph, waitForGraphSync } from '../utils/graph';
-
-afterAll(async () => {
-  await clearSubgraph();
-});
 
 describe('Proposals', () => {
   let babelfish: Awaited<ReturnType<typeof setupSystem>>;
+  let testIndex = 0;
 
   beforeEach(async () => {
-    babelfish = await setupSystem({ subgraphName: 'proposals' });
+    babelfish = await setupSystem({ subgraphName: `proposal-${testIndex}` });
+    testIndex++;
+  });
+
+  afterEach(async () => {
+    await babelfish.stopSubgraph();
   });
 
   it('properly sync new proposals from both governorAdmin and governorOwner', async () => {
@@ -34,6 +35,8 @@ describe('Proposals', () => {
       fishToken,
       governorAdmin,
       governorOwner,
+      syncSubgraph,
+      subgraphName,
     } = babelfish;
 
     const [deployer, user] = getSigners(provider);
@@ -82,12 +85,9 @@ describe('Proposals', () => {
         )
     ).wait();
 
-    await waitForGraphSync({
-      provider,
-      targetBlockNumber: ownerProposalReceipt.blockNumber,
-    });
+    await syncSubgraph({ targetBlockNumber: ownerProposalReceipt.blockNumber });
 
-    const proposals = await proposalsListQuery();
+    const proposals = await proposalsListQuery(subgraphName);
 
     expect(proposals).toHaveLength(2);
 
@@ -122,7 +122,14 @@ describe('Proposals', () => {
   });
 
   it('properly adds votes data', async () => {
-    const { provider, staking, fishToken, governorOwner } = babelfish;
+    const {
+      provider,
+      staking,
+      fishToken,
+      governorOwner,
+      syncSubgraph,
+      subgraphName,
+    } = babelfish;
 
     const [deployer, user, user2] = getSigners(provider);
     const userAddress = await user.getAddress();
@@ -170,12 +177,9 @@ describe('Proposals', () => {
         )
     ).wait();
 
-    await waitForGraphSync({
-      provider,
-      targetBlockNumber: ownerProposalReceipt.blockNumber,
-    });
+    await syncSubgraph({ targetBlockNumber: ownerProposalReceipt.blockNumber });
 
-    const [proposal] = await proposalsBaseQuery();
+    const [proposal] = await proposalsBaseQuery(subgraphName);
     const { proposalId, startDate } = proposal;
 
     // ----- vote for proposal  -----
@@ -192,13 +196,11 @@ describe('Proposals', () => {
       await governorOwner.connect(user2).castVote(proposalId, false)
     ).wait();
 
-    await waitForGraphSync({
-      provider,
-      targetBlockNumber: user2VoteReceipt.blockNumber,
-    });
+    await syncSubgraph({ targetBlockNumber: user2VoteReceipt.blockNumber });
 
     const proposalsAfterVoting = await proposalsWithVotesListQuery(
-      governorOwner.address
+      governorOwner.address,
+      subgraphName
     );
 
     const [proposalWithVotes] = proposalsAfterVoting;

@@ -7,7 +7,6 @@ import { writeFile, readFile } from 'fs/promises';
 import { wait } from './time';
 import { execAsync } from './bash';
 import { getLastBlock } from './evm';
-// import { SUBGRAPH_NAME } from './constants';
 import {
   BuildSubgraphYmlProps,
   StartGraphParams,
@@ -15,9 +14,10 @@ import {
 } from './types';
 import { logger } from './logger';
 
-export const buildSubgraphYaml = async (viewProps: BuildSubgraphYmlProps) => {
-  const { subgraphName } = viewProps;
-
+export const buildSubgraphYaml = async (
+  viewProps: BuildSubgraphYmlProps,
+  subgraphName: string
+) => {
   logger.info('Building subgraph manifest...');
 
   const subgraphYamlTemplate = await readFile('./subgraph.template.yaml', {
@@ -28,23 +28,18 @@ export const buildSubgraphYaml = async (viewProps: BuildSubgraphYmlProps) => {
   await writeFile(`./${subgraphName}-subgraph.yaml`, subgraphYamlOut);
 
   logger.info(`${subgraphName}-subgraph.yaml file created!`);
-
-  const data = JSON.stringify({ subgraphName });
-  await writeFile('./subgraphName.json', data);
 };
 
 export const waitForGraphSync = async ({
   provider,
   targetBlockNumber,
+  subgraphName,
 }: WaitForGraphSyncParams) => {
-  const data = await readFile('./subgraphName.json')
-  const SUBGRAPH_NAME = JSON.parse(data.toString()).subgraphName;
-
   targetBlockNumber =
     targetBlockNumber || (await getLastBlock(provider)).number;
 
   logger.info(
-    `Waiting for subgraph "${SUBGRAPH_NAME}" to sync block #${targetBlockNumber}`
+    `Waiting for subgraph "${subgraphName}" to sync block #${targetBlockNumber}`
   );
 
   // eslint-disable-next-line no-constant-condition
@@ -57,7 +52,7 @@ export const waitForGraphSync = async ({
         },
       } = await axios.post('http://graph-node-test:8030/graphql', {
         query: `{
-            indexingStatusForCurrentVersion(subgraphName: "${SUBGRAPH_NAME}-babelfish/test-graph") {
+            indexingStatusForCurrentVersion(subgraphName: "babelfish/${subgraphName}") {
             synced
             chains {
               chainHeadBlock {
@@ -77,7 +72,7 @@ export const waitForGraphSync = async ({
           targetBlockNumber
       ) {
         logger.info(
-          `Subgraph "${SUBGRAPH_NAME}" has synced with block #${targetBlockNumber}`
+          `Subgraph "${subgraphName}" has synced with block #${targetBlockNumber}`
         );
         break;
       }
@@ -93,12 +88,9 @@ export const waitForGraphSync = async ({
  * @param query
  * @returns
  */
-export const querySubgraph = async <T>(query: string) => {
-  const data = await readFile('./subgraphName.json')
-  const SUBGRAPH_NAME = JSON.parse(data.toString()).subgraphName;
-
+export const querySubgraph = async <T>(query: string, subgraphName: string) => {
   const res = await axios.post(
-    `http://graph-node-test:8000/subgraphs/name/${SUBGRAPH_NAME}-babelfish/test-graph`,
+    `http://graph-node-test:8000/subgraphs/name/babelfish/${subgraphName}`,
     {
       query,
     },
@@ -127,15 +119,17 @@ export const startGraph = async ({
   await execAsync('yarn codegen');
   await execAsync('yarn build');
   await execAsync(
-    `graph create --node http://graph-node-test:8020 ${subgraphName}-babelfish/test-graph ${subgraphName}-subgraph.yaml`
+    `graph create --node http://graph-node-test:8020 babelfish/${subgraphName} ${subgraphName}-subgraph.yaml`
   );
   await execAsync(
-    `graph deploy ${subgraphName}-babelfish/test-graph --ipfs http://ipfs-test:5001 --node http://graph-node-test:8020 ${subgraphName}-subgraph.yaml`
+    `graph deploy babelfish/${subgraphName} --ipfs http://ipfs-test:5001 --node http://graph-node-test:8020 ${subgraphName}-subgraph.yaml`
   );
 
-  await waitForGraphSync({ provider });
+  await waitForGraphSync({ provider, subgraphName });
 };
 
-export const clearSubgraph = async () => {
-  await execAsync('yarn remove-local');
+export const clearSubgraph = async (subgraphName: string) => {
+  await execAsync(
+    `graph remove --node http://graph-node-test:8020/ babelfish/${subgraphName}`
+  );
 };

@@ -1,9 +1,13 @@
 import { providers } from 'ethers';
 
-import { execAsync } from '../utils/bash';
 import { logger } from '../utils/logger';
 import { EVM_ENDPOINT, standardFees } from '../utils/constants';
-import { buildSubgraphYaml, startGraph } from '../utils/graph';
+import {
+  buildSubgraphYaml,
+  clearSubgraph,
+  startGraph,
+  waitForGraphSync,
+} from '../utils/graph';
 import {
   deployBasketManager,
   deployfishToken,
@@ -14,7 +18,7 @@ import {
   initMassetV3,
   prepareGovernor,
 } from './initializeContracts';
-import { SetupSystemParams } from '../utils/types';
+import { SetupSystemParams, WaitForGraphSyncParams } from '../utils/types';
 
 export const setupSystem = async ({ subgraphName }: SetupSystemParams) => {
   const provider = new providers.JsonRpcProvider(EVM_ENDPOINT);
@@ -63,34 +67,42 @@ export const setupSystem = async ({ subgraphName }: SetupSystemParams) => {
 
   logger.info('Contracts deployed!');
 
-  await buildSubgraphYaml({
-    subgraphName,
-    network: 'mainnet',
-    startBlock: fishToken.deployTransaction.blockNumber as number,
-    contracts: {
-      GovernorAdmin: {
-        address: governorAdmin.address,
-      },
-      GovernorOwner: {
-        address: governorOwner.address,
-      },
-      Staking: {
-        address: staking.address,
-      },
-      VestingRegistry: {
-        address: vesting.address,
-      },
-      Masset: {
-        address: masset.address,
+  await buildSubgraphYaml(
+    {
+      subgraphName,
+      network: 'mainnet',
+      startBlock: fishToken.deployTransaction.blockNumber as number,
+      contracts: {
+        GovernorAdmin: {
+          address: governorAdmin.address,
+        },
+        GovernorOwner: {
+          address: governorOwner.address,
+        },
+        Staking: {
+          address: staking.address,
+        },
+        VestingRegistry: {
+          address: vesting.address,
+        },
+        Masset: {
+          address: masset.address,
+        },
       },
     },
-  });
-
-  await execAsync('yarn codegen');
+    subgraphName
+  );
 
   await startGraph({ provider, subgraphName });
 
   logger.info('Setup complete!');
+
+  const syncSubgraph = ({
+    targetBlockNumber,
+  }: Pick<WaitForGraphSyncParams, 'targetBlockNumber'>) =>
+    waitForGraphSync({ provider, subgraphName, targetBlockNumber });
+
+  const stopSubgraph = () => clearSubgraph(subgraphName);
 
   return {
     provider,
@@ -105,5 +117,8 @@ export const setupSystem = async ({ subgraphName }: SetupSystemParams) => {
     governorOwner,
     adminTimelock,
     ownerTimelock,
+    syncSubgraph,
+    stopSubgraph,
+    subgraphName,
   };
 };

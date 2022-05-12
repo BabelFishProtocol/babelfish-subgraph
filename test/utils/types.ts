@@ -33,6 +33,7 @@ export type BuildSubgraphYmlProps = {
 export type WaitForGraphSyncParams = {
   provider: providers.JsonRpcProvider;
   targetBlockNumber?: number;
+  subgraphName: string;
 };
 
 export type StartGraphParams = {
