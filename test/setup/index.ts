@@ -20,7 +20,11 @@ import {
 } from './initializeContracts';
 import { SetupSystemParams, WaitForGraphSyncParams } from '../utils/types';
 
-export const setupSystem = async ({ subgraphName }: SetupSystemParams) => {
+let testIndex = 0;
+
+export const setupSystem = async ({ testName }: SetupSystemParams) => {
+  const subgraphName = `${testName}-${testIndex}`;
+
   const provider = new providers.JsonRpcProvider(EVM_ENDPOINT);
   const deployer = provider.getSigner(0);
 
@@ -103,6 +107,8 @@ export const setupSystem = async ({ subgraphName }: SetupSystemParams) => {
     waitForGraphSync({ provider, subgraphName, targetBlockNumber });
 
   const stopSubgraph = () => clearSubgraph(subgraphName);
+
+  testIndex++;
 
   return {
     provider,

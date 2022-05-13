@@ -42,5 +42,5 @@ export type StartGraphParams = {
 };
 
 export type SetupSystemParams = {
-  subgraphName: string;
+  testName: string;
 };

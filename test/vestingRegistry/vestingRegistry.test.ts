@@ -9,14 +9,8 @@ import { createVesting } from '../utils/helpers';
 describe('Vesting Contract', () => {
   let babelfish: Awaited<ReturnType<typeof setupSystem>>;
 
-  let testIndex = 0;
-
   beforeEach(async () => {
-    babelfish = await setupSystem({
-      subgraphName: `${testIndex}-vestingRegistry`,
-    });
-
-    testIndex++;
+    babelfish = await setupSystem({ testName: `vestingRegistry` });
   });
 
   afterEach(async () => {

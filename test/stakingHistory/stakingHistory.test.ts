@@ -8,13 +8,9 @@ import { createVesting } from '../utils/helpers';
 
 describe('Staking events', () => {
   let babelfish: Awaited<ReturnType<typeof setupSystem>>;
-  let testIndex = 0;
 
   beforeEach(async () => {
-    babelfish = await setupSystem({
-      subgraphName: `stakingHistory-${testIndex}`,
-    });
-    testIndex++;
+    babelfish = await setupSystem({ testName: 'stakingHistory' });
   });
 
   afterEach(async () => {
@@ -118,13 +114,9 @@ describe('Staking events', () => {
 
 describe('Users', () => {
   let babelfish: Awaited<ReturnType<typeof setupSystem>>;
-  let testIndex = 0;
 
   beforeEach(async () => {
-    babelfish = await setupSystem({
-      subgraphName: `stakingHistoryUsers-${testIndex}`,
-    });
-    testIndex++;
+    babelfish = await setupSystem({ testName: 'stakingHistoryUsers' });
   });
 
   it('properly sync user stake events and filter vesting onces', async () => {

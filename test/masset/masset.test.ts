@@ -7,11 +7,9 @@ import { getSigners } from '../utils/evm';
 
 describe('Transactions events', () => {
   let babelfish: Awaited<ReturnType<typeof setupSystem>>;
-  let testIndex = 0;
 
   beforeEach(async () => {
-    babelfish = await setupSystem({ subgraphName: `masset-${testIndex}` });
-    testIndex++;
+    babelfish = await setupSystem({ testName: 'masset' });
   });
 
   afterEach(async () => {

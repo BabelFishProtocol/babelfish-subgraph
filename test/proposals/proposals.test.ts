@@ -17,11 +17,9 @@ import { ONE_DAY, TIMELOCK_DELAY } from '../utils/constants';
 
 describe('Proposals', () => {
   let babelfish: Awaited<ReturnType<typeof setupSystem>>;
-  let testIndex = 0;
 
   beforeEach(async () => {
-    babelfish = await setupSystem({ subgraphName: `proposal-${testIndex}` });
-    testIndex++;
+    babelfish = await setupSystem({ testName: `proposal` });
   });
 
   afterEach(async () => {
