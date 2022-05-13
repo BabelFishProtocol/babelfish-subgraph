@@ -14,7 +14,7 @@
     "prepare-rsk": "mustache config/rsk.json subgraph.template.yaml > subgraph.yaml",
     "prepare-rskTestnet": "mustache config/rskTestnet.json subgraph.template.yaml > subgraph.yaml",
     "remove-local": "graph remove --node http://graph-node-test:8020/ babelfish/test-graph",
-    "test-run": "jest",
+    "test-run": "jest --maxWorkers=4",
     "clear-tests-dockers": "docker-compose rm -vsf graph-node-test postgres-test ganache ipfs-test",
     "test": "docker-compose run  --rm  test-runner",
     "rsk": "docker-compose up --force-recreate --renew-anon-volumes rsk",
