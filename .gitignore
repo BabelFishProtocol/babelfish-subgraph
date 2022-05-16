@@ -64,5 +64,3 @@ node_modules/
 /data/postgres
 
 subgraph.yaml
-
-*-subgraph.yaml
