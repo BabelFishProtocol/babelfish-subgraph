@@ -51,7 +51,7 @@ describe('Vesting Contract', () => {
 
     const { vestingContracts } = await vestingContractsListQuery(subgraphName);
     //TODO should be 2
-    expect(vestingContracts).toHaveLength(22);
+    expect(vestingContracts).toHaveLength(2);
 
     expect(vestingContracts).toEqual(
       expect.arrayContaining([
@@ -59,11 +59,13 @@ describe('Vesting Contract', () => {
           address: userVesting1.vestingAddress,
           owner: userAddress,
           type: 'genesis',
+          stakes: [],
         },
         {
           address: userVesting2.vestingAddress,
           owner: user2Address,
           type: 'genesis',
+          stakes: [],
         },
       ])
     );
@@ -108,6 +110,7 @@ describe('Vesting Contract', () => {
           address: userVesting1.vestingAddress,
           owner: userAddress,
           type: 'genesis',
+          stakes: [],
         },
       ])
     );
