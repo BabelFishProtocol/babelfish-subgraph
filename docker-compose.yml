@@ -3,10 +3,7 @@ services:
   # ---------- local tests ----------
 
   test-runner:
-    image: node:14-buster
-    working_dir: /app
-    volumes:
-      - .:/app
+    build: .
     depends_on:
       - graph-node-test
     command: ["./scripts/wait-for-it.sh", "graph-node-test:8030",  "--", "yarn", "test-run"]
