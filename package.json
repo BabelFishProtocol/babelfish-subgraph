@@ -17,7 +17,7 @@
     "test-run": "jest",
     "test-run:ci": "jest --maxWorkers=4",
     "clear-tests-dockers": "docker-compose rm -vsf graph-node-test postgres-test ganache ipfs-test",
-    "test": "docker-compose build && docker-compose run test-runner",
+    "test": "docker-compose build && docker-compose run --rm test-runner",
     "test:ci": "docker-compose up test-runner-ci",
     "rsk": "docker-compose up --force-recreate --renew-anon-volumes rsk",
     "rsk-testnet": "docker-compose up --force-recreate --renew-anon-volumes rsk-testnet",
