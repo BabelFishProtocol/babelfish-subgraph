@@ -3,9 +3,13 @@ services:
   # ---------- local tests ----------
 
   test-runner:
-    build: .
+    image: node:14-buster
+    working_dir: /app
+    volumes:
+      - .:/app
     depends_on:
       - graph-node-test
+    command: ["./scripts/wait-for-it.sh", "graph-node-test:8030",  "--", "yarn", "test-run"]
 
   # ---------- ci tests ----------
 
@@ -143,6 +147,3 @@ services:
       POSTGRES_USER: graph-node
       POSTGRES_PASSWORD: let-me-in
       POSTGRES_DB: graph-node
-
-
-

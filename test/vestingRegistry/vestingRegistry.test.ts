@@ -50,7 +50,7 @@ describe('Vesting Contract', () => {
     });
 
     const { vestingContracts } = await vestingContractsListQuery(subgraphName);
-    //TODO should be 2
+
     expect(vestingContracts).toHaveLength(2);
 
     expect(vestingContracts).toEqual(
