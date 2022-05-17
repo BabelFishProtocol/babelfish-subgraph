@@ -71,31 +71,28 @@ export const setupSystem = async ({ testName }: SetupSystemParams) => {
 
   logger.info('Contracts deployed!');
 
-  await buildSubgraphYaml(
-    {
-      subgraphName,
-      network: 'mainnet',
-      startBlock: fishToken.deployTransaction.blockNumber as number,
-      contracts: {
-        GovernorAdmin: {
-          address: governorAdmin.address,
-        },
-        GovernorOwner: {
-          address: governorOwner.address,
-        },
-        Staking: {
-          address: staking.address,
-        },
-        VestingRegistry: {
-          address: vesting.address,
-        },
-        Masset: {
-          address: masset.address,
-        },
+  await buildSubgraphYaml({
+    subgraphName,
+    network: 'mainnet',
+    startBlock: fishToken.deployTransaction.blockNumber as number,
+    contracts: {
+      GovernorAdmin: {
+        address: governorAdmin.address,
+      },
+      GovernorOwner: {
+        address: governorOwner.address,
+      },
+      Staking: {
+        address: staking.address,
+      },
+      VestingRegistry: {
+        address: vesting.address,
+      },
+      Masset: {
+        address: masset.address,
       },
     },
-    subgraphName
-  );
+  });
 
   await startGraph({ provider, subgraphName });
 

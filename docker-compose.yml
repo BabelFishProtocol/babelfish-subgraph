@@ -22,7 +22,7 @@ services:
       - graph-node-test
     command: ["./scripts/wait-for-it.sh", "graph-node-test:8030",  "--", "yarn", "test-run:ci"]
 
-  # ---------- deps ----------
+  # ---------- tests deps ----------
 
   graph-node-test:
     image: graphprotocol/graph-node:v0.25.0

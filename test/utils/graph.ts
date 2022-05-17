@@ -14,18 +14,22 @@ import {
 } from './types';
 import { logger } from './logger';
 
-export const buildSubgraphYaml = async (
-  viewProps: BuildSubgraphYmlProps,
-  subgraphName: string
-) => {
+const subgraphConfigDir = './subgraphConfig';
+
+export const buildSubgraphYaml = async (viewProps: BuildSubgraphYmlProps) => {
   logger.info('Building subgraph manifest...');
 
-  const subgraphYamlTemplate = await readFile('./subgraph.template.yaml', {
+  const { subgraphName } = viewProps;
+
+  const subgraphYamlTemplate = await readFile('subgraph.template.yaml', {
     encoding: 'utf8',
   });
   const subgraphYamlOut = render(subgraphYamlTemplate, viewProps);
 
-  await writeFile(`./${subgraphName}-subgraph.yaml`, subgraphYamlOut);
+  await writeFile(
+    `${subgraphConfigDir}/${subgraphName}-subgraph.yaml`,
+    subgraphYamlOut
+  );
 
   logger.info(`${subgraphName}-subgraph.yaml file created!`);
 };
@@ -116,13 +120,17 @@ export const startGraph = async ({
 }: StartGraphParams) => {
   logger.info('Creating and deploying subgraph');
 
-  await execAsync(`graph codegen ${subgraphName}-subgraph.yaml`);
-  await execAsync(`graph build ${subgraphName}-subgraph.yaml`);
   await execAsync(
-    `graph create --node http://graph-node-test:8020 babelfish/${subgraphName} ${subgraphName}-subgraph.yaml`
+    `graph codegen ${subgraphConfigDir}/${subgraphName}-subgraph.yaml`
   );
   await execAsync(
-    `graph deploy babelfish/${subgraphName} --ipfs http://ipfs-test:5001 --node http://graph-node-test:8020 ${subgraphName}-subgraph.yaml`
+    `graph build ${subgraphConfigDir}/${subgraphName}-subgraph.yaml`
+  );
+  await execAsync(
+    `graph create --node http://graph-node-test:8020 babelfish/${subgraphName} ${subgraphConfigDir}/${subgraphName}-subgraph.yaml`
+  );
+  await execAsync(
+    `graph deploy babelfish/${subgraphName} --ipfs http://ipfs-test:5001 --node http://graph-node-test:8020 ${subgraphConfigDir}/${subgraphName}-subgraph.yaml`
   );
 
   await waitForGraphSync({ provider, subgraphName });
