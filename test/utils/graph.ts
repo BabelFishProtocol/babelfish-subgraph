@@ -28,7 +28,7 @@ export const buildSubgraphYaml = async (viewProps: BuildSubgraphYmlProps) => {
   });
   const subgraphYamlOut = render(subgraphYamlTemplate, viewProps);
 
-  createSubgraphConfigDir();
+  await createSubgraphConfigDir();
 
   await writeFile(
     `${subgraphConfigDir}/${subgraphName}-subgraph.yaml`,
