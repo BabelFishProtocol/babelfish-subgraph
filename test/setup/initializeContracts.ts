@@ -1,4 +1,4 @@
-import { constants, providers, utils } from 'ethers';
+import { constants, utils } from 'ethers';
 import { JsonRpcSigner } from '@ethersproject/providers';
 
 import { Fees } from '../utils/types';
