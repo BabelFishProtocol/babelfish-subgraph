@@ -13,8 +13,10 @@ import {
   WaitForGraphSyncParams,
 } from './types';
 import { logger } from './logger';
-
-const subgraphConfigDir = './subgraphConfig';
+import {
+  createSubgraphConfigDir,
+  subgraphConfigDir,
+} from './createSubgraphConfigDir';
 
 export const buildSubgraphYaml = async (viewProps: BuildSubgraphYmlProps) => {
   logger.info('Building subgraph manifest...');
@@ -26,7 +28,7 @@ export const buildSubgraphYaml = async (viewProps: BuildSubgraphYmlProps) => {
   });
   const subgraphYamlOut = render(subgraphYamlTemplate, viewProps);
 
-  await execAsync(`mkdir -p ${subgraphConfigDir}`);
+  createSubgraphConfigDir();
 
   await writeFile(
     `${subgraphConfigDir}/${subgraphName}-subgraph.yaml`,
