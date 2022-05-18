@@ -2,7 +2,7 @@ specVersion: 0.0.2
 description: Babelfish subgraph
 repository: https://github.com/graphprotocol/example-subgraph
 schema:
-  file: ./schema.graphql
+  file: ../schema.graphql
 dataSources:
   - kind: ethereum/contract
     name: GovernorAdmin
@@ -19,7 +19,7 @@ dataSources:
         - GovernorAdmin
       abis:
         - name: GovernorAlpha
-          file: ./abis/GovernorAlpha.json
+          file: ../abis/GovernorAlpha.json
       eventHandlers:
         - event: ProposalCreated(uint256,address,address[],uint256[],string[],bytes[],uint256,uint256,string)
           handler: handleNewProposal
@@ -29,7 +29,7 @@ dataSources:
 
         - event: VoteCast(address,uint256,bool,uint256)
           handler: handleVoteCast
-      file: ./src/mappings/proposals.ts
+      file: ../src/mappings/proposals.ts
 
   - kind: ethereum/contract
     name: GovernorOwner
@@ -46,7 +46,7 @@ dataSources:
         - GovernorOwner
       abis:
         - name: GovernorAlpha
-          file: ./abis/GovernorAlpha.json
+          file: ../abis/GovernorAlpha.json
       eventHandlers:
         - event: ProposalCreated(uint256,address,address[],uint256[],string[],bytes[],uint256,uint256,string)
           handler: handleNewProposal
@@ -56,7 +56,7 @@ dataSources:
 
         - event: VoteCast(address,uint256,bool,uint256)
           handler: handleVoteCast
-      file: ./src/mappings/proposals.ts
+      file: ../src/mappings/proposals.ts
   - kind: ethereum/contract
     name: Staking
     network: {{network}}
@@ -72,11 +72,11 @@ dataSources:
         - Staking
       abis:
         - name: Staking
-          file: ./abis/Staking.json
+          file: ../abis/Staking.json
       eventHandlers:
         - event: TokensStaked(indexed address,uint256,uint256,uint256)
           handler: handleTokensStaked
-      file: ./src/mappings/stakingHistory.ts
+      file: ../src/mappings/stakingHistory.ts
   - kind: ethereum/contract
     name: MassetV3
     network: {{network}}
@@ -92,13 +92,13 @@ dataSources:
         - MassetV3
       abis:
         - name: MassetV3
-          file: ./abis/MassetV3.json
+          file: ../abis/MassetV3.json
       eventHandlers:
         - event: Minted(indexed address,indexed address,uint256,address,uint256)
           handler: handleMinted
         - event: Redeemed(indexed address,indexed address,uint256,address,uint256)
           handler: handleRedeemed
-      file: ./src/mappings/masset.ts
+      file: ../src/mappings/masset.ts
   - kind: ethereum/contract
     name: VestingRegistry
     network: {{network}}
@@ -114,10 +114,10 @@ dataSources:
         - VestingRegistry
       abis:
         - name: VestingRegistry
-          file: ./abis/VestingRegistry.json
+          file: ../abis/VestingRegistry.json
       eventHandlers:
         - event: VestingCreated(indexed address,address,uint256,uint256,uint256)
           handler: handleVestingCreated
         - event: TeamVestingCreated(indexed address,address,uint256,uint256,uint256)
           handler: handleTeamVestingCreated
-      file: ./src/mappings/vestingRegistry.ts
+      file: ../src/mappings/vestingRegistry.ts

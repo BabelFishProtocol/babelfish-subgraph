@@ -1,9 +1,7 @@
-import { constants, providers, utils } from 'ethers';
-import { AbiCoder } from 'ethers/lib/utils';
+import { constants, utils } from 'ethers';
 import { JsonRpcSigner } from '@ethersproject/providers';
 
 import { Fees } from '../utils/types';
-import { mineBlock } from '../utils/evm';
 import {
   Staking,
   Fish__factory,
@@ -152,7 +150,6 @@ export const deployBasketManager = async (
 };
 
 export const prepareGovernor = async (
-  provider: providers.JsonRpcProvider,
   deployer: JsonRpcSigner,
   staking: Staking
 ) => {
@@ -170,35 +167,6 @@ export const prepareGovernor = async (
     1,
     20
   );
-
-  const currBlock = await provider.getBlock('latest');
-  const eta = currBlock.timestamp + TIMELOCK_DELAY + 30;
-
-  const signature = 'setPendingAdmin(address)';
-  const encoder = new AbiCoder();
-  const abiParameters = encoder.encode(['address'], [governor.address]);
-
-  await timelockMock.queueTransaction(
-    timelockMock.address,
-    0,
-    signature,
-    abiParameters,
-    eta
-  );
-
-  await mineBlock(provider, eta + 10);
-
-  await (
-    await timelockMock.executeTransaction(
-      timelockMock.address,
-      0,
-      signature,
-      abiParameters,
-      eta
-    )
-  ).wait();
-
-  await (await governor.__acceptAdmin()).wait();
 
   return [governor, timelockMock] as const;
 };

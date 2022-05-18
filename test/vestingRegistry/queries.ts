@@ -17,15 +17,18 @@ type VestingContractListQueryResult = {
  * Query to get the list of vesting contracts
  */
 
-export const vestingContractsListQuery = async () => {
-  const data = await querySubgraph<VestingContractListQueryResult>(`{
+export const vestingContractsListQuery = async (subgraphName: string) => {
+  const data = await querySubgraph<VestingContractListQueryResult>(
+    `{
     vestingContracts {
       owner
       address
       stakes
       type
     }
-  }`);
+  }`,
+    subgraphName
+  );
 
   return data;
 };

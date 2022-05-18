@@ -1,6 +1,7 @@
 version: '3'
 services:
-  # ---------- tests ----------
+  # ---------- local tests ----------
+
   test-runner:
     image: node:14-buster
     working_dir: /app
@@ -9,6 +10,19 @@ services:
     depends_on:
       - graph-node-test
     command: ["./scripts/wait-for-it.sh", "graph-node-test:8030",  "--", "yarn", "test-run"]
+
+  # ---------- ci tests ----------
+
+  test-runner-ci:
+    image: node:14-buster
+    working_dir: /app
+    volumes:
+      - .:/app
+    depends_on:
+      - graph-node-test
+    command: ["./scripts/wait-for-it.sh", "graph-node-test:8030",  "--", "yarn", "test-run:ci"]
+
+  # ---------- tests deps ----------
 
   graph-node-test:
     image: graphprotocol/graph-node:v0.25.0
@@ -133,6 +147,3 @@ services:
       POSTGRES_USER: graph-node
       POSTGRES_PASSWORD: let-me-in
       POSTGRES_DB: graph-node
-
-
-

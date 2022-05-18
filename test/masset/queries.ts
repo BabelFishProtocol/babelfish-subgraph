@@ -15,8 +15,9 @@ type TransactionsQueryResult = {
  * Query to get the transactions
  */
 
-export const xusdTransactionsQuery = async () => {
-  const { xusdTransactions } = await querySubgraph<TransactionsQueryResult>(`{
+export const xusdTransactionsQuery = async (subgraphName: string) => {
+  const { xusdTransactions } = await querySubgraph<TransactionsQueryResult>(
+    `{
     xusdTransactions(orderBy: date) {
       id
       event
@@ -25,7 +26,9 @@ export const xusdTransactionsQuery = async () => {
       date
       user
     }
-  }`);
+  }`,
+    subgraphName
+  );
 
   return xusdTransactions;
 };

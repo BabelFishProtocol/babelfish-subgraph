@@ -1,9 +1,13 @@
 import { providers } from 'ethers';
 
-import { execAsync } from '../utils/bash';
 import { logger } from '../utils/logger';
 import { EVM_ENDPOINT, standardFees } from '../utils/constants';
-import { buildSubgraphYaml, startGraph } from '../utils/graph';
+import {
+  buildSubgraphYaml,
+  clearSubgraph,
+  startGraph,
+  waitForGraphSync,
+} from '../utils/graph';
 import {
   deployBasketManager,
   deployfishToken,
@@ -14,8 +18,13 @@ import {
   initMassetV3,
   prepareGovernor,
 } from './initializeContracts';
+import { SetupSystemParams, WaitForGraphSyncParams } from '../utils/types';
 
-export const setupSystem = async () => {
+let testIndex = 0;
+
+export const setupSystem = async ({ testName }: SetupSystemParams) => {
+  const subgraphName = `${testName}-${testIndex}`;
+
   const provider = new providers.JsonRpcProvider(EVM_ENDPOINT);
   const deployer = provider.getSigner(0);
 
@@ -50,12 +59,10 @@ export const setupSystem = async () => {
   );
 
   const [governorAdmin, adminTimelock] = await prepareGovernor(
-    provider,
     deployer,
     staking
   );
   const [governorOwner, ownerTimelock] = await prepareGovernor(
-    provider,
     deployer,
     staking
   );
@@ -63,6 +70,7 @@ export const setupSystem = async () => {
   logger.info('Contracts deployed!');
 
   await buildSubgraphYaml({
+    subgraphName,
     network: 'mainnet',
     startBlock: fishToken.deployTransaction.blockNumber as number,
     contracts: {
@@ -84,11 +92,18 @@ export const setupSystem = async () => {
     },
   });
 
-  await execAsync('yarn codegen');
-
-  await startGraph(provider);
+  await startGraph({ provider, subgraphName });
 
   logger.info('Setup complete!');
+
+  const syncSubgraph = ({
+    targetBlockNumber,
+  }: Pick<WaitForGraphSyncParams, 'targetBlockNumber'>) =>
+    waitForGraphSync({ provider, subgraphName, targetBlockNumber });
+
+  const stopSubgraph = () => clearSubgraph(subgraphName);
+
+  testIndex++;
 
   return {
     provider,
@@ -103,5 +118,8 @@ export const setupSystem = async () => {
     governorOwner,
     adminTimelock,
     ownerTimelock,
+    syncSubgraph,
+    stopSubgraph,
+    subgraphName,
   };
 };
