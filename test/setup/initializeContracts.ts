@@ -150,7 +150,6 @@ export const deployBasketManager = async (
 };
 
 export const prepareGovernor = async (
-  _: providers.JsonRpcProvider,
   deployer: JsonRpcSigner,
   staking: Staking
 ) => {

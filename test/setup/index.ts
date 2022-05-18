@@ -59,12 +59,10 @@ export const setupSystem = async ({ testName }: SetupSystemParams) => {
   );
 
   const [governorAdmin, adminTimelock] = await prepareGovernor(
-    provider,
     deployer,
     staking
   );
   const [governorOwner, ownerTimelock] = await prepareGovernor(
-    provider,
     deployer,
     staking
   );
