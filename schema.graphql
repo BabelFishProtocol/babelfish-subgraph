@@ -69,4 +69,6 @@ type XusdTransaction @entity {
   amount: BigInt!
   date: BigInt!
   user: Bytes!
+  txHash: Bytes!
+  receiver: Bytes!
 }
