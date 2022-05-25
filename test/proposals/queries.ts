@@ -38,6 +38,7 @@ export const proposalsListQuery = async (subgraphName: string) => {
     proposals {
       proposalId
       description
+      createdAt
       contractAddress
       actions {
         contract

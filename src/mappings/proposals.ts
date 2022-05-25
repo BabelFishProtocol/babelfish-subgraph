@@ -20,6 +20,7 @@ export function handleNewProposal(event: ProposalCreated): void {
   proposal.againstVotesAmount = new BigInt(0);
   proposal.contractAddress = event.address;
   proposal.proposalId = event.params.id;
+  proposal.createdAt = event.block.number;
 
   let target = event.params.targets.shift() || null;
   let signature = event.params.signatures.shift() || null;
