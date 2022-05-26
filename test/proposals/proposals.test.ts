@@ -57,7 +57,7 @@ describe('Proposals', () => {
 
     // ----- add proposal using GovernorAdmin contract
 
-    await (
+    const adminReceipt = await (
       await governorAdmin
         .connect(user)
         .propose(
@@ -93,6 +93,7 @@ describe('Proposals', () => {
       expect.arrayContaining([
         {
           proposalId: '1',
+          createdAt: adminReceipt.blockNumber.toString(),
           description: 'test admin proposal',
           contractAddress: governorAdmin.address.toLowerCase(),
           actions: [
@@ -105,6 +106,7 @@ describe('Proposals', () => {
         },
         {
           proposalId: '1',
+          createdAt: ownerProposalReceipt.blockNumber.toString(),
           description: 'test owner proposal',
           contractAddress: governorOwner.address.toLowerCase(),
           actions: [

@@ -17,6 +17,7 @@ type ProposalAction @entity {
 
 type Proposal @entity {
   id: ID!
+  createdAt: BigInt!
   proposalId: BigInt!
   contractAddress: Bytes!
   eta: BigInt
