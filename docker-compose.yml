@@ -35,7 +35,7 @@ services:
     environment:
       postgres_host: postgres-test
       postgres_user: graph-node
-      postgres_pass: let-me-in
+      postgres_pass: ${POSTGRES_PASSWORD}
       postgres_db: graph-node
       ipfs: 'ipfs-test:5001'
       ethereum: mainnet:http://ganache:8545
@@ -46,6 +46,8 @@ services:
     image: ipfs/go-ipfs:v0.4.23
   postgres-test:
     image: postgres
+    ports:
+      - '5432:5432'
     command:
       [
         "postgres",
@@ -53,7 +55,7 @@ services:
       ]
     environment:
       POSTGRES_USER: graph-node
-      POSTGRES_PASSWORD: let-me-in
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: graph-node
   ganache:
     image: trufflesuite/ganache-cli
@@ -84,7 +86,7 @@ services:
     environment:
       postgres_host: postgres-rsk-testnet
       postgres_user: graph-node
-      postgres_pass: let-me-in
+      postgres_pass: ${POSTGRES_PASSWORD}
       postgres_db: graph-node
       ipfs: 'ipfs-rsk-testnet:5001'
       ethereum: mainnet:https://testnet.sovryn.app
@@ -94,6 +96,8 @@ services:
     image: ipfs/go-ipfs:v0.4.23
   postgres-rsk-testnet:
     image: postgres
+    ports:
+      - '5432:5432'
     command:
       [
         "postgres",
@@ -101,7 +105,7 @@ services:
       ]
     environment:
       POSTGRES_USER: graph-node
-      POSTGRES_PASSWORD: let-me-in
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: graph-node
 
   # ---------- rsk ----------
@@ -128,7 +132,7 @@ services:
     environment:
       postgres_host: postgres-rsk
       postgres_user: graph-node
-      postgres_pass: let-me-in
+      postgres_pass: ${POSTGRES_PASSWORD}
       postgres_db: graph-node
       ipfs: 'ipfs-rsk:5001'
       ethereum: mainnet:https://mainnet.sovryn.app/
@@ -138,6 +142,8 @@ services:
     image: ipfs/go-ipfs:v0.4.23
   postgres-rsk:
     image: postgres
+    ports:
+      - '5432:5432'
     command:
       [
         "postgres",
@@ -145,5 +151,5 @@ services:
       ]
     environment:
       POSTGRES_USER: graph-node
-      POSTGRES_PASSWORD: let-me-in
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: graph-node
