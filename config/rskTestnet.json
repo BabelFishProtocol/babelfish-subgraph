@@ -5,14 +5,26 @@
     "GovernorAdmin": {
       "address": "0x82dF1C8d73235128A5176Af4Bdac7dDb7e049e5E"
     },
+    "GovernorAdmin_2": {
+      "address": "0x94e907f6b903a393e14fe549113137ca6483b5ef"
+    },
     "GovernorOwner": {
       "address": "0x0000000000000000000000000000000000000000"
+    },
+    "GovernorOwner_2": {
+      "address": "0x1547510c48eb322a2199dcf2EA837e4E2870Ebd6"
     },
     "Staking": {
       "address": "0x786CD2E46fFa407114cCDb78b57F9fbe3b83Cd24"
     },
+    "Staking_2": {
+      "address": "0x34a01F53432e2105B7361Aee031F3De629eb7211"
+    },
     "VestingRegistry": {
       "address": "0x64e0C4bBe361B3efbbcE35870FaFc9DC1A049AC6"
+    },
+    "VestingRegistry_2": {
+      "address": "0xEB0AAD069b452563628CE539df0Da531E2313148"
     },
     "Masset": {
       "address": "0xca8b437d9d586b938CE000e765476A0594856b51"
