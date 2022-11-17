@@ -135,10 +135,10 @@ dataSources:
       file: ../src/mappings/stakingHistory.ts
   # Staking 2
   - kind: ethereum/contract
-    name: Staking
+    name: Staking_2
     network: {{network}}
     source:
-      address: '{{contracts.Staking.address}}'
+      address: '{{contracts.Staking_2.address}}'
       abi: Staking
       startBlock: {{startBlock}}
     mapping:
