@@ -31,33 +31,6 @@ dataSources:
         - event: VoteCast(address,uint256,bool,uint256)
           handler: handleVoteCast
       file: ../src/mappings/proposals.ts
-  # Governor Admin 2
-  - kind: ethereum/contract
-    name: GovernorAdmin_2
-    network: {{network}}
-    source:
-      address: '{{contracts.GovernorAdmin_2.address}}'
-      abi: GovernorAlpha
-      startBlock: {{startBlock}}
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.4
-      language: wasm/assemblyscript
-      entities:
-        - GovernorAdmin
-      abis:
-        - name: GovernorAlpha
-          file: ../abis/GovernorAlpha.json
-      eventHandlers:
-        - event: ProposalCreated(uint256,address,address[],uint256[],string[],bytes[],uint256,uint256,string)
-          handler: handleNewProposal
-
-        - event: ProposalQueued(uint256,uint256)
-          handler: handleProposalQueued
-
-        - event: VoteCast(address,uint256,bool,uint256)
-          handler: handleVoteCast
-      file: ../src/mappings/proposals.ts
   # Governor Owner
   - kind: ethereum/contract
     name: GovernorOwner
@@ -85,60 +58,12 @@ dataSources:
         - event: VoteCast(address,uint256,bool,uint256)
           handler: handleVoteCast
       file: ../src/mappings/proposals.ts
-  # Governor Owner 2
-  - kind: ethereum/contract
-    name: GovernorOwner_2
-    network: {{network}}
-    source:
-      address: '{{contracts.GovernorOwner_2.address}}'
-      abi: GovernorAlpha
-      startBlock: {{startBlock}}
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.4
-      language: wasm/assemblyscript
-      entities:
-        - GovernorOwner
-      abis:
-        - name: GovernorAlpha
-          file: ../abis/GovernorAlpha.json
-      eventHandlers:
-        - event: ProposalCreated(uint256,address,address[],uint256[],string[],bytes[],uint256,uint256,string)
-          handler: handleNewProposal
-
-        - event: ProposalQueued(uint256,uint256)
-          handler: handleProposalQueued
-
-        - event: VoteCast(address,uint256,bool,uint256)
-          handler: handleVoteCast
-      file: ../src/mappings/proposals.ts
   # Staking
   - kind: ethereum/contract
     name: Staking
     network: {{network}}
     source:
       address: '{{contracts.Staking.address}}'
-      abi: Staking
-      startBlock: {{startBlock}}
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.4
-      language: wasm/assemblyscript
-      entities:
-        - Staking
-      abis:
-        - name: Staking
-          file: ../abis/Staking.json
-      eventHandlers:
-        - event: TokensStaked(indexed address,uint256,uint256,uint256)
-          handler: handleTokensStaked
-      file: ../src/mappings/stakingHistory.ts
-  # Staking 2
-  - kind: ethereum/contract
-    name: Staking_2
-    network: {{network}}
-    source:
-      address: '{{contracts.Staking_2.address}}'
       abi: Staking
       startBlock: {{startBlock}}
     mapping:
@@ -183,29 +108,6 @@ dataSources:
     network: {{network}}
     source:
       address: '{{contracts.VestingRegistry.address}}'
-      abi: VestingRegistry
-      startBlock: {{startBlock}}
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.4
-      language: wasm/assemblyscript
-      entities:
-        - VestingRegistry
-      abis:
-        - name: VestingRegistry
-          file: ../abis/VestingRegistry.json
-      eventHandlers:
-        - event: VestingCreated(indexed address,address,uint256,uint256,uint256)
-          handler: handleVestingCreated
-        - event: TeamVestingCreated(indexed address,address,uint256,uint256,uint256)
-          handler: handleTeamVestingCreated
-      file: ../src/mappings/vestingRegistry.ts
-  # VestingRegistry 2
-  - kind: ethereum/contract
-    name: VestingRegistry_2
-    network: {{network}}
-    source:
-      address: '{{contracts.VestingRegistry_2.address}}'
       abi: VestingRegistry
       startBlock: {{startBlock}}
     mapping:
