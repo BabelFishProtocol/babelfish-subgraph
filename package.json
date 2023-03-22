@@ -24,7 +24,9 @@
     "codegen": "graph codegen",
     "build": "graph build",
     "generate-contracts-types": "typechain --target ethers-v5 --out-dir generated/types './abis/*.json'",
-    "postinstall": "yarn generate-contracts-types"
+    "postinstall": "yarn generate-contracts-types",
+    "dev:up": "docker compose --env-file .env.dev up -d",
+    "dev:down": "docker compose --env-file .env.dev down"
   },
   "devDependencies": {
     "@graphprotocol/graph-cli": "^0.20.1",

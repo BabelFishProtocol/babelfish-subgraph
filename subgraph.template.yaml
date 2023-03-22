@@ -125,3 +125,28 @@ dataSources:
         - event: TeamVestingCreated(indexed address,address,uint256,uint256,uint256)
           handler: handleTeamVestingCreated
       file: ./src/mappings/vestingRegistry.ts
+  # BasketManagerV3.json
+  - kind: ethereum/contract
+    name: BasketManagerV3
+    network: {{network}}
+    source:
+      address: '{{contracts.BasketManagerV3.address}}'
+      abi: BasketManagerV3
+      startBlock: {{startBlock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      entities:
+        - BasketManagerV3
+      abis:
+        - name: BasketManagerV3
+          file: ./abis/BasketManagerV3.json
+        - name: ERC20
+          file: ./abis/ERC20.json
+      eventHandlers:
+        - event: BassetAdded(address)
+          handler: handleBassetAdded
+        - event: BassetRemoved(address)
+          handler: handleBassetRemoved
+      file: ./src/mappings/basketManager.ts

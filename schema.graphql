@@ -73,3 +73,20 @@ type XusdTransaction @entity {
   txHash: Bytes!
   receiver: Bytes!
 }
+
+type Global @entity {
+  id: ID! # id is 'only'
+  assets: [BAsset!] @derivedFrom(field: "global")
+  xusdSupply: BigDecimal!
+}
+
+type BAsset @entity {
+  id: ID!
+  symbol: String!
+  name: String!
+  decimals: Int!
+  paused: Boolean!
+  balance: BigDecimal!
+  createdAtTx: String!
+  global: Global!
+}
