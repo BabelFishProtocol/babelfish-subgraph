@@ -96,6 +96,8 @@ dataSources:
       abis:
         - name: MassetV3
           file: ./abis/MassetV3.json
+        - name: ERC20
+          file: ./abis/ERC20.json
       eventHandlers:
         - event: Minted(indexed address,indexed address,uint256,address,uint256)
           handler: handleMinted
@@ -150,3 +152,26 @@ dataSources:
         - event: BassetRemoved(address)
           handler: handleBassetRemoved
       file: ./src/mappings/basketManager.ts
+    # PauseManager
+  - kind: ethereum/contract
+    name: PauseManager
+    network: {{network}}
+    source:
+      address: '{{contracts.PauseManager.address}}'
+      abi: PauseManager
+      startBlock: {{startBlock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      entities:
+        - PauseManager
+      abis:
+        - name: PauseManager
+          file: ./abis/PauseManager.json
+      eventHandlers:
+        - event: onPause(indexed address,indexed address)
+          handler: handleOnPause
+        - event: onUnpause(indexed address,indexed address)
+          handler: handleOnUnpause
+      file: ./src/mappings/pauseManager.ts

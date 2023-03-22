@@ -1,5 +1,9 @@
 import { XusdTransaction } from '../../generated/schema';
 import { Minted, Redeemed } from '../../generated/MassetV3/MassetV3';
+import {
+  decrementBAssetBalance,
+  incrementBAssetBalance,
+} from '../entities/BAsset';
 
 export function handleMinted(event: Minted): void {
   let tx = new XusdTransaction(
@@ -13,7 +17,11 @@ export function handleMinted(event: Minted): void {
   tx.user = event.params.minter;
   tx.txHash = event.transaction.hash;
   tx.receiver = event.params.recipient;
-
+  incrementBAssetBalance(
+    event.params.bAsset,
+    event.params.bassetQuantity,
+    event
+  );
   tx.save();
 }
 
@@ -29,6 +37,7 @@ export function handleRedeemed(event: Redeemed): void {
   tx.user = event.params.redeemer;
   tx.txHash = event.transaction.hash;
   tx.receiver = event.params.recipient;
+  decrementBAssetBalance(event.params.bAsset, event.params.bassetQuantity);
 
   tx.save();
 }
