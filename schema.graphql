@@ -77,7 +77,6 @@ type XusdTransaction @entity {
 type Global @entity {
   id: ID! # id is 'only'
   assets: [BAsset!] @derivedFrom(field: "global")
-  xusdSupply: BigDecimal!
 }
 
 type BAsset @entity {
@@ -86,7 +85,5 @@ type BAsset @entity {
   name: String!
   decimals: Int!
   paused: Boolean!
-  balance: BigDecimal!
-  createdAtTx: String!
   global: Global!
 }

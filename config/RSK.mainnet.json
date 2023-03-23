@@ -1,6 +1,11 @@
 {
   "network": "mainnet",
   "startBlock": 3416026,
+  "node": {
+    "network": "mainnet",
+    "address": "https://rsk-internal.sovryn.app/rpc",
+    "log_level": "debug"
+  },
   "contracts": {
     "GovernorAdmin": {
       "address": "0xA91b53289375836565ea0c276286561fEd555C85"
@@ -16,6 +21,12 @@
     },
     "Masset": {
       "address": "0x1440d19436bEeaF8517896bffB957a88EC95a00F"
+    },
+    "BasketManagerV3": {
+      "address": "0x93d6aa744DA92b5496bA216075b3CBbBAE8cc625"
+    },
+    "PauseManager": {
+      "address": "0x08830e91423f393F082C03Ede0a94d828Af6629d"
     }
   }
 }

@@ -22,25 +22,18 @@ export function handleNewProposal(event: ProposalCreated): void {
   proposal.proposalId = event.params.id;
   proposal.createdAt = event.block.number;
 
-  let target = event.params.targets.shift() || null;
-  let signature = event.params.signatures.shift() || null;
-  let calldata = event.params.calldatas.shift() || null;
-
   for (let i = 0; i < event.params.targets.length; i++) {
-    if (target != null && signature != null && calldata != null) {
-      let proposalAction = new ProposalAction(proposal.id + '_' + i.toString());
+    let target = event.params.targets[i];
+    let signature = event.params.signatures[i];
+    let calldata = event.params.calldatas[i];
+    let proposalAction = new ProposalAction(proposal.id + '_' + i.toString());
 
-      proposalAction.contract = target;
-      proposalAction.signature = signature;
-      proposalAction.proposal = proposal.id;
-      proposalAction.calldata = calldata;
+    proposalAction.contract = target;
+    proposalAction.signature = signature;
+    proposalAction.proposal = proposal.id;
+    proposalAction.calldata = calldata;
 
-      proposalAction.save();
-
-      target = event.params.targets.shift() || null;
-      signature = event.params.signatures.shift() || null;
-      calldata = event.params.calldatas.shift() || null;
-    }
+    proposalAction.save();
   }
 
   proposal.save();

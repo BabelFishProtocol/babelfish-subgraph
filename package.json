@@ -11,8 +11,8 @@
     "deploy-rsk": "graph deploy babelfish/rsk-graph --ipfs http://ipfs-rsk:5001 --node http://graph-node-rsk:8020 ./subgraphConfig/subgraph-rsk.yaml",
     "deploy-rskTestnet": "graph deploy babelfish/rskTestnet-graph --ipfs http://ipfs-rsk-testnet:5001 --node http://graph-node-rsk-testnet:8020 ./subgraphConfig/subgraph-rskTestnet.yaml",
     "deploy-local": "graph deploy  DistributedCollective/babelfish-subgraph --ipfs http://localhost:5001 --node http://127.0.0.1:8020",
-    "prepare-rsk": "mustache config/RSK.mainnet.json subgraph.template.yaml > subgraph.yaml",
-    "prepare-rskTestnet": "mustache config/RSK.testnet.json subgraph.template.yaml > ./subgraphConfig/subgraph-rskTestnet.yaml && mustache config/RSK.testnet.json subgraph.template.yaml > ./subgraph.yaml",
+    "prepare-rsk": "sh ./scripts/prepare_mainnet.sh",
+    "prepare-rskTestnet": "sh ./scripts/prepare_testnet.sh",
     "remove-local": "graph remove --node http://graph-node-test:8020/ babelfish/test-graph",
     "test-run": "jest",
     "test-run:ci": "jest --maxWorkers=4",
@@ -29,8 +29,8 @@
     "dev:down": "docker compose --env-file .env.dev down"
   },
   "devDependencies": {
-    "@graphprotocol/graph-cli": "^0.20.1",
-    "@graphprotocol/graph-ts": "^0.20.0",
+    "@graphprotocol/graph-cli": "^0.25.3",
+    "@graphprotocol/graph-ts": "^0.24.1",
     "@typechain/ethers-v5": "^7.0.1",
     "@types/jest": "^26.0.20",
     "@types/mustache": "^4.1.2",
