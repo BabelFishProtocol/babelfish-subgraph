@@ -26,6 +26,7 @@ services:
 
   graph-node-test:
     image: graphprotocol/graph-node:v0.25.0
+    restart: always
     extra_hosts:
       - host.docker.internal:host-gateway
     depends_on:
@@ -44,8 +45,10 @@ services:
 
   ipfs-test:
     image: ipfs/go-ipfs:v0.4.23
+    restart: always
   postgres-test:
     image: postgres
+    restart: always
     ports:
       - '5432:5432'
     command:
@@ -66,6 +69,7 @@ services:
 
   rsk-testnet:
     image: node:14-buster
+    restart: always
     working_dir: /app
     volumes:
       - .:/app
@@ -75,6 +79,7 @@ services:
 
   graph-node-rsk-testnet:
     image: graphprotocol/graph-node:v0.25.0
+    restart: always
     extra_hosts:
       - host.docker.internal:host-gateway
     ports:
@@ -94,8 +99,10 @@ services:
       RUST_BACKTRACE: 1
   ipfs-rsk-testnet:
     image: ipfs/go-ipfs:v0.4.23
+    restart: always
   postgres-rsk-testnet:
     image: postgres
+    restart: always
     ports:
       - '5432:5432'
     command:
@@ -113,6 +120,7 @@ services:
   rsk:
     image: node:14-buster
     working_dir: /app
+    restart: always
     volumes:
       - .:/app
     depends_on:
@@ -121,6 +129,7 @@ services:
 
   graph-node-rsk:
     image: graphprotocol/graph-node:v0.25.0
+    restart: always
     extra_hosts:
       - host.docker.internal:host-gateway
     ports:
@@ -140,8 +149,10 @@ services:
       RUST_BACKTRACE: 1
   ipfs-rsk:
     image: ipfs/go-ipfs:v0.4.23
+    restart: always
   postgres-rsk:
     image: postgres
+    restart: always
     ports:
       - '5432:5432'
     command:
