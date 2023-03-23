@@ -69,7 +69,6 @@ services:
 
   rsk-testnet:
     image: node:14-buster
-    restart: always
     working_dir: /app
     volumes:
       - .:/app
@@ -120,7 +119,6 @@ services:
   rsk:
     image: node:14-buster
     working_dir: /app
-    restart: always
     volumes:
       - .:/app
     depends_on:
