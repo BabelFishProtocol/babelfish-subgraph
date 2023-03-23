@@ -2,7 +2,7 @@ specVersion: 0.0.2
 description: Babelfish subgraph
 repository: https://github.com/graphprotocol/example-subgraph
 schema:
-  file: ./schema.graphql
+  file: ../schema.graphql
 dataSources:
   # GovernorAdmin
   - kind: ethereum/contract
@@ -20,7 +20,7 @@ dataSources:
         - GovernorAdmin
       abis:
         - name: GovernorAlpha
-          file: ./abis/GovernorAlpha.json
+          file: ../abis/GovernorAlpha.json
       eventHandlers:
         - event: ProposalCreated(uint256,address,address[],uint256[],string[],bytes[],uint256,uint256,string)
           handler: handleNewProposal
@@ -30,7 +30,7 @@ dataSources:
 
         - event: VoteCast(address,uint256,bool,uint256)
           handler: handleVoteCast
-      file: ./src/mappings/proposals.ts
+      file: ../src/mappings/proposals.ts
   # Governor Owner
   - kind: ethereum/contract
     name: GovernorOwner
@@ -47,7 +47,7 @@ dataSources:
         - GovernorOwner
       abis:
         - name: GovernorAlpha
-          file: ./abis/GovernorAlpha.json
+          file: ../abis/GovernorAlpha.json
       eventHandlers:
         - event: ProposalCreated(uint256,address,address[],uint256[],string[],bytes[],uint256,uint256,string)
           handler: handleNewProposal
@@ -57,7 +57,7 @@ dataSources:
 
         - event: VoteCast(address,uint256,bool,uint256)
           handler: handleVoteCast
-      file: ./src/mappings/proposals.ts
+      file: ../src/mappings/proposals.ts
   # Staking
   - kind: ethereum/contract
     name: Staking
@@ -74,11 +74,11 @@ dataSources:
         - Staking
       abis:
         - name: Staking
-          file: ./abis/Staking.json
+          file: ../abis/Staking.json
       eventHandlers:
         - event: TokensStaked(indexed address,uint256,uint256,uint256)
           handler: handleTokensStaked
-      file: ./src/mappings/stakingHistory.ts
+      file: ../src/mappings/stakingHistory.ts
   # MAsset
   - kind: ethereum/contract
     name: MassetV3
@@ -95,15 +95,15 @@ dataSources:
         - MassetV3
       abis:
         - name: MassetV3
-          file: ./abis/MassetV3.json
+          file: ../abis/MassetV3.json
         - name: ERC20
-          file: ./abis/ERC20.json
+          file: ../abis/ERC20.json
       eventHandlers:
         - event: Minted(indexed address,indexed address,uint256,address,uint256)
           handler: handleMinted
         - event: Redeemed(indexed address,indexed address,uint256,address,uint256)
           handler: handleRedeemed
-      file: ./src/mappings/masset.ts
+      file: ../src/mappings/masset.ts
   # VestingRegistry
   - kind: ethereum/contract
     name: VestingRegistry
@@ -120,13 +120,13 @@ dataSources:
         - VestingRegistry
       abis:
         - name: VestingRegistry
-          file: ./abis/VestingRegistry.json
+          file: ../abis/VestingRegistry.json
       eventHandlers:
         - event: VestingCreated(indexed address,address,uint256,uint256,uint256)
           handler: handleVestingCreated
         - event: TeamVestingCreated(indexed address,address,uint256,uint256,uint256)
           handler: handleTeamVestingCreated
-      file: ./src/mappings/vestingRegistry.ts
+      file: ../src/mappings/vestingRegistry.ts
   # BasketManagerV3.json
   - kind: ethereum/contract
     name: BasketManagerV3
@@ -143,15 +143,15 @@ dataSources:
         - BasketManagerV3
       abis:
         - name: BasketManagerV3
-          file: ./abis/BasketManagerV3.json
+          file: ../abis/BasketManagerV3.json
         - name: ERC20
-          file: ./abis/ERC20.json
+          file: ../abis/ERC20.json
       eventHandlers:
         - event: BassetAdded(address)
           handler: handleBassetAdded
         - event: BassetRemoved(address)
           handler: handleBassetRemoved
-      file: ./src/mappings/basketManager.ts
+      file: ../src/mappings/basketManager.ts
     # PauseManager
   - kind: ethereum/contract
     name: PauseManager
@@ -168,10 +168,10 @@ dataSources:
         - PauseManager
       abis:
         - name: PauseManager
-          file: ./abis/PauseManager.json
+          file: ../abis/PauseManager.json
       eventHandlers:
         - event: onPause(indexed address,indexed address)
           handler: handleOnPause
         - event: onUnpause(indexed address,indexed address)
           handler: handleOnUnpause
-      file: ./src/mappings/pauseManager.ts
+      file: ../src/mappings/pauseManager.ts

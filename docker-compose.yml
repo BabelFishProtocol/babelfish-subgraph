@@ -1,50 +1,164 @@
 version: '3'
 services:
-  graph-node:
-    image: graphprotocol/graph-node:v0.27.0
-    ports:
-      - '8000:8000'
-      - '8001:8001'
-      - '8020:8020'
-      - '8030:8030'
-      - '8040:8040'
-    expose:
-      - 8000
-      - 8001
-      - 8020
-      - 8030
-    depends_on:
-      - ipfs
-      - postgres
-    environment:
-      postgres_host: postgres
-      postgres_user: postgres
-      postgres_pass: ${postgres_pass}
-      postgres_db: postgres
-      ipfs: 'ipfs:5001'
-      # Change next line if you want to connect to a different JSON-RPC endpoint
-      ethereum: 'mainnet:https://rsk-internal.sovryn.app/rpc'
-      GRAPH_LOG: 'debug'
-      GRAPH_GRAPHQL_QUERY_TIMEOUT: '10'
-      GRAPH_SQL_STATEMENT_TIMEOUT: '10'
-      GRAPH_GRAPHQL_MAX_DEPTH: '16'
-      GRAPH_GRAPHQL_MAX_COMPLEXITY: '1500000'
-  ipfs:
-    image: ipfs/go-ipfs:v0.11.0
-    ports:
-      - '5001:5001'
-    expose:
-      - 5001
+  # ---------- local tests ----------
+
+  test-runner:
+    image: node:14-buster
+    working_dir: /app
     volumes:
-      - ./data/ipfs:/data/ipfs
-  postgres:
+      - .:/app
+    depends_on:
+      - graph-node-test
+    command: ["./scripts/wait-for-it.sh", "graph-node-test:8030",  "--", "yarn", "test-run"]
+
+  # ---------- ci tests ----------
+
+  test-runner-ci:
+    image: node:14-buster
+    working_dir: /app
+    volumes:
+      - .:/app
+    depends_on:
+      - graph-node-test
+    command: ["./scripts/wait-for-it.sh", "graph-node-test:8030",  "--", "yarn", "test-run:ci"]
+
+  # ---------- tests deps ----------
+
+  graph-node-test:
+    image: graphprotocol/graph-node:v0.25.0
+    restart: always
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    depends_on:
+      - ipfs-test
+      - postgres-test
+      - ganache
+    environment:
+      postgres_host: postgres-test
+      postgres_user: graph-node
+      postgres_pass: ${POSTGRES_PASSWORD}
+      postgres_db: graph-node
+      ipfs: 'ipfs-test:5001'
+      ethereum: mainnet:http://ganache:8545
+      GRAPH_LOG: info
+      RUST_BACKTRACE: 1
+
+  ipfs-test:
+    image: ipfs/go-ipfs:v0.4.23
+    restart: always
+  postgres-test:
     image: postgres
+    restart: always
     ports:
       - '5432:5432'
-    command: ["postgres", "-cshared_preload_libraries=pg_stat_statements"]
+    command:
+      [
+        "postgres",
+        "-cshared_preload_libraries=pg_stat_statements"
+      ]
     environment:
-      POSTGRES_USER: postgres
+      POSTGRES_USER: graph-node
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: postgres
+      POSTGRES_DB: graph-node
+  ganache:
+    image: trufflesuite/ganache-cli
+    ports:
+      - '8545:8545'
+
+  # ---------- rsk Testnet ----------
+
+  rsk-testnet:
+    image: node:14-buster
+    working_dir: /app
     volumes:
-      - ./data/postgres:/var/lib/postgresql/data
+      - .:/app
+    depends_on:
+      - graph-node-rsk-testnet
+    command: ["./scripts/wait-for-it.sh", "graph-node-rsk-testnet:8030",  "--", "yarn", "run-rskTestnet"]
+
+  graph-node-rsk-testnet:
+    image: graphprotocol/graph-node:v0.25.0
+    restart: always
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    ports:
+      - 8000:8000
+      - 8001:8001
+    depends_on:
+      - ipfs-rsk-testnet
+      - postgres-rsk-testnet
+    environment:
+      postgres_host: postgres-rsk-testnet
+      postgres_user: graph-node
+      postgres_pass: ${POSTGRES_PASSWORD}
+      postgres_db: graph-node
+      ipfs: 'ipfs-rsk-testnet:5001'
+      ethereum: mainnet:https://testnet.sovryn.app
+      GRAPH_LOG: info
+      RUST_BACKTRACE: 1
+  ipfs-rsk-testnet:
+    image: ipfs/go-ipfs:v0.4.23
+    restart: always
+  postgres-rsk-testnet:
+    image: postgres
+    restart: always
+    ports:
+      - '5432:5432'
+    command:
+      [
+        "postgres",
+        "-cshared_preload_libraries=pg_stat_statements"
+      ]
+    environment:
+      POSTGRES_USER: graph-node
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: graph-node
+
+  # ---------- rsk ----------
+
+  rsk:
+    image: node:14-buster
+    working_dir: /app
+    volumes:
+      - .:/app
+    depends_on:
+      - graph-node-rsk
+    command: ["./scripts/wait-for-it.sh", "graph-node-rsk:8030",  "--", "yarn", "run-rsk"]
+
+  graph-node-rsk:
+    image: graphprotocol/graph-node:v0.25.0
+    restart: always
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    ports:
+      - 7000:8000
+      - 7001:8001
+    depends_on:
+      - ipfs-rsk
+      - postgres-rsk
+    environment:
+      postgres_host: postgres-rsk
+      postgres_user: graph-node
+      postgres_pass: ${POSTGRES_PASSWORD}
+      postgres_db: graph-node
+      ipfs: 'ipfs-rsk:5001'
+      ethereum: mainnet:https://mainnet.sovryn.app/
+      GRAPH_LOG: info
+      RUST_BACKTRACE: 1
+  ipfs-rsk:
+    image: ipfs/go-ipfs:v0.4.23
+    restart: always
+  postgres-rsk:
+    image: postgres
+    restart: always
+    ports:
+      - '5432:5432'
+    command:
+      [
+        "postgres",
+        "-cshared_preload_libraries=pg_stat_statements"
+      ]
+    environment:
+      POSTGRES_USER: graph-node
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: graph-node
