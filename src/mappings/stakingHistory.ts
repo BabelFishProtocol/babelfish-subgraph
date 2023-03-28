@@ -19,14 +19,14 @@ export function handleTokensStaked(event: TokensStaked): void {
   let vestingContract = VestingContract.load(event.params.staker.toHex());
   let owner = event.params.staker;
 
-  if (vestingContract) {
-    owner = vestingContract.owner as Address;
+  if (vestingContract !== null) {
+    owner = changetype<Address>(vestingContract.owner);
   }
 
   let user = User.load(owner.toHex());
 
-  if (!user) {
-    user = new User(owner.toHex());
+  if (user === null) {
+    user = new User(owner.toHexString());
     user.allStakes = [];
     user.stakes = [];
     user.vests = [];
@@ -42,7 +42,7 @@ export function handleTokensStaked(event: TokensStaked): void {
 
   user.allStakes = allStakesEvents;
 
-  if (vestingContract) {
+  if (vestingContract !== null) {
     vestingContractStakes = vestingContract.stakes;
 
     vestingContractStakes.push(stake.id);
