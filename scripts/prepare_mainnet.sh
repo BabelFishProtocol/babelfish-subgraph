@@ -11,6 +11,3 @@ echo "File: ${green}docker-compose.yml${reset} has been mustached";
 echo "Copying bassets file for ${yellow}$NETWORK${reset} network" && echo
 cp src/utils/bAssets.mainnet.ts src/utils/bAssets.ts
 echo "bAssets file has been copied" && echo
-echo "Copying env file file for ${yellow}$NETWORK${reset} network" && echo
-cp .env_rsk .env
-echo "env file has been copied" && echo
