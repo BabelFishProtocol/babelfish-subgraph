@@ -1,14 +1,7 @@
-import {
-  Address,
-  BigDecimal,
-  BigInt,
-  ethereum,
-  store,
-} from '@graphprotocol/graph-ts';
+import { Address, store } from '@graphprotocol/graph-ts';
 import { BAsset } from '../../generated/schema';
 import { ERC20 as ERC20TokenContract } from '../../generated/BasketManagerV3/ERC20';
 import { getGlobal } from './Global';
-import { decimalize } from '../utils/bigNumber';
 
 export function createAndReturnBAsset(tokenAddress: Address): BAsset {
   let token = BAsset.load(tokenAddress.toHex());

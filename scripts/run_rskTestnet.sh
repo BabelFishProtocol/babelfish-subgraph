@@ -3,8 +3,10 @@ echo "Installing"
 yarn
 yarn prepare-rskTestnet
 yarn codegen
-yarn dev:up
-echo "Waiting for 2 minutes..."
-sleep 2m
+docker-compose up -d postgres && sleep 10 && docker-compose up -d
+echo "Waiting for 1 minutes..."
+sleep 1m
 yarn create-local
+echo "Waiting for 1 minutes..."
+sleep 1m
 yarn deploy-local

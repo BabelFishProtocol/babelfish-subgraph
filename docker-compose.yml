@@ -23,7 +23,7 @@ services:
       postgres_db: postgres
       ipfs: 'ipfs:5001'
       # Change next line if you want to connect to a different JSON-RPC endpoint
-      ethereum: 'mainnet:https://rsk-internal.sovryn.app/rpc'
+      ethereum: 'mainnet:https://testnet.sovryn.app'
       GRAPH_LOG: 'debug'
       GRAPH_GRAPHQL_QUERY_TIMEOUT: '10'
       GRAPH_SQL_STATEMENT_TIMEOUT: '10'

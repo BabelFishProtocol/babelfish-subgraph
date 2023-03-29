@@ -1,6 +1,11 @@
 {
   "network": "mainnet",
   "startBlock": 1929321,
+  "node": {
+    "network": "mainnet",
+    "address": "https://testnet.sovryn.app",
+    "log_level": "debug"
+  },
   "contracts": {
     "GovernorAdmin": {
       "address": "0x94e907f6b903a393e14fe549113137ca6483b5ef"
