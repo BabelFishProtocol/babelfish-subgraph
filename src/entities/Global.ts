@@ -10,7 +10,7 @@ export function getGlobal(): Global {
     global.save();
     for (let i = 0; i < bassets.length; i++) {
       createAndReturnBAsset(
-        Address.fromString(bassets[i].address.toLowerCase())
+        Address.fromString(bassets[i].address.toLowerCase()), bassets[i].symbol
       );
     }
   }

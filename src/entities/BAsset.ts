@@ -3,7 +3,7 @@ import { BAsset } from '../../generated/schema';
 import { ERC20 as ERC20TokenContract } from '../../generated/BasketManagerV3/ERC20';
 import { getGlobal } from './Global';
 
-export function createAndReturnBAsset(tokenAddress: Address): BAsset {
+export function createAndReturnBAsset(tokenAddress: Address, symbol: string): BAsset {
   let token = BAsset.load(tokenAddress.toHex());
   if (token === null) {
     token = new BAsset(tokenAddress.toHex());
@@ -15,10 +15,14 @@ export function createAndReturnBAsset(tokenAddress: Address): BAsset {
     let tokenSymbolResult = tokenContract.try_symbol();
     if (!tokenSymbolResult.reverted) {
       token.symbol = tokenSymbolResult.value;
+    } else {
+      token.symbol = symbol
     }
     let assetDecimalResult = tokenContract.try_decimals();
     if (!assetDecimalResult.reverted) {
       token.decimals = assetDecimalResult.value;
+    } else {
+      token.decimals = 18
     }
     token.paused = false;
     let global = getGlobal();
