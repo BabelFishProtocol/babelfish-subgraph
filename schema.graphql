@@ -81,9 +81,9 @@ type Global @entity {
 
 type BAsset @entity {
   id: ID!
-  symbol: String!
-  name: String!
-  decimals: Int!
+  symbol: String
+  name: String
+  decimals: Int
   paused: Boolean!
   global: Global!
 }
