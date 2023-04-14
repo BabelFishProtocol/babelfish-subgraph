@@ -17,4 +17,5 @@ export const bassets: BAsset[] = [
   new BAsset('0x43bC3F0FFFF6c9BBf3C2EAFE464c314d43f561De', 'bsUSDT'),
   new BAsset('0x4D5a316D23eBE168d8f887b4447bf8DbFA4901CC', 'USDT'),
   new BAsset('0x3E2CF87e7fF4048A57f9cDdE9368c9F4BFB43ADF', 'bsUSDC'),
+  new BAsset('0x30199fc1322b89bbe8B575BA4f695632961fC8f3', 'SEPUSDes'),
 ];
