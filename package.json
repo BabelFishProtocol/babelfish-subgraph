@@ -27,7 +27,7 @@
     "dev:down": "docker compose --env-file .env.dev down"
   },
   "devDependencies": {
-    "@graphprotocol/graph-cli": "^0.25.3",
+    "@graphprotocol/graph-cli": "0.45.2",
     "@graphprotocol/graph-ts": "^0.24.1",
     "@typechain/ethers-v5": "^7.0.1",
     "@types/jest": "^26.0.20",
