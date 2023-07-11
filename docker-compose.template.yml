@@ -25,10 +25,6 @@ services:
       # Change next line if you want to connect to a different JSON-RPC endpoint
       ethereum: '{{node.network}}:{{& node.address}}'
       GRAPH_LOG: '{{node.log_level}}'
-      GRAPH_GRAPHQL_QUERY_TIMEOUT: '10'
-      GRAPH_SQL_STATEMENT_TIMEOUT: '10'
-      GRAPH_GRAPHQL_MAX_DEPTH: '16'
-      GRAPH_GRAPHQL_MAX_COMPLEXITY: '1500000'
   ipfs:
     image: ipfs/go-ipfs:v0.11.0
     ports:
@@ -46,6 +42,5 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: postgres
-      # POSTGRES_INITDB_ARGS: "-E UTF8 --locale=C"
     volumes:
       - ./data/postgres:/var/lib/postgresql/data
