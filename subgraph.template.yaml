@@ -20,7 +20,7 @@ dataSources:
         - GovernorAdmin
       abis:
         - name: GovernorAlpha
-          file: ./abis/GovernorAlpha.json
+          file: ./abi/GovernorAlpha.json
       eventHandlers:
         - event: ProposalCreated(uint256,address,address[],uint256[],string[],bytes[],uint256,uint256,string)
           handler: handleNewProposal
@@ -47,7 +47,7 @@ dataSources:
         - GovernorOwner
       abis:
         - name: GovernorAlpha
-          file: ./abis/GovernorAlpha.json
+          file: ./abi/GovernorAlpha.json
       eventHandlers:
         - event: ProposalCreated(uint256,address,address[],uint256[],string[],bytes[],uint256,uint256,string)
           handler: handleNewProposal
@@ -74,7 +74,7 @@ dataSources:
         - Staking
       abis:
         - name: Staking
-          file: ./abis/Staking.json
+          file: ./abi/Staking.json
       eventHandlers:
         - event: TokensStaked(indexed address,uint256,uint256,uint256)
           handler: handleTokensStaked
@@ -95,9 +95,9 @@ dataSources:
         - MassetV3
       abis:
         - name: MassetV3
-          file: ./abis/MassetV3.json
+          file: ./abi/MassetV3.json
         - name: ERC20
-          file: ./abis/ERC20.json
+          file: ./abi/ERC20.json
       eventHandlers:
         - event: Minted(indexed address,indexed address,uint256,address,uint256)
           handler: handleMinted
@@ -120,7 +120,7 @@ dataSources:
         - VestingRegistry
       abis:
         - name: VestingRegistry
-          file: ./abis/VestingRegistry.json
+          file: ./abi/VestingRegistry.json
       eventHandlers:
         - event: VestingCreated(indexed address,address,uint256,uint256,uint256)
           handler: handleVestingCreated
@@ -143,9 +143,9 @@ dataSources:
         - BasketManagerV3
       abis:
         - name: BasketManagerV3
-          file: ./abis/BasketManagerV3.json
+          file: ./abi/BasketManagerV3.json
         - name: ERC20
-          file: ./abis/ERC20.json
+          file: ./abi/ERC20.json
       eventHandlers:
         - event: BassetAdded(address)
           handler: handleBassetAdded
@@ -168,7 +168,7 @@ dataSources:
         - PauseManager
       abis:
         - name: PauseManager
-          file: ./abis/PauseManager.json
+          file: ./abi/PauseManager.json
       eventHandlers:
         - event: onPause(indexed address,indexed address)
           handler: handleOnPause
