@@ -1,6 +1,7 @@
-import { Address, store } from '@graphprotocol/graph-ts';
+import { Address, BigInt, store } from '@graphprotocol/graph-ts';
 import { BAsset } from '../../generated/schema';
 import { ERC20 as ERC20TokenContract } from '../../generated/BasketManagerV3/ERC20';
+import { RewardManager as RewardManagerContract } from '../../generated/RewardManager/RewardManager';
 import { getGlobal } from './Global';
 
 export function createAndReturnBAsset(tokenAddress: Address, symbol: string): BAsset {
@@ -24,6 +25,12 @@ export function createAndReturnBAsset(tokenAddress: Address, symbol: string): BA
     } else {
       token.decimals = 18
     }
+    let targetWeightResult = RewardManagerContract.try_getTargetWeight();
+    if (!targetWeightResult.reverted) {
+      token.targetWeight = targetWeightResult.value;
+    } else {
+      token.targetWeight = 0
+    }
     token.paused = false;
     let global = getGlobal();
     token.global = global.id;
@@ -43,6 +50,14 @@ export function togglePauseBAsset(address: Address, isPaused: boolean): void {
   let bAsset = BAsset.load(address.toHexString());
   if (bAsset !== null) {
     bAsset.paused = isPaused;
+    bAsset.save();
+  }
+}
+
+export function toggleTargetWeightBAsset(address: Address, weight: BigInt): void {
+  let bAsset = BAsset.load(address.toHexString());
+  if (bAsset !== null) {
+    bAsset.targetWeight = weight;
     bAsset.save();
   }
 }

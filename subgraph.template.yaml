@@ -175,3 +175,30 @@ dataSources:
         - event: onUnpause(indexed address,indexed address)
           handler: handleOnUnpause
       file: ./src/mappings/pauseManager.ts
+    # RewardManager
+  - kind: ethereum/contract
+    name: RewardManager
+    network: {{network}}
+    source:
+      address: '{{contracts.RewardManager.address}}'
+      abi: RewardManager
+      startBlock: {{startBlock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - RewardManager
+      abis:
+        - name: RewardManager
+          file: ./abi/RewardManager.json
+      eventHandlers:
+        - event: onFactorChanged(indexed address,uint256)
+          handler: handleOnFactorChanged
+        - event: onTargetWeightChanged(indexed address,indexed address,uint256)
+          handler: handleOnTargetWeightChanged
+        - event: onGlobalMaxPenaltyChanged(indexed address,uint256)
+          handler: handleOnGlobalMaxPenaltyChanged
+        - event: onGlobalMaxRewardChanged(indexed address,uint256)
+          handler: handleOnGlobalMaxRewardChanged
+      file: ./src/mappings/rewardManager.ts
