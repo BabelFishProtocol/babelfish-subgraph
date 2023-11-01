@@ -78,10 +78,9 @@ type RewardManager @entity {
 type RewardManagerXusdTransaction @entity {
   id: ID!
   event: RewardManagerEvent!
-  asset: String!
   amount: BigInt!
   date: BigInt!
-  user: Bytes!
+  user: Bytes
   txHash: Bytes!
   receiver: Bytes!
 }
@@ -89,7 +88,7 @@ type RewardManagerXusdTransaction @entity {
 type XusdTransaction @entity {
   id: ID!
   event: Event!
-  asset: String!
+  asset: Bytes!
   amount: BigInt!
   date: BigInt!
   user: Bytes!

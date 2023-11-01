@@ -202,3 +202,24 @@ dataSources:
         - event: onGlobalMaxRewardChanged(indexed address,uint256)
           handler: handleOnGlobalMaxRewardChanged
       file: ./src/mappings/rewardManager.ts
+    # RewardManagetTransfers
+  - kind: ethereum/contract
+    name: RewardManagetTransfers
+    network: mainnet
+    source:
+      address: '{{contracts.XUSD.address}}'
+      abi: ERC20
+      startBlock: 1929321
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - ERC20
+      abis:
+        - name: ERC20
+          file: ./abi/ERC20.json
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleRMTransfer
+      file: ./src/mappings/rewardManager.ts

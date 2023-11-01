@@ -10,7 +10,7 @@ export function handleMinted(event: Minted): void {
   getGlobal();
 
   tx.event = 'Deposit';
-  tx.asset = 'XUSD';
+  tx.asset = event.params.basset;
   tx.amount = event.params.massetQuantity;
   tx.date = event.block.timestamp;
   tx.user = event.params.minter;
@@ -27,7 +27,7 @@ export function handleRedeemed(event: Redeemed): void {
   getGlobal();
 
   tx.event = 'Withdraw';
-  tx.asset = 'XUSD';
+  tx.asset = event.params.basset;
   tx.amount = event.params.massetQuantity;
   tx.date = event.block.timestamp;
   tx.user = event.params.redeemer;

@@ -22,3 +22,5 @@ export const bassets: BAsset[] = [
   new BAsset('0xD9665EA8F5fF70Cf97E1b1Cd1B4Cd0317b0976e8', 'USDTes'),
   new BAsset('0xDb107FA69E33f05180a4C2CE9C2e7Cb481645c2D', 'ZUSD'),
 ];
+
+export const rewardManagerAddress = { address: '0xD2508D45fF30f920178Ce88b3a5C7207C534558D' };

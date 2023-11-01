@@ -30,6 +30,9 @@
     },
     "RewardManager": {
       "address": "0xD2508D45fF30f920178Ce88b3a5C7207C534558D"
+    },
+    "XUSD": {
+      "address": "0xb5999795BE0eBb5BAb23144Aa5fD6a02d080299f"
     }
   }
 }
