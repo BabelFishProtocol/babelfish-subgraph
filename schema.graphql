@@ -70,9 +70,9 @@ enum RewardManagerEvent {
 
 type RewardManager @entity {
   id: ID!
-  factor: Int
-  globalMaxPenalty: Int
-  globalMaxReward: Int
+  factor: BigInt
+  globalMaxPenalty: BigInt
+  globalMaxReward: BigInt
 }
 
 type RewardManagerXusdTransaction @entity {

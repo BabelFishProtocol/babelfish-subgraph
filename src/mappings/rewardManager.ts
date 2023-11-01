@@ -1,8 +1,8 @@
 import { onFactorChanged, onTargetWeightChanged, onGlobalMaxPenaltyChanged, onGlobalMaxRewardChanged } from '../../generated/RewardManager/RewardManager';
 import { toggleTargetWeightBAsset } from '../entities/BAsset';
 import { RewardManagerXusdTransaction, RewardManager } from '../../generated/schema';
-import { Transfer } from 'generated/MassetV3/ERC20';
-import { getGlobal } from './Global';
+import { Transfer } from '../../generated/MassetV3/ERC20';
+import { getGlobal } from '../entities/Global';
 import { rewardManagerAddress } from '../utils/bAssets';
 
 export function handleOnTargetWeightChanged(event: onTargetWeightChanged): void {
@@ -11,20 +11,38 @@ export function handleOnTargetWeightChanged(event: onTargetWeightChanged): void 
 
 export function handleOnFactorChanged(event: onFactorChanged): void {
   let rw = RewardManager.load('rw');
-  rw.factor = event.params.newFactor;
-  rw.save();
+  if (rw === null) {
+    rw = new RewardManager('rw'); 
+  }
+
+  if (rw !== null) {
+    rw.factor = event.params.newFactor;
+    rw.save();
+  }
 }
 
 export function handleOnGlobalMaxPenaltyChanged(event: onGlobalMaxPenaltyChanged): void {
   let rw = RewardManager.load('rw');
-  rw.globalMaxPenalty = event.params.newMax;
-  rw.save();
+  if (rw === null) {
+    rw = new RewardManager('rw'); 
+  }
+
+  if (rw !== null) {
+    rw.globalMaxPenalty = event.params.newMax;
+    rw.save();
+  }
 }
 
 export function handleOnGlobalMaxRewardChanged(event: onGlobalMaxRewardChanged): void {
   let rw = RewardManager.load('rw');
-  rw.globalMaxReward = event.params.newMax;
-  rw.save();
+  if (rw === null) {
+    rw = new RewardManager('rw');
+  }
+
+  if (rw !== null) {
+    rw.globalMaxReward = event.params.newMax;
+    rw.save();
+  }
 }
 
 export function handleRMTransfer(event: Transfer): void {
@@ -33,7 +51,7 @@ export function handleRMTransfer(event: Transfer): void {
   );
 
   getGlobal();
-  if (tx.params.to == rewardManagerAddress.address) {
+  if (event.params.to == rewardManagerAddress.address) {
     tx.event = 'Reward';
     tx.amount = event.params.value;
     tx.date = event.block.timestamp;
@@ -41,7 +59,7 @@ export function handleRMTransfer(event: Transfer): void {
     tx.txHash = event.transaction.hash;
     tx.receiver = event.params.to;
     tx.save();
-  } else if (tx.from == rewardManagerAddress.address) {
+  } else if (event.params.from == rewardManagerAddress.address) {
     tx.event = 'Penalty';
     tx.amount = event.params.value;
     tx.date = event.block.timestamp;

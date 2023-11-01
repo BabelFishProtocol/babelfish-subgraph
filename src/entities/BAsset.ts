@@ -3,6 +3,7 @@ import { BAsset } from '../../generated/schema';
 import { ERC20 as ERC20TokenContract } from '../../generated/BasketManagerV3/ERC20';
 import { RewardManager as RewardManagerContract } from '../../generated/RewardManager/RewardManager';
 import { getGlobal } from './Global';
+import { rewardManagerAddress } from '../utils/bAssets';
 
 export function createAndReturnBAsset(tokenAddress: Address, symbol: string): BAsset {
   let token = BAsset.load(tokenAddress.toHex());
@@ -25,11 +26,12 @@ export function createAndReturnBAsset(tokenAddress: Address, symbol: string): BA
     } else {
       token.decimals = 18
     }
-    let targetWeightResult = RewardManagerContract.try_getTargetWeight();
+    let rewardManagerContract = RewardManagerContract.bind(Address.fromString(rewardManagerAddress.address));
+    let targetWeightResult = rewardManagerContract.try_getTargetWeight(tokenAddress);
     if (!targetWeightResult.reverted) {
       token.targetWeight = targetWeightResult.value;
     } else {
-      token.targetWeight = 0
+      token.targetWeight = BigInt.fromI32(0)
     }
     token.paused = false;
     let global = getGlobal();

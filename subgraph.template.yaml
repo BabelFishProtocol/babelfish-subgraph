@@ -1,6 +1,6 @@
 specVersion: 0.0.2
 description: Babelfish subgraph
-repository: https://github.com/graphprotocol/example-subgraph
+repository: https://github.com/BabelFishProtocol/babelfish-subgraph.git
 schema:
   file: ./schema.graphql
 dataSources:
