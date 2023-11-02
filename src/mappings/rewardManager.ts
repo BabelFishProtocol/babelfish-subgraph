@@ -51,7 +51,7 @@ export function handleRMTransfer(event: Transfer): void {
   );
 
   getGlobal();
-  if (event.params.to == rewardManagerAddress.address) {
+  if (event.params.to.toHex() == rewardManagerAddress.address) {
     tx.event = 'Reward';
     tx.amount = event.params.value;
     tx.date = event.block.timestamp;
@@ -59,7 +59,7 @@ export function handleRMTransfer(event: Transfer): void {
     tx.txHash = event.transaction.hash;
     tx.receiver = event.params.to;
     tx.save();
-  } else if (event.params.from == rewardManagerAddress.address) {
+  } else if (event.params.from.toHex() == rewardManagerAddress.address) {
     tx.event = 'Penalty';
     tx.amount = event.params.value;
     tx.date = event.block.timestamp;
