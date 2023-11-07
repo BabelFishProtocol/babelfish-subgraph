@@ -68,13 +68,6 @@ enum RewardManagerEvent {
   Reward
 }
 
-type RewardManager @entity {
-  id: ID!
-  factor: BigInt
-  globalMaxPenalty: BigInt
-  globalMaxReward: BigInt
-}
-
 type RewardManagerXusdTransaction @entity {
   id: ID!
   event: RewardManagerEvent!
@@ -99,6 +92,9 @@ type XusdTransaction @entity {
 type Global @entity {
   id: ID! # id is 'only'
   assets: [BAsset!] @derivedFrom(field: "global")
+  RMFactor: BigInt @derivedFrom(field: "global")
+  RMGlobalMaxPenalty: BigInt @derivedFrom(field: "global")
+  RMGlobalMaxReward: BigInt @derivedFrom(field: "global")
 }
 
 type BAsset @entity {
@@ -108,5 +104,5 @@ type BAsset @entity {
   decimals: Int
   paused: Boolean!
   global: Global!
-  targetWeight: BigInt!
+  targetWeight: BigInt
 }
