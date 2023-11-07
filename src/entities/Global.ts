@@ -1,7 +1,7 @@
 import { Address } from '@graphprotocol/graph-ts';
 import { bassets } from '../utils/bAssets';
 import { Global } from '../../generated/schema';
-import { toggleTargetWeightBAsset } from './BAsset';
+import { createAndReturnBAsset, toggleTargetWeightBAsset } from './BAsset';
 
 export function getGlobal(): Global {
   let global = Global.load('only');

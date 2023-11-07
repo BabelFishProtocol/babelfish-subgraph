@@ -1,48 +1,35 @@
-import { onFactorChanged, onTargetWeightChanged, onGlobalMaxPenaltyChanged, onGlobalMaxRewardChanged } from '../../generated/RewardManager/RewardManager';
+import { RewardManager, onFactorChanged, onTargetWeightChanged, onGlobalMaxPenaltyChanged, onGlobalMaxRewardChanged } from '../../generated/RewardManager/RewardManager';
 import { toggleTargetWeightBAsset } from '../entities/BAsset';
-import { RewardManagerXusdTransaction, RewardManager } from '../../generated/schema';
-import { RewardManager as RewardManagerContract } from '../../generated/RewardManager/RewardManager';
+import { Global, RewardManagerXusdTransaction } from '../../generated/schema';
 import { Transfer } from '../../generated/MassetV3/ERC20';
-import { getGlobal } from '../entities/Global';
+import { getGlobal,getRewardManager } from '../entities/Global';
 import { rewardManagerAddress } from '../utils/bAssets';
 
 export function handleOnTargetWeightChanged(event: onTargetWeightChanged): void {
-  toggleTargetWeightBAsset(event.params.token, event.params.newTargetWeight);
+  toggleTargetWeightBAsset(event.params.token);
 }
 
 export function handleOnFactorChanged(event: onFactorChanged): void {
-  let rm = RewardManager.load('rm');
-  if (rm === null) {
-    rm = new RewardManager('rm'); 
-  }
-
-  if (rm !== null) {
-    rm.factor = event.params.newFactor;
-    rm.save();
-  }
+  let globalRM = Global.load('only');
+  if (globalRM !== null) {
+    globalRM.RMFactor = event.params.newFactor;
+    globalRM.save();
+   }
 }
 
 export function handleOnGlobalMaxPenaltyChanged(event: onGlobalMaxPenaltyChanged): void {
-  let rm = RewardManager.load('rm');
-  if (rm === null) {
-    rm = new RewardManager('rm'); 
-  }
-
-  if (rm !== null) {
-    rm.globalMaxPenalty = event.params.newMax;
-    rm.save();
+  let globalRM = Global.load('only');
+  if (globalRM !== null) {
+    globalRM.RMGlobalMaxPenalty = event.params.newMax;
+    globalRM.save();
   }
 }
 
 export function handleOnGlobalMaxRewardChanged(event: onGlobalMaxRewardChanged): void {
-  let rm = RewardManager.load('rm');
-  if (rm === null) {
-    rm = new RewardManager('rm');
-  }
-
-  if (rm !== null) {
-    rm.globalMaxReward = event.params.newMax;
-    rm.save();
+  let globalRM = Global.load('only');
+  if (globalRM !== null) {
+    globalRM.RMGlobalMaxReward = event.params.newMax;
+    globalRM.save();
   }
 }
 
@@ -52,10 +39,8 @@ export function handleTransfer(event: Transfer): void {
   );
 
   getGlobal();
-  let rmtw = Global.load('rmtw');
-  if (rmtw == null) {
-    getRewardManager();
-  }
+  getRewardManager(); //TODO: execute only once
+
   if (event.params.to.toHex() == rewardManagerAddress.address) {
     tx.event = 'Reward';
     tx.amount = event.params.value;

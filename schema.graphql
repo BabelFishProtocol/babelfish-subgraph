@@ -92,9 +92,9 @@ type XusdTransaction @entity {
 type Global @entity {
   id: ID! # id is 'only'
   assets: [BAsset!] @derivedFrom(field: "global")
-  RMFactor: BigInt @derivedFrom(field: "global")
-  RMGlobalMaxPenalty: BigInt @derivedFrom(field: "global")
-  RMGlobalMaxReward: BigInt @derivedFrom(field: "global")
+  RMFactor: BigInt
+  RMGlobalMaxPenalty: BigInt
+  RMGlobalMaxReward: BigInt
 }
 
 type BAsset @entity {
