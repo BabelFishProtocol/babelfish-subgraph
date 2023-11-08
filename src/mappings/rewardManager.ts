@@ -12,7 +12,7 @@ export function handleOnTargetWeightChanged(event: onTargetWeightChanged): void 
 export function handleOnFactorChanged(event: onFactorChanged): void {
   let globalRM = Global.load('only');
   if (globalRM !== null) {
-    globalRM.RMFactor = event.params.newFactor;
+    globalRM.rewardManagerFactor = event.params.newFactor;
     globalRM.save();
    }
 }
@@ -20,7 +20,7 @@ export function handleOnFactorChanged(event: onFactorChanged): void {
 export function handleOnGlobalMaxPenaltyChanged(event: onGlobalMaxPenaltyChanged): void {
   let globalRM = Global.load('only');
   if (globalRM !== null) {
-    globalRM.RMGlobalMaxPenalty = event.params.newMax;
+    globalRM.rewardManagerGlobalMaxPenalty = event.params.newMax;
     globalRM.save();
   }
 }
@@ -28,7 +28,7 @@ export function handleOnGlobalMaxPenaltyChanged(event: onGlobalMaxPenaltyChanged
 export function handleOnGlobalMaxRewardChanged(event: onGlobalMaxRewardChanged): void {
   let globalRM = Global.load('only');
   if (globalRM !== null) {
-    globalRM.RMGlobalMaxReward = event.params.newMax;
+    globalRM.rewardManagerGlobalMaxReward = event.params.newMax;
     globalRM.save();
   }
 }
@@ -39,9 +39,9 @@ export function handleTransfer(event: Transfer): void {
   );
 
   getGlobal();
-  getRewardManager(); //TODO: execute only once
 
   if (event.params.to.toHex() == rewardManagerAddress.address) {
+    getRewardManager();
     tx.event = 'Reward';
     tx.amount = event.params.value;
     tx.date = event.block.timestamp;
@@ -50,6 +50,7 @@ export function handleTransfer(event: Transfer): void {
     tx.receiver = event.params.to;
     tx.save();
   } else if (event.params.from.toHex() == rewardManagerAddress.address) {
+    getRewardManager();
     tx.event = 'Penalty';
     tx.amount = event.params.value;
     tx.date = event.block.timestamp;

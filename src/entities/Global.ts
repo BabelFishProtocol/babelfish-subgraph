@@ -7,6 +7,7 @@ export function getGlobal(): Global {
   let global = Global.load('only');
   if (global == null) {
     global = new Global('only');
+    global.rewardManagerExecuted = false;
     global.save();
     for (let i = 0; i < bassets.length; i++) {
       createAndReturnBAsset(
@@ -19,10 +20,16 @@ export function getGlobal(): Global {
 
 export function getRewardManager(): Global {
   let global = Global.load('only');
-  for (let i = 0; i < bassets.length; i++) {
-    toggleTargetWeightBAsset(
-      Address.fromString(bassets[i].address.toLowerCase())
-    );
+  if (global != null) {
+    if (!global.rewardManagerExecuted) {
+      for (let i = 0; i < bassets.length; i++) {
+        toggleTargetWeightBAsset(
+          Address.fromString(bassets[i].address.toLowerCase())
+        );
+      }
+      global.rewardManagerExecuted = true;
+      global.save();
+    }
   }
   return global as Global;
 }
