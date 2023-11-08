@@ -27,6 +27,12 @@
     },
     "PauseManager": {
       "address": "0x08830e91423f393F082C03Ede0a94d828Af6629d"
+    },
+    "RewardManager": {
+      "address": "0xd7D4236adEa1fFE9C1C6b4A31Ac3d37AE146906D"
+    },
+    "XUSD": {
+      "address": "0xA9262cC3fb54Ea55b1b0AF00EFcA9416B8D59570"
     }
   }
 }

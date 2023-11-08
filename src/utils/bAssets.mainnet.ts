@@ -7,6 +7,13 @@ class BAsset {
   }
 }
 
+class RM {
+  address: string;
+  constructor(address: string) {
+    this.address = address.toLowerCase();
+  }
+}
+
 export const bassets: BAsset[] = [
   new BAsset('0x2aCc95758f8b5F583470bA265Eb685a8f45fC9D5', 'RIF'),
   new BAsset('0x6D9659BDF5b1a1Da217f7BBAf7DBaf8190e2e71b', 'BNBs'),
@@ -21,4 +28,7 @@ export const bassets: BAsset[] = [
   new BAsset('0x8D1f7CbC6391D95E2774380e80A666FEbf655D6b', 'USDCes'),
   new BAsset('0xD9665EA8F5fF70Cf97E1b1Cd1B4Cd0317b0976e8', 'USDTes'),
   new BAsset('0xDb107FA69E33f05180a4C2CE9C2e7Cb481645c2D', 'ZUSD'),
+  new BAsset('0xc1411567D2670E24D9c4Daaa7CdA95686E1250Aa', 'DLLR'),
 ];
+
+export const rewardManagerAddress: RM = new RM('0xD2508D45fF30f920178Ce88b3a5C7207C534558D');

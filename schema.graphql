@@ -63,10 +63,25 @@ enum Event {
   Withdraw
 }
 
+enum RewardManagerEvent {
+  Penalty
+  Reward
+}
+
+type RewardManagerXusdTransaction @entity {
+  id: ID!
+  event: RewardManagerEvent!
+  amount: BigInt!
+  date: BigInt!
+  user: Bytes
+  txHash: Bytes!
+  receiver: Bytes!
+}
+
 type XusdTransaction @entity {
   id: ID!
   event: Event!
-  asset: String!
+  asset: Bytes!
   amount: BigInt!
   date: BigInt!
   user: Bytes!
@@ -77,6 +92,10 @@ type XusdTransaction @entity {
 type Global @entity {
   id: ID! # id is 'only'
   assets: [BAsset!] @derivedFrom(field: "global")
+  rewardManagerFactor: BigInt
+  rewardManagerGlobalMaxPenalty: BigInt
+  rewardManagerGlobalMaxReward: BigInt
+  rewardManagerExecuted: Boolean
 }
 
 type BAsset @entity {
@@ -86,4 +105,5 @@ type BAsset @entity {
   decimals: Int
   paused: Boolean!
   global: Global!
+  targetWeight: BigInt
 }
