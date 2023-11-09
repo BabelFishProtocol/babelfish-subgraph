@@ -14,7 +14,7 @@ dataSources:
       startBlock: {{startBlock}}
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.5
+      apiVersion: 0.0.6
       language: wasm/assemblyscript
       entities:
         - GovernorAdmin
@@ -41,7 +41,7 @@ dataSources:
       startBlock: {{startBlock}}
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.5
+      apiVersion: 0.0.6
       language: wasm/assemblyscript
       entities:
         - GovernorOwner
@@ -68,7 +68,7 @@ dataSources:
       startBlock: {{startBlock}}
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.5
+      apiVersion: 0.0.6
       language: wasm/assemblyscript
       entities:
         - Staking
@@ -89,7 +89,7 @@ dataSources:
       startBlock: {{startBlock}}
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.5
+      apiVersion: 0.0.6
       language: wasm/assemblyscript
       entities:
         - MassetV3
@@ -98,6 +98,8 @@ dataSources:
           file: ./abi/MassetV3.json
         - name: ERC20
           file: ./abi/ERC20.json
+        - name: RewardManager
+          file: ./abi/RewardManager.json
       eventHandlers:
         - event: Minted(indexed address,indexed address,uint256,address,uint256)
           handler: handleMinted
@@ -114,7 +116,7 @@ dataSources:
       startBlock: {{startBlock}}
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.5
+      apiVersion: 0.0.6
       language: wasm/assemblyscript
       entities:
         - VestingRegistry
@@ -137,7 +139,7 @@ dataSources:
       startBlock: {{startBlock}}
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.5
+      apiVersion: 0.0.6
       language: wasm/assemblyscript
       entities:
         - BasketManagerV3
@@ -162,7 +164,7 @@ dataSources:
       startBlock: {{startBlock}}
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.5
+      apiVersion: 0.0.6
       language: wasm/assemblyscript
       entities:
         - PauseManager
@@ -185,7 +187,7 @@ dataSources:
       startBlock: {{startBlock}}
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.5
+      apiVersion: 0.0.6
       language: wasm/assemblyscript
       entities:
         - RewardManager
@@ -219,7 +221,9 @@ dataSources:
       abis:
         - name: ERC20
           file: ./abi/ERC20.json
+        - name: RewardManager
+          file: ./abi/RewardManager.json
       eventHandlers:
         - event: Transfer(indexed address,indexed address,uint256)
-          handler: handleRMTransfer
+          handler: handleTransfer
       file: ./src/mappings/rewardManager.ts
