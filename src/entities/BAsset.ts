@@ -3,7 +3,7 @@ import { BAsset } from '../../generated/schema';
 import { ERC20 as ERC20TokenContract } from '../../generated/BasketManagerV3/ERC20';
 import { getGlobal } from './Global';
 import { RewardManager } from '../../generated/RewardManager/RewardManager';
-import { rewardManagerAddress } from '../utils/bAssets';
+import { rewardManagerAddress3 } from '../utils/bAssets';
 
 export function createAndReturnBAsset(tokenAddress: Address, symbol: string): BAsset {
   let token = BAsset.load(tokenAddress.toHex());
@@ -51,10 +51,10 @@ export function togglePauseBAsset(address: Address, isPaused: boolean): void {
 
 export function toggleTargetWeightBAsset(address: Address): void {
   let bAsset = BAsset.load(address.toHexString());
-  let rewardManagerContract = RewardManager.bind(Address.fromString(rewardManagerAddress.address));
-  let targetWeightResult = rewardManagerContract.getTargetWeight(address);
-  if (bAsset !== null) {
-    bAsset.targetWeight = targetWeightResult;
+  let rewardManagerContract = RewardManager.bind(Address.fromString(rewardManagerAddress3.address));
+  let targetWeightResult = rewardManagerContract.try_getTargetWeight(address);
+  if (!targetWeightResult.reverted && bAsset !== null) {
+    bAsset.targetWeight = targetWeightResult.value;
     bAsset.save();
   }
 }

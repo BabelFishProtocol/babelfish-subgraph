@@ -28,7 +28,7 @@ export function handleRedeemed(event: Redeemed): void {
 
   tx.event = 'Withdraw';
   tx.asset = event.params.bAsset;
-  tx.amount = event.params.massetQuantity;
+  tx.amount = event.params.bassetQuantity;
   tx.date = event.block.timestamp;
   tx.user = event.params.redeemer;
   tx.txHash = event.transaction.hash;

@@ -31,4 +31,6 @@ export const bassets: BAsset[] = [
   new BAsset('0xc1411567D2670E24D9c4Daaa7CdA95686E1250Aa', 'DLLR'),
 ];
 
-export const rewardManagerAddress: RM = new RM('0xD2508D45fF30f920178Ce88b3a5C7207C534558D');
+export const rewardManagerAddress1: RM = new RM('0xD2508D45fF30f920178Ce88b3a5C7207C534558D');
+export const rewardManagerAddress2: RM = new RM('0xdfE234575c04F8Ad29Bea2c1546799e677022021');
+export const rewardManagerAddress3: RM = new RM('0x7535e61fc42392C578d90268358b94649f9B4193');

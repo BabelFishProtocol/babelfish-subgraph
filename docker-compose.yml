@@ -2,6 +2,7 @@ version: '3'
 services:
   graph-node:
     image: graphprotocol/graph-node:v0.27.0
+    restart: always
     ports:
       - '8000:8000'
       - '8001:8001'
@@ -23,10 +24,11 @@ services:
       postgres_db: postgres
       ipfs: 'ipfs:5001'
       # Change next line if you want to connect to a different JSON-RPC endpoint
-      ethereum: 'mainnet:https://testnet.sovryn.app'
+      ethereum: 'mainnet:https://mainnet-dev.sovryn.app/rpc'
       GRAPH_LOG: 'debug'
   ipfs:
     image: ipfs/go-ipfs:v0.11.0
+    restart: always
     ports:
       - '5001:5001'
     expose:
@@ -35,6 +37,7 @@ services:
       - ./data/ipfs:/data/ipfs
   postgres:
     image: postgres
+    restart: always
     ports:
       - '5432:5432'
     command: ["postgres", "-cshared_preload_libraries=pg_stat_statements"]

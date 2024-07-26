@@ -28,8 +28,14 @@
     "PauseManager": {
       "address": "0x3e96B99993B39a01e620Be71eFB5bF8AC6F7fb0E"
     },
-    "RewardManager": {
+    "RewardManager1": {
       "address": "0xD2508D45fF30f920178Ce88b3a5C7207C534558D"
+    },
+    "RewardManager2": {
+      "address": "0xdfE234575c04F8Ad29Bea2c1546799e677022021"
+    },
+    "RewardManager3": {
+      "address": "0x7535e61fc42392C578d90268358b94649f9B4193"
     },
     "XUSD": {
       "address": "0xb5999795BE0eBb5BAb23144Aa5fD6a02d080299f"

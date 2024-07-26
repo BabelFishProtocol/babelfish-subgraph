@@ -177,12 +177,12 @@ dataSources:
         - event: onUnpause(indexed address,indexed address)
           handler: handleOnUnpause
       file: ./src/mappings/pauseManager.ts
-    # RewardManager
+    # RewardManager1
   - kind: ethereum/contract
-    name: RewardManager
+    name: RewardManager1
     network: {{network}}
     source:
-      address: '{{contracts.RewardManager.address}}'
+      address: '{{contracts.RewardManager1.address}}'
       abi: RewardManager
       startBlock: {{startBlock}}
     mapping:
@@ -190,7 +190,7 @@ dataSources:
       apiVersion: 0.0.6
       language: wasm/assemblyscript
       entities:
-        - RewardManager
+        - RewardManager1
       abis:
         - name: RewardManager
           file: ./abi/RewardManager.json
@@ -204,9 +204,9 @@ dataSources:
         - event: onGlobalMaxRewardChanged(indexed address,uint256)
           handler: handleOnGlobalMaxRewardChanged
       file: ./src/mappings/rewardManager.ts
-    # RewardManagetTransfers
+    # RewardManagerTransfers
   - kind: ethereum/contract
-    name: RewardManagetTransfers
+    name: RewardManagerTransfers
     network: mainnet
     source:
       address: '{{contracts.XUSD.address}}'
@@ -226,4 +226,58 @@ dataSources:
       eventHandlers:
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handleTransfer
+      file: ./src/mappings/rewardManager.ts
+    # RewardManager2
+  - kind: ethereum/contract
+    name: RewardManager2
+    network: {{network}}
+    source:
+      address: '{{contracts.RewardManager2.address}}'
+      abi: RewardManager
+      startBlock: {{startBlock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - RewardManager2
+      abis:
+        - name: RewardManager
+          file: ./abi/RewardManager.json
+      eventHandlers:
+        - event: onFactorChanged(indexed address,uint256)
+          handler: handleOnFactorChanged
+        - event: onTargetWeightChanged(indexed address,indexed address,uint256)
+          handler: handleOnTargetWeightChanged
+        - event: onGlobalMaxPenaltyChanged(indexed address,uint256)
+          handler: handleOnGlobalMaxPenaltyChanged
+        - event: onGlobalMaxRewardChanged(indexed address,uint256)
+          handler: handleOnGlobalMaxRewardChanged
+      file: ./src/mappings/rewardManager.ts
+    # RewardManager3
+  - kind: ethereum/contract
+    name: RewardManager3
+    network: {{network}}
+    source:
+      address: '{{contracts.RewardManager3.address}}'
+      abi: RewardManager
+      startBlock: {{startBlock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - RewardManager3
+      abis:
+        - name: RewardManager
+          file: ./abi/RewardManager.json
+      eventHandlers:
+        - event: onFactorChanged(indexed address,uint256)
+          handler: handleOnFactorChanged
+        - event: onTargetWeightChanged(indexed address,indexed address,uint256)
+          handler: handleOnTargetWeightChanged
+        - event: onGlobalMaxPenaltyChanged(indexed address,uint256)
+          handler: handleOnGlobalMaxPenaltyChanged
+        - event: onGlobalMaxRewardChanged(indexed address,uint256)
+          handler: handleOnGlobalMaxRewardChanged
       file: ./src/mappings/rewardManager.ts
