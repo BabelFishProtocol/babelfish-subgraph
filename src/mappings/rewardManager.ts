@@ -1,4 +1,4 @@
-import { RewardManager, onFactorChanged, onTargetWeightChanged, onGlobalMaxPenaltyChanged, onGlobalMaxRewardChanged } from '../../generated/RewardManager/RewardManager';
+import { RewardManager, onFactorChanged, onTargetWeightChanged, onGlobalMaxPenaltyChanged, onGlobalMaxRewardChanged } from '../../generated/RewardManager1/RewardManager';
 import { toggleTargetWeightBAsset } from '../entities/BAsset';
 import { Global, RewardManagerXusdTransaction } from '../../generated/schema';
 import { Transfer } from '../../generated/MassetV3/ERC20';

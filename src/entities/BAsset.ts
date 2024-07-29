@@ -2,7 +2,7 @@ import { log, Address, BigInt, store } from '@graphprotocol/graph-ts';
 import { BAsset } from '../../generated/schema';
 import { ERC20 as ERC20TokenContract } from '../../generated/BasketManagerV3/ERC20';
 import { getGlobal } from './Global';
-import { RewardManager } from '../../generated/RewardManager/RewardManager';
+import { RewardManager } from '../../generated/RewardManager1/RewardManager';
 import { rewardManagerAddress3 } from '../utils/bAssets';
 
 export function createAndReturnBAsset(tokenAddress: Address, symbol: string): BAsset {
